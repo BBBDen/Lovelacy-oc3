@@ -1,0 +1,11 @@
+{{ header }}
+<section class="subscription-form" id="subscribe-block">
+    <div class="container">
+        {% if status == 'successful' %}
+            success
+        {% else %}
+            failed
+        {% endif %}
+    </div>
+</section>
+{{ footer }}

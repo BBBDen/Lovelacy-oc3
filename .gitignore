@@ -59,4 +59,6 @@ image
 .well-known
 system/storage
 admin/*.txt
+config.php
+admin/config.php
 

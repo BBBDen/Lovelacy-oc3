@@ -37,8 +37,16 @@
             </tr>
             </thead>
             <tbody>
+            {% set user_class_pay_result = '' %}
             {% for data in user_data %}
-              <tr>
+              {% if data.pay_status == 'successful' %}
+                {% set user_class_pay_result = 'alert-success' %}
+              {% elseif data.pay_status == 'canceled' %}
+                {% set user_class_pay_result = 'alert-warning' %}
+              {% elseif data.pay_status == 'failed' %}
+                {% set user_class_pay_result = 'alert-danger' %}
+              {% endif %}
+              <tr class="{{ user_class_pay_result }}">
                 <td class="text-center"><input type="checkbox" name="selected[]" value="{{ data.id }}">
                 </td>
                 <td class="left">{{ data.name }}</td>

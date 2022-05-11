@@ -79,6 +79,7 @@ class ControllerCatalogUserData extends Controller {
 			    'id' => $result['card_subscribe_info_id'],
 				'name' => $result['firstname'] . ' ' . $result['lastname'],
 				'email' => $result['email'],
+				'pay_status' => $result['pay_status'],
 				'phone' => $result['telephone'],
                 'edit' => $this->url->link('catalog/user_data/edit', 'user_token=' . $this->session->data['user_token'] . '&path_id=' . $result['card_subscribe_info_id'], true),
 			);

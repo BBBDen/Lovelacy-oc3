@@ -186,6 +186,8 @@ class ControllerCatalogUserData extends Controller {
             'color'         => 'Какие цвета нравятся больше',
             'notToAdd'      => 'Что точно не класть в мешочек',
             'requests'      => 'Есть ли какие-то особенные пожелания',
+            'braSize'       => 'Размер чашки',
+            'braSizeOur'    => 'Какой из комплектов уже присутствует',
         ];
 
         $result = $this->model_customer_customer->getData($this->request->get['path_id']);
@@ -194,10 +196,20 @@ class ControllerCatalogUserData extends Controller {
             $data = [];
             if ($result['user_data']) {
                 $_data_ = unserialize($result['user_data']);
+
                 $keys = array_keys($_data_);
                 foreach ($keys as $k) {
                     if ($k === 'material') {
-                        $val = $materials[$_data_[$k]];
+                        if (gettype($_data_[$k]) === 'array') {
+                            $vals = [];
+                            foreach ($_data_[$k] as $item) {
+                                $vals[] = $materials[$item];
+                            }
+
+                            $val = implode(', ', $vals);
+                        } else {
+                            $val = $materials[$_data_[$k]];
+                        }
                     } else if ($k === 'color') {
                         $val = $colors[$_data_[$k]];
                     } else if ($k === 'chockers' || $k === 'streps') {

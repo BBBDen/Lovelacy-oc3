@@ -118,6 +118,8 @@ class ControllerAccountAccount extends Controller {
                 $data['color'] = isset($user_data['color']) ? $user_data['color'] : '';
                 $data['notToAdd'] = isset($user_data['notToAdd']) ? $user_data['notToAdd'] : '';
                 $data['requests'] = isset($user_data['requests']) ? $user_data['requests'] : '';
+                $data['braSize'] = isset($user_data['braSize']) ? $user_data['braSize'] : '';
+                $data['braSizeOur'] = isset($user_data['braSizeOur']) ? $user_data['braSizeOur'] : '';
             }
         } else {
             $data['customer_id'] = 0;
@@ -130,6 +132,8 @@ class ControllerAccountAccount extends Controller {
             $data['color'] = '';
             $data['notToAdd'] = '';
             $data['requests'] = '';
+            $data['braSize'] = '';
+            $data['braSizeOur'] = '';
         }
 
         $data['name'] = $customer_info['firstname'];
@@ -385,15 +389,68 @@ class ControllerAccountAccount extends Controller {
         $language->load('account/account');
 
         $this->load->model('account/customer');
-
-        $params = [
-            'customer_id' => $this->request->get['customer_id'],
-            'user_data' => serialize($this->request->post)
-        ];
-        $this->model_account_customer->saveInfo($params);
+        $validation_errors = $this->validateUserInfo($this->request->post);
+        if (!empty($validation_errors)) {
+            $errors_array = [];
+            foreach ($validation_errors as $error_key => $validation_error) {
+                $errors_array[$error_key] = $language->get($validation_error);
+            }
+            $answer = $errors_array;
+            $success = false;
+        } else {
+            $params = [
+                'customer_id' => $this->request->get['customer_id'],
+                'user_data' => serialize($this->request->post)
+            ];
+            $this->model_account_customer->saveInfo($params);
+            $answer = $language->get('text_answer');
+            $success = true;
+        }
 
         $this->response->addHeader('Content-Type: application/json');
-        $this->response->setOutput(json_encode(['success' => true, 'answer' => $language->get('text_answer'), 'redirect' => $this->url->link('account/account')]));
+        $this->response->setOutput(json_encode(['success' => $success, 'answer' => $answer, 'redirect' => $this->url->link('account/account')]));
+    }
+
+    public function validateUserInfo($post) {
+        $errors = [];
+        if (mb_strlen($post['chest']) === 0) {
+            $errors['chest'] = 'chest_text_error';
+        }
+
+        if (mb_strlen($post['under_chest']) === 0) {
+            $errors['under_chest'] = 'under_chest_text_error';
+        }
+
+        if (mb_strlen($post['hips']) === 0) {
+            $errors['hips'] = 'hips_text_error';
+        }
+
+        if (mb_strlen($post['braSize']) === 0) {
+            $errors['braSize'] = 'bra_size_text_error';
+        }
+
+        if (!array_key_exists('chockers', $post)) {
+            $errors['chockers'] = 'chockers_text_error';
+        }
+
+        if (!array_key_exists('streps', $post)) {
+            $errors['streps'] = 'streps_text_error';
+        }
+        if (!array_key_exists('material', $post)) {
+            $errors['material'] = 'material_text_error';
+        }
+
+        if (!array_key_exists('color', $post)) {
+            $errors['color'] = 'color_text_error';
+        }
+
+        if (mb_strlen($post['notToAdd']) === 0) {
+            $errors['notToAdd'] = 'not_to_add_text_error';
+        }
+        if (mb_strlen($post['requests']) === 0) {
+            $errors['requests'] = 'requests_text_error';
+        }
+        return $errors;
     }
 
     public function unSubscribe()

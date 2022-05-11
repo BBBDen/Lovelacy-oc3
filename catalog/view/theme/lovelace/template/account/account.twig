@@ -191,12 +191,12 @@
                                 <input class="input" name="hips" type="text" placeholder="{{ text_hips }}" value="{{ hips }}">
                             </div>
                             <div>
-                                <textarea class="input" name="braSize" placeholder="Какой размер чашки вы обычно покупаете? (например: 75С)"></textarea>
+                                <textarea class="input" name="braSize" placeholder="Какой размер чашки вы обычно покупаете? (например: 75С)">{{ braSize }}</textarea>
                             </div>
                             <div>
-                                <textarea class="input" name="braSizeOur" placeholder="Какие из наших комплектов у вас уже есть и какого размера там чашка? (необязательно)"></textarea>
+                                <textarea class="input" name="braSizeOur" placeholder="Какие из наших комплектов у вас уже есть и какого размера там чашка? (необязательно)">{{ braSizeOur }}</textarea>
                             </div>
-                            <div class="wrapper">
+                            <div class="wrapper wrapper-chockers">
                                 <div class="account-info__edit__title">{{ text_chokers }}</div>
                                 <div class="account-info__checkbox checkbox">
                                     <label class="custom-checkbox">
@@ -217,7 +217,7 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="wrapper">
+                            <div class="wrapper wrapper-streps">
                                 <div class="account-info__edit__title">{{ text_streps }}</div>
                                 <div class="account-info__checkbox checkbox">
                                     <label class="custom-checkbox">
@@ -239,10 +239,10 @@
                                 </div>
                             </div>
                             <div class="account-info__edit__title">{{ text_material }}</div>
-                            <div class="wrapper">
+                            <div class="wrapper wrapper-material">
                                 <div class="account-info__checkbox checkbox">
                                     <label class="custom-checkbox">
-                                        <input type="checkbox" name="material" value="cruzhevo" {% if material == 'cruzhevo' %}{{ 'checked' }}{% endif %}>
+                                        <input type="checkbox" name="material[]" value="cruzhevo" {% if 'cruzhevo' in material %}{{ 'checked' }}{% endif %}>
                                         <span class="flex">
                                         <span class="checkbox-button"></span>
                                         <span class="custom-checkbox__text">{{ text_lace }}</span>
@@ -251,7 +251,7 @@
                                 </div>
                                 <div class="account-info__checkbox checkbox">
                                     <label class="custom-checkbox">
-                                        <input type="checkbox" name="material" value="chlopock" {% if material == 'chlopock' %}{{ 'checked' }}{% endif %}>
+                                        <input type="checkbox" name="material[]" value="chlopock" {% if 'chlopock' in material %}{{ 'checked' }}{% endif %}>
                                         <span class="flex">
                                         <span class="checkbox-button"></span>
                                         <span class="custom-checkbox__text">{{ text_cotton }}</span>
@@ -260,7 +260,7 @@
                                 </div>
                                 <div class="account-info__checkbox checkbox">
                                     <label class="custom-checkbox">
-                                        <input type="checkbox" name="material" value="setka" {% if material == 'setka' %}{{ 'checked' }}{% endif %}>
+                                        <input type="checkbox" name="material[]" value="setka" {% if 'setka' in material %}{{ 'checked' }}{% endif %}>
                                         <span class="flex">
                                         <span class="checkbox-button"></span>
                                         <span class="custom-checkbox__text">{{ text_grid }}</span>
@@ -269,7 +269,7 @@
                                 </div>
                                 <div class="account-info__checkbox checkbox">
                                     <label class="custom-checkbox">
-                                        <input type="checkbox" name="material" value="all" {% if material == 'all' %}{{ 'checked' }}{% endif %}>
+                                        <input type="checkbox" name="material[]" value="all" {% if 'all' in material %}{{ 'checked' }}{% endif %}>
                                         <span class="flex">
                                         <span class="checkbox-button"></span>
                                         <span class="custom-checkbox__text">{{ text_no_preference }}</span>
@@ -278,10 +278,10 @@
                                 </div>
                             </div>
                             <div class="account-info__edit__title">{{ text_colors }}</div>
-                            <div class="wrapper">
+                            <div class="wrapper wrapper-color">
                                 <div class="account-info__checkbox checkbox">
                                     <label class="custom-checkbox">
-                                        <input type="checkbox" name="color" value="dark" {% if color == 'dark' %}{{ 'checked' }}{% endif %}>
+                                        <input type="radio" name="color" value="dark" {% if color == 'dark' %}{{ 'checked' }}{% endif %}>
                                         <span class="flex">
                                         <span class="checkbox-button"></span>
                                         <span class="custom-checkbox__text">{{ text_dark }}</span>
@@ -290,7 +290,7 @@
                                 </div>
                                 <div class="account-info__checkbox checkbox">
                                     <label class="custom-checkbox">
-                                        <input type="checkbox" name="color" value="light" {% if color == 'light' %}{{ 'checked' }}{% endif %}>
+                                        <input type="radio" name="color" value="light" {% if color == 'light' %}{{ 'checked' }}{% endif %}>
                                         <span class="flex">
                                         <span class="checkbox-button"></span>
                                         <span class="custom-checkbox__text">{{ text_light }}</span>
@@ -299,7 +299,7 @@
                                 </div>
                                 <div class="account-info__checkbox checkbox">
                                     <label class="custom-checkbox">
-                                        <input type="checkbox" name="color" value="all" {% if color == 'all' %}{{ 'checked' }}{% endif %}>
+                                        <input type="radio" name="color" value="all" {% if color == 'all' %}{{ 'checked' }}{% endif %}>
                                         <span class="flex">
                                         <span class="checkbox-button"></span>
                                         <span class="custom-checkbox__text">{{ text_no_preference }}</span>
@@ -516,22 +516,35 @@
                 data: s.serialize(),
                 type: 'post',
                 success: function (response) {
-                    var popupNew = document.createElement("div");
-                    var popupWrap = document.querySelector(".subs-wrapp");
+                    $('.span_error').remove();
+                    s.find('input, textarea').removeClass('wrong');
+                    if (response.success === false) {
+                        $.each(response.answer, function (k, v) {
+                            if (k === 'chockers' || k === 'streps' || k === 'material' || k === 'color') {
+                                s.find('.wrapper-' + k).after('<span class="span_error">'+v+'</span>');
+                            } else {
+                                s.find('[name="'+k+'"]').addClass('wrong').after('<span class="span_error">'+v+'</span>');
+                            }
+                        })
+                    } else {
 
-                    popupNew.classList.add('promo-popup');
-                    if(popupWrap) {
-                        popupWrap.appendChild(popupNew)
-                    }
-                    popupNew.style.cssText = `color: #f486be; font-size: 14px; `
-                    popupNew.innerText = "{{ text_popup_subscribe }}";
-                    setTimeout(function() {
-                        {% if status == 'successful' %}
+                        var popupNew = document.createElement("div");
+                        var popupWrap = document.querySelector(".subs-wrapp");
+
+                        popupNew.classList.add('promo-popup');
+                        if(popupWrap) {
+                            popupWrap.appendChild(popupNew)
+                        }
+                        popupNew.style.cssText = `color: #f486be; font-size: 14px; `
+                        popupNew.innerText = "{{ text_popup_subscribe }}";
+                        setTimeout(function() {
+                            {% if status == 'successful' %}
                             window.location.href = response.redirect
-                        {% else %}
+                            {% else %}
                             popupNew.remove()
-                        {% endif %}
-                    }, 5000)
+                            {% endif %}
+                        }, 5000)
+                    }
                 },
                 beforeSend: function () {
                     $('.btn.btn-subscription').prop('disabled', true);

@@ -66,5 +66,16 @@ $_['text_ok']             = 'Ок';
 $_['text_not_subscribe']             = 'You are not subscribe!';
 $_['text_popup_subscribe']             = 'The data has been successfully saved, the manager will contact you soon';
 
+$_['chest_text_error']             = 'Заполните поле "Обхват груди"';
+$_['under_chest_text_error']             = 'Заполните поле "Обхват под грудью"';
+$_['hips_text_error']             = 'Заполните поле "Обхват бедер"';
+$_['bra_size_text_error']             = 'Какой размер чашки вы обычно покупаете?';
+$_['not_to_add_text_error']             = 'Что точно не класть в ваш мешочек?';
+$_['requests_text_error']             = 'Есть ли какие-то особенные пожелания, о которых мы не спросили?';
+$_['chockers_text_error']             = 'Выберите один вариант';
+$_['streps_text_error']             = 'Выберите один вариант';
+$_['color_text_error']             = 'Выберите один вариант';
+$_['material_text_error']             = 'Выберите один или несколько вариантов';
+
 
 

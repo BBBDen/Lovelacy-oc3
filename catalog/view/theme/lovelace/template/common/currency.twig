@@ -1,0 +1,35 @@
+{% if currencies|length > 1 %}
+    <form class="dropdown" id="currency" action="{{ action }}" method="post" enctype="multipart/form-data">
+        <div class="dropdown__btn">
+            {% for currency in currencies %}
+                {% if currency.code == code %}
+                    {{ currency.code }}
+                {% endif %}
+            {% endfor %}
+            <span>
+        <svg width="13" height="9" viewBox="0 0 13 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1 1L5.71368 6.99923C6.11406 7.5088 6.88594 7.5088 7.28632 6.99923L12 1" stroke="black"
+                stroke-width="1.5"/>
+        </svg>
+      </span>
+        </div>
+        <div class="dropdown__menu">
+            {% for currency in currencies %}
+                {% if currency.code != code %}
+                    <a class="dropdown__item currency-select" href="#"
+                       data-code="{{ currency.code }}">{{ currency.code }}</a>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <input type="hidden" name="code" value=""/>
+        <input type="hidden" name="redirect" value="{{ redirect }}"/>
+    </form>
+{% else %}
+    {% if currencies[0] %}
+      <div class="dropdown" id="currency">
+        <div class="dropdown__btn">
+          {{ currencies[0].code }}
+        </div>
+      </div>
+    {% endif %}
+{% endif %} 

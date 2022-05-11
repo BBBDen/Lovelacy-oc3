@@ -1,0 +1,38 @@
+{% if languages|length > 1 %}
+
+    <form action="{{ action }}" method="post" class="dropdown" enctype="multipart/form-data" id="lang">
+
+        <div class="dropdown__btn">
+          {% for language in languages %}
+                {% if language.code == code %}
+                    {{ language.name }}
+                {% endif %}
+            {% endfor %}
+          <span>
+                 <svg width="13" height="9" viewBox="0 0 13 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                   <path d="M1 1L5.71368 6.99923C6.11406 7.5088 6.88594 7.5088 7.28632 6.99923L12 1" stroke="black" stroke-width="1.5"/>
+                 </svg>
+          </span>
+        </div>
+
+        <div class="dropdown__menu">
+            {% for language in languages %}
+                {% if language.code != code %}
+                    <a class="dropdown__item language-select" href="" data-code="{{ language.code }}">{{ language.name|trim }} </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <input type="hidden" name="code" value=""/>
+        <input type="hidden" name="redirect" value="{{ redirect }}"/>
+    </form>
+{% else %}
+    {% if languages[0] %}
+    <div class="dropdown" id="lang">
+        <div class="dropdown__btn">
+            {{ languages[0].name }}
+        </div>
+    </div>
+    {% endif %}
+{% endif %}
+

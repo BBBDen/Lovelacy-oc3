@@ -1,0 +1,13 @@
+{% if categories %}
+  <div class="flex catalog__categories">
+    {% for category in categories %}
+      {# catalog__link_active #}
+      <a
+              class="catalog__link{{ category.class }}"
+              href="{{ category.href }}"
+              data-child-id="{{ category.child_id }}"
+              data-category-id="{{ category.category_id }}"
+      >{{ category.name }}</a>
+    {% endfor %}
+  </div>
+{% endif %}

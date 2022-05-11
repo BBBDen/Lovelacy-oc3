@@ -1,0 +1,2 @@
+[18-Jan-2022 20:19:44 UTC] PHP Fatal error:  Cannot redeclare ModelCatalogProduct::getProductCode1c() in /home/sunautob/public_html/storage/modification/admin/model/catalog/product.php on line 499
+[18-Jan-2022 20:20:01 UTC] PHP Fatal error:  Cannot redeclare ModelCatalogProduct::getProductCode1c() in /home/sunautob/public_html/storage/modification/admin/model/catalog/product.php on line 499

@@ -1,0 +1,87 @@
+{{ header }}
+<div class="breadcrumbs">
+    <div class="container">
+        <ul itemscope itemtype="https://schema.org/BreadcrumbList">
+            {% for breadcrumb in breadcrumbs %}
+                <li class="breadcrumbs-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                    <a href="{{ breadcrumb.href }}" itemprop="item">
+                        <span itemprop="name">{{ breadcrumb.text }}</span>
+                        <meta itemprop="position" content="{{ loop.index }}" />
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>{{ text_back_button }}
+    </div>
+</div>
+<section class="certificate">
+    <div class="container">
+        {% if product %}
+        <div class="certificate__wrapper flex flex_fs">
+
+            <div class="certificate__photo"> <img src="{{ product.image }}" alt="{{ product.title|striptags }}" title="{{ product.title|striptags }}" loading="lazy"></div>
+            <div class="certificate__block">
+                <div class="flex flex_fs certificate__radios">
+                    {#  <div class="radio radio__e">
+                        <label class="custom-radio">
+                            <input type="radio" name="certificate" value="electronic" ><span><span class="radio-button"></span><span class="custom-radio__text">{{ electronic_certificate }}</span></span>
+                        </label>
+                        <label> </label>
+                    </div> #}
+                    <div class="radio radio__p">
+                        <label class="custom-radio">
+                            <input type="radio" name="certificate" value="paper" checked><span><span class="radio-button"></span><span class="custom-radio__text">{{ paper_certificate }}</span></span>
+                        </label>
+                    </div>
+                </div>
+                {#  <div class="certificate__e">
+                    {{ description }}
+                    <form class="certificate-form">
+                        <div>
+                            <input class="input denomination" type="number" name="denomination" placeholder="{{ text_currency }}">
+                        </div>
+                        <div>
+                            <input class="input email-input" type="text" name="email" placeholder="{{ text_mail }}">
+                        </div>
+                        <button class="btn" onclick="cart.addCertificate('{{ product.product_id }}');return false;">{{ add_to_cart }}</button>
+                    </form>
+                </div> #}
+                <div class="certificate__p" style="display: block">
+                    <div class="text text_mt24 text_fs16">{{ text_certificate_buy_instruction }}</div>
+                    <div class="text text_mt16 text_fs16">{{ text_certificate_exp_instruction }}</div>
+                    <div class="certificate__help">{{ text_certificate_contact_instruction }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="certificate__info flex flex_fs">
+            <div class="certificate__title">
+                <h2 class="title title_left">{{ product.title }}</h2>
+            </div>
+            <div class="certificate__list">{{ product.description }}</div>
+        </div>
+        {% else %}
+            <p>{{ certificate_empty }}</p>
+        {% endif %}
+    </div>
+</section>
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://google.com/article"
+        },
+        "headline": "{{ heading_title }}",
+        "datePublished": "{{ date }}",
+        "dateModified": "{{ date_modified }}",
+        "publisher": {
+            "@type": "Organization",
+            "name": "Google",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "{{ logo }}"
+            }
+        }
+    }
+</script>
+{{ footer }}

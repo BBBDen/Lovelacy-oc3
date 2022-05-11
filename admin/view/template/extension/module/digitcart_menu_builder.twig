@@ -1,0 +1,687 @@
+{{ header }}{{ column_left }} 
+<div id="content">
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="pull-right">
+				<a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+			</div>
+			<h1>{{ heading_title }}</h1>
+			<ul class="breadcrumb">
+				{% for breadcrumb in breadcrumbs %} 
+					<li><a href="{{ breadcrumb['href'] }}">{{ breadcrumb['text'] }}</a></li>
+				{% endfor %} 
+			</ul>
+		</div>
+	</div>
+	<div class="container-fluid">
+		{% if (error_warning) %} 
+			<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }} 
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+			</div>
+		{% endif %} 
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+			</div>
+			<div class="panel-body">
+				<ul id="main-nav" class="nav nav-tabs">
+					<li class="active"><a href="#tab-general" data-toggle="tab">{{ tab_general }}</a></li>
+					<li><a href="#tab-add-menu" data-toggle="tab">{{ tab_add_menu }}</a></li>
+					<li><a href="#tab-menus" data-toggle="tab">{{ tab_menus }}</a></li>
+				</ul>
+				<div id="main-content" class="tab-content">
+					<div id="tab-general" class="tab-pane active">
+						<form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-menu-builder" class="form-horizontal">
+							<div class="form-group">
+								<label class="col-sm-2 control-label">{{ entry_status }}</label>
+								<div class="col-sm-10">
+									<select name="module_digitcart_menu_builder_status" class="form-control">
+										<option value="0">{{ text_disabled }}</option>
+										<option value="1" {{ module_digitcart_menu_builder_status ? 'selected="selected"' : '' }}>{{ text_enabled }}</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">{{ entry_override }}</label>
+								<div class="col-sm-10">
+									<select name="module_digitcart_menu_builder_override" class="form-control">
+										<option value="0">{{ text_select }}</option>
+										{% if menus %}
+											{% for menu in menus %} 
+												<option value="{{ menu['menu_id'] }}" {% if module_digitcart_menu_builder_override == menu['menu_id'] %}selected="selected"{% endif %}>{{ menu['multi_language_data'][config_language_id]['name'] }} [dcmenu {{ menu['menu_id'] }}]</option>
+											{% endfor %}
+										{% endif %}
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">{{ entry_css }}</label>
+								<div class="col-sm-10">
+									<textarea name="module_digitcart_menu_builder_css" class="form-control code-mirror">{{ module_digitcart_menu_builder_css }}</textarea>
+								</div>
+							</div>
+						</form>
+						<div class="form-group">
+							<label class="col-sm-2 control-label"></label>
+							<div class="col-sm-10">
+								<button type="submit" form="form-menu-builder" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+							</div>
+						</div>
+					</div>
+					<div id="tab-add-menu" class="tab-pane form-horizontal">
+						<div class="content-wrapper">
+							<div class="form-group required">
+								<label class="col-sm-2 control-label">{{ entry_name }}</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control digitcart-menu-builder-field" name="name" value="" />
+								</div>
+							</div>
+							{% if languages|length > 1 %} 
+								<div class="form-group required">
+									<label class="col-sm-2 control-label">{{ entry_language }}</label>
+									<div class="col-sm-10">
+										<select class="form-control digitcart-menu-builder-field" name="language_id">
+											{% for language in languages %} 
+												<option value="{{ language['language_id'] }}">{{ language['name'] }}</option>
+											{% endfor %} 
+										</select>
+									</div>
+								</div>
+							{% else %} 
+								<input type="hidden" name="language_id" value="{{ config_language_id }}" class="digitcart-menu-builder-field" />
+							{% endif %}
+							<input type="hidden" name="menu_id" value="" class="digitcart-menu-builder-field" />
+							<div class="form-group clearfix">
+								<label class="col-sm-2 control-label">{{ entry_type }}</label>
+								<div class="col-sm-10">
+									<select name="type" class="form-control digitcart-menu-builder-field">
+										<option value="1" selected="selected">{{ text_horizontal }}</option>
+										<option value="2">{{ text_vertical }}</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group clearfix">
+								<label class="col-sm-2 control-label">{{ entry_class }}</label>
+								<div class="col-sm-10">
+									<input type="text" name="class" value="navbar-default" class="form-control digitcart-menu-builder-field" placeholder="{{ entry_class }}" />
+									<div class="class-helpers">
+										<div class="btn-group">
+											<span class="class-helper btn btn-default" data-ignore="navbar-inverse">navbar-default</span>
+											<span class="class-helper btn btn-default" data-ignore="navbar-default">navbar-inverse</span>
+										</div>
+										<div class="btn-group">
+											<span class="class-helper btn btn-default" data-ignore="navbar-fixed-bottom">navbar-fixed-top</span>
+											<span class="class-helper btn btn-default" data-ignore="navbar-fixed-top">navbar-fixed-bottom</span>
+										</div>
+										<div class="btn-group">
+											<span class="class-helper btn btn-default" data-ignore="">list-group</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="form-group clearfix">
+								<label class="col-sm-2 control-label">{{ entry_status }}</label>
+								<div class="col-sm-10">
+									<select name="status" class="form-control digitcart-menu-builder-field">
+										<option value="1" selected="selected">{{ text_enabled }}</option>
+										<option value="0">{{ text_disabled }}</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group clearfix">
+								<div class="new-menu-data">
+									<div class="col-md-6">
+										<div class="panel panel-success">
+											<div class="panel-heading clearfix"><h5 class="pull-left">{{ text_menu }}</h5></div>
+											<div class="panel-body" style="min-height:294px;">
+												<ul id="dc-editor" class="sortableLists list-group"></ul>
+											</div>
+											<div class="panel-footer">
+												<button data-toggle="popover" data-html="true" data-placement="top" title="{{ text_export_header }}" type="button" id="btnExport" class="btn btn-danger"><i class="fa fa-sign-out"></i> {{ text_export }}</button>
+												<button data-toggle="popover" data-html="true" data-placement="top" title="{{ text_import_header }}" type="button" id="btnImport" class="btn btn-warning"><i class="fa fa-sign-in"></i> {{ text_import }}</button>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="panel panel-primary">
+											<div class="panel-heading">{{ text_add_edit_item }}</div>
+											<div class="panel-body">
+												<form id="frmEdit" class="form-horizontal">
+													<div class="form-group">
+														<label for="text" class="col-sm-2 control-label">{{ text_item_text }}</label>
+														<div class="col-sm-10">
+															<div class="input-group">
+																<input type="text" class="form-control item-menu" name="text" id="text" placeholder="{{ text_item_text }}">
+																<div class="input-group-btn">
+																	<button type="button" id="dc-editor_icon" class="btn btn-default" data-iconset="fontawesome"></button>
+																</div>
+																<input type="hidden" name="icon" class="item-menu">
+															</div>
+														</div>
+													</div>
+													<div class="form-group">
+														<label for="href" class="col-sm-2 control-label">{{ text_item_url }}</label>
+														<div class="col-sm-10">
+															<input type="text" class="form-control item-menu" id="href" name="href" placeholder="{{ text_item_url }}">
+														</div>
+													</div>
+													<div class="form-group">
+														<label for="target" class="col-sm-2 control-label">{{ text_item_target }}</label>
+														<div class="col-sm-10">
+															<select name="target" id="target" class="form-control item-menu">
+																<option value="_self">{{ text_self }}</option>
+																<option value="_blank">{{ text_blank }}</option>
+																<option value="_top">{{text_top }}</option>
+															</select>
+														</div>
+													</div>
+													<div class="form-group">
+														<label for="title" class="col-sm-2 control-label">{{ text_tooltip }}</label>
+														<div class="col-sm-10">
+															<input type="text" name="title" class="form-control item-menu" id="title" placeholder="{{ text_tooltip }}">
+														</div>
+													</div>
+												</form>
+											</div>
+											<div class="panel-footer">
+												<button type="button" id="btnUpdate" class="btn btn-primary" disabled><i class="fa fa-refresh"></i> {{ text_edit_item }}</button>
+												<button type="button" id="btnAdd" class="btn btn-success"><i class="fa fa-plus"></i> {{ text_add_item }}</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="form-group text-center">
+								<button type="button" id="button-add-menu" data-loading-text="{{ text_loading }}" class="btn btn-success btn-lg"><i class="fa fa-plus"></i> {{ button_add_menu }}</button>
+								<button type="button" id="button-clear-menu" class="btn btn-danger"><i class="fa fa-eraser"></i> {{ button_clear_menu }}</button>
+							</div>
+						</div>
+					</div>
+					<div id="tab-menus" class="tab-pane">
+						<div class="table-responsive">
+							<table class="table text-center table-striped">
+								<thead>
+									<th>{{ column_menu_id }}</th>
+									<th>{{ column_type }}</th>
+									<th>{{ column_status }}</th>
+									<th>{{ column_menu_name }}</th>
+									<th>{{ column_shortcode }}</th>
+									<th>{{ column_date_added }}</th>
+									<th>{{ column_date_modified }}</th>
+									<th>{{ column_action }}</th>
+								</thead>
+								<tbody>
+									{% if menus %}
+										{% for menu in menus %} 
+											<tr>
+												<td>{{ menu['menu_id'] }}</td>
+												<td>
+													{% if menu['type'] == 1 %}
+														{{ text_horizontal }}
+													{% else %}
+														{{ text_vertical }}
+													{% endif %}
+												</td>
+												<td>
+													{% if (menu['status']) %} 
+														<a title="{{ text_click_disable }}" data-toggle="tooltip" style="cursor:pointer;color: #4DAF7C;font-size: 20px;" data-loading-text="<i class='fa fa-spin fa-spinner'></i>" onclick="toggleMenuStatus({{ menu['menu_id'] }}, this);"><i class="fa fa-check-circle"></i></a>
+													{% else %} 
+														<a title="{{ text_click_enable }}" data-toggle="tooltip" style="cursor:pointer;color: #ff0000;font-size: 20px;" data-loading-text="<i class='fa fa-spin fa-spinner'></i>" onclick="toggleMenuStatus({{ menu['menu_id'] }}, this);"><i class="fa fa-ban"></i></a>
+													{% endif %} 
+												</td>
+												<td class="text-left">
+													{% for language in languages %} 
+														<div style="margin-bottom: 3px;">
+															<img src="language/{{ language['code'] }}/{{ language['code'] }}.png" title="{{ language['name'] }}" />
+															{% if (menu['multi_language_data'][language['language_id']]['data'] is not empty) %} 
+																<textarea class="hidden">{{ menu['multi_language_data'][language['language_id']]['data'] }}</textarea>
+															{% endif %} 
+															{% if (menu['multi_language_data'][language['language_id']]['name'] is not empty) %} 
+																<a title="{{ text_edit_menu }}" data-toggle="tooltip" class="btn btn-sm btn-default" onclick='reSetup({"editMenu": [{{ menu["menu_id"] }}, {{ language["language_id"] }}, "{{ menu['multi_language_data'][language['language_id']]['name'] }}", {{ menu["type"] }}, "{{ menu['class'] }}", {{ menu["status"] }}, $(this)]})'><i class="fa fa-pencil"></i></a>
+																{% if languages|length > 1 %}<a title="{{ text_delete_language }}" data-toggle="tooltip" class="btn btn-sm btn-default" onclick='deleteMenuByLanguage({{ menu["menu_id"] }},{{ language["language_id"] }})'><i class="fa fa-trash"></i></a>{% endif %} 
+																<strong>{{ menu['multi_language_data'][language['language_id']]['name'] }}</strong>
+															{% else %} 
+																<a title="{{ text_add_language }}" data-toggle="tooltip" class="btn btn-sm btn-default" onclick='reSetup({"editMenu": [{{ menu["menu_id"] }}, {{ language["language_id"] }}, "", {{ menu["type"] }}, "{{ menu['class'] }}", {{ menu["status"] }}, $(this)]})'><i class="fa fa-plus"></i></a>
+															{% endif %} 
+														</div>
+													{% endfor %} 
+												</td>
+												<td><input data-toggle="popover" data-trigger="focus" data-content="{{ text_copied }}" readonly style="max-width: 110px;text-align: center;" class="form-control copy-to-clipboard" type="text" value="[dcmenu {{ menu['menu_id'] }}]" /></td>
+												<td>{{ menu['date_added'] }}</td>
+												<td>{{ menu['date_modified'] }}</td>
+												<td><a data-toggle="tooltip" title="{{ button_delete }}" class="btn btn-danger" onclick="deleteMenu({{ menu['menu_id'] }});"><i class=" fa fa-trash"></i></a></td>
+											</tr>
+										{% endfor %}
+									{% else %} 
+										<tr><td colspan="100">{{ text_no_result }}</td></tr>
+									{% endif %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div><!-- /.tab-content -->
+			</div><!-- /.panel-body -->
+		</div><!-- /.panel -->
+	</div><!-- /.container-fluid -->
+</div><!-- /#content -->
+<svg version="1.1" id="loading" viewBox="0 0 250 288">
+<polygon id="segment-1" fill="#489EF7" points="250,72 125,0 125,144">
+      <animate attributeName="points" dur="150ms" begin="0s; segment6open.end" restart="always" fill="freeze" id="segment1" to="250,72 187.1,108 125,144" />
+      <animate attributeName="points" dur="150ms" begin="segment6.end" fill="freeze" id="segment1open" from="125,72 125,0 125,144" to="250,72 125,0 125,144" />
+      <animate attributeName="fill" dur="150ms" fill="freeze" from="#489EF7" to="#1E56C2" />
+      <animate attributeName="fill" dur="150ms" fill="freeze" begin="segment6.end" from="#1E56C2" to="#489EF7" />
+      <set attributeName="visibility" attributeType="XML" begin="segment2.begin" from="visible" to="hidden" />
+      <set attributeName="visibility" attributeType="XML" begin="segment1open.begin" from="hidden" to="visible" />
+    </polygon>
+    <polygon id="segment-2" fill="#489EF7" points="250,72 125,0 125,144" transform="translate(187.1, -36.3) rotate(60)">
+      <animate attributeName="points" dur="150ms" fill="freeze" begin="segment1.end" id="segment2" to="250,72 187.1,108 125,144" />
+      <animate attributeName="points" dur="150ms" begin="segment1open.end" fill="freeze" id="segment2open" from="125,72 125,0 125,144" to="250,72 125,0 125,144" />
+      <animate attributeName="fill" dur="150ms" fill="freeze" begin="segment1.end" id="" from="#489EF7" to="#1E56C2" />
+      <animate attributeName="fill" dur="150ms" fill="freeze" begin="segment1open.end" from="#1E56C2" to="#489EF7" />
+      <set attributeName="visibility" attributeType="XML" begin="segment3.begin" from="visible" to="hidden" />
+      <set attributeName="visibility" attributeType="XML" begin="segment2open.begin" from="hidden" to="visible" />
+    </polygon>
+    <polygon id="segment-3" fill="#489EF7" points="250,72 125,0 125,144" transform="translate(312.1, 107.7) rotate(120)">
+      <animate attributeName="points" dur="150ms" fill="freeze" begin="segment2.end" id="segment3" to="250,72 187.1,108 125,144" />
+      <animate attributeName="points" dur="150ms" begin="segment2open.end" fill="freeze" id="segment3open" from="125,72 125,0 125,144" to="250,72 125,0 125,144" />
+      <animate attributeName="fill" dur="150ms" fill="freeze" begin="segment2.end" from="#489EF7" to="#1E56C2" />
+      <animate attributeName="fill" dur="150ms" fill="freeze" begin="segment2open.end" from="#1E56C2" to="#489EF7" />
+      <set attributeName="visibility" attributeType="XML" begin="segment4.begin" from="visible" to="hidden" />
+      <set attributeName="visibility" attributeType="XML" begin="segment3open.begin" from="hidden" to="visible" />
+    </polygon>
+    <polygon id="segment-4" fill="#489EF7" points="250,72 125,0 125,144" transform="translate(250, 288) rotate(180)">
+      <animate attributeName="points" dur="150ms" fill="freeze" begin="segment3.end" id="segment4" to="250,72 187.1,108 125,144" />
+      <animate attributeName="points" dur="150ms" begin="segment3open.end" fill="freeze" id="segment4open" from="125,72 125,0 125,144" to="250,72 125,0 125,144" />
+      <animate attributeName="fill" dur="150ms" fill="freeze" begin="segment3.end" from="#489EF7" to="#1E56C2" />
+      <animate attributeName="fill" dur="150ms" fill="freeze" begin="segment3open.end" from="#1E56C2" to="#489EF7" />
+      <set attributeName="visibility" attributeType="XML" begin="segment5.begin" from="visible" to="hidden" />
+      <set attributeName="visibility" attributeType="XML" begin="segment4open.begin" from="hidden" to="visible" />
+    </polygon>
+    <polygon id="segment-5" fill="#489EF7" points="250,72 125,0 125,144" transform="translate(62.6, 324.5) rotate(240)">
+      <animate attributeName="points" dur="150ms" fill="freeze" begin="segment4.end" id="segment5" to="250,72 187.1,108 125,144" />
+      <animate attributeName="points" dur="150ms" begin="segment4open.end" fill="freeze" id="segment5open" from="125,72 125,0 125,144" to="250,72 125,0 125,144" />
+      <animate attributeName="fill" dur="150ms" fill="freeze" begin="segment4.end" from="#489EF7" to="#1E56C2" />
+      <animate attributeName="fill" dur="150ms" fill="freeze" begin="segment4open.end" from="#1E56C2" to="#489EF7" />
+      <set attributeName="visibility" attributeType="XML" begin="segment6.begin" from="visible" to="hidden" />
+      <set attributeName="visibility" attributeType="XML" begin="segment5open.begin" from="hidden" to="visible" />
+    </polygon>
+    <polygon id="segment-6" fill="#489EF7" points="250,72 125,0 125,144" transform="translate(-62.3, 180.6) rotate(299.99)">
+      <animate attributeName="points" dur="150ms" fill="freeze" begin="segment5.end" id="segment6" to="250,72 187.1,108 125,144" />
+      <animate attributeName="points" dur="150ms" begin="segment5open.end" fill="freeze" id="segment6open" from="125,72 125,0 125,144" to="250,72 125,0 125,144" />
+      <animate attributeName="fill" dur="150ms" fill="freeze" begin="segment6.end" from="#489EF7" to="#1E56C2" />
+      <animate attributeName="fill" dur="150ms" fill="freeze" begin="segment5open.end" from="#1E56C2" to="#489EF7" />
+      <set attributeName="visibility" attributeType="XML" begin="segment1open.begin" from="visible" to="hidden" />
+      <set attributeName="visibility" attributeType="XML" begin="segment6open.begin" from="hidden" to="visible" />
+    </polygon>
+  </svg>
+<style>
+th {
+	text-align: center;
+}
+.form-control.copy-to-clipboard {
+	margin: auto;
+}
+#loading {
+	position: fixed;
+	right: 10px;
+	bottom: 10px;
+	width: 50px;
+	display:none;
+	z-index: 99999;
+}
+/* Placeholder for menu panel */
+#dc-editor:empty::before {
+  content: "{{ text_insert_items }}";
+  font-size: 30px;
+  color: #ddd;
+  text-align: center;
+  display: block;
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  margin: auto;
+}
+/* Convert editor glyphicon to fontawesome */
+.iconpicker-popover .glyphicon::before, #dc-editor .glyphicon {
+  font-family: "fontawesome"
+}
+.iconpicker-popover .glyphicon-arrow-left::before {
+  content: "\f053";
+}
+.iconpicker-popover .glyphicon-arrow-right::before {
+  content: "\f054";
+}
+#dc-editor .glyphicon-remove::before {
+  content: "\f00d"
+}
+#dc-editor .glyphicon-chevron-up::before {
+  content: "\f077";
+}
+#dc-editor .glyphicon-chevron-down::before {
+  content: "\f078";
+}
+#dc-editor .glyphicon-export::before {
+  content: "\f090";
+}
+#dc-editor .glyphicon-save::before {
+  content: "\f08b";
+}
+.popover-content .fa-close {
+	position: absolute;
+	right: 15px;
+	top: 8px;
+	cursor: pointer;
+	color: #aaa;
+	cursor: pointer;
+	transition: 0.3 all;
+}
+.popover-content .fa-close:hover {
+	color: #000;
+}
+.class-helpers {
+  margin-top: 10px;
+}
+.class-helpers .btn-group + .btn-group {
+  margin: 1px 5px;
+}
+</style>
+<script>
+	// Ajax Loading icon
+	$(document).ajaxStart( function() {
+		$('#loading').fadeIn();
+	});
+	$(document).ajaxStop( function() {
+		$('#loading').delay(1000).fadeOut('slow');
+	});
+	// Remember last active tab
+	if (typeof(Storage) !== "undefined") {
+		$('.nav-tabs a').on('click', function() {
+			localStorage.setItem("digitcart-menu-builder-active-tab", $(this).attr('href'));
+		});
+		if(localStorage.getItem("digitcart-menu-builder-active-tab")) {
+			$('.nav-tabs a[href="' + localStorage.getItem("digitcart-menu-builder-active-tab") + '"]').trigger('click');
+		}
+	}
+	// Menu editor init
+	var iconPickerOptions = {searchText: '{{ entry_search }}', labelHeader: '{0}/{1}'};
+	var sortableListOptions = {
+		placeholderCss: {'background-color': '#fafafa', 'border': '1px dashed #eee'}
+	};
+	var dcEditor = new MenuEditor('dc-editor', {listOptions: sortableListOptions, iconPicker: iconPickerOptions, labelEdit: '{{ button_edit }}'});
+	dcEditor.setForm($('#frmEdit'));
+	dcEditor.setUpdateButton($('#btnUpdate'));
+	$("#btnUpdate").click(function() {
+		dcEditor.update();
+	});
+	$('#btnAdd').click(function() {
+		dcEditor.add();
+	});
+	// Clear form
+	$(document).on('click', '#button-clear-menu', function() {
+		if (confirm('{{ text_confirm }}')) {
+			dcEditor.setData('[]');
+		}
+	});
+	// Add or edit Menu
+	$(document).on('click', '#button-add-menu', function() {
+		$.ajax({
+			url: 'index.php?route={{ module_path }}/addMenu&user_token={{ user_token }}',
+			type: 'post',
+			data: {
+				name: $('#tab-add-menu .digitcart-menu-builder-field[name="name"]').val(),
+				menu_id: $('#tab-add-menu .digitcart-menu-builder-field[name="menu_id"]').val(),
+				language_id: $('#tab-add-menu .digitcart-menu-builder-field[name="language_id"]').val(),
+				type: $('#tab-add-menu .digitcart-menu-builder-field[name="type"]').val(),
+				class: $('#tab-add-menu .digitcart-menu-builder-field[name="class"]').val(),
+				status: $('#tab-add-menu .digitcart-menu-builder-field[name="status"]').val(),
+				data: dcEditor.getString()
+			},
+			dataType: 'json',
+			beforeSend: function() {
+				$('#button-save').button('loading');
+			},
+			complete: function() {
+				$('#button-save').button('reset');
+			},
+			success: function(json) {
+				$('.be-removed').remove();
+				$('#tab-add-menu .has-error').removeClass('has-error');
+				if (json['error']) {
+					if (json['error']['name']) {
+						$('#tab-add-menu [name=\'name\']').after('<div class="text-danger be-removed">' + json['error']['name'] + '</div>');
+					}
+					if (json['error']['data']) {
+						$('.new-menu-data').after('<div class="text-danger be-removed">' + json['error']['data'] + '</div>');
+					}
+					$('#tab-add-menu .text-danger').parent().addClass('has-error');
+					if($('.has-error').length) {
+						var scrollTarget = $('.has-error:first').offset().top;
+						$('html, body').animate({
+							scrollTop: scrollTarget - 50
+						});
+					}
+				}
+				if (json['success']) {
+					if (json['success']['edit']) {
+						$('html, body').animate({ scrollTop: 0 }, 'slow');
+						$('#tab-add-menu .content-wrapper').before('<div class="alert alert-success be-removed">' + json['success']['edit'] + '</div>');
+					}
+					if (json['success']['add']) {
+						$('html, body').animate({ scrollTop: 0 }, 'slow');
+						$('#tab-add-menu .content-wrapper').hide()
+						.after(
+							'<div class="help-insert-form text-center" style="width: 500px;max-width: 100%;margin: auto;box-shadow: 0 0 5px #eee;padding: 20px;border-radius: 3px;">' +
+								'<div class="alert alert-success">' + json['success']['add'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>' +
+								'<i class="fa fa-check-circle" style="font-size: 100px;color: #4DAF7C;width: 100px;height: 100px;margin: auto;display: block;"></i>' +
+								'<p class="alert alert-info">{{ help_display_menu }}</p>' +
+								'<input data-toggle="popover" data-trigger="focus" data-content="{{ text_copied }}" readonly style="max-width: 120px;margin-bottom: 20px;text-align: center;" class="form-control copy-to-clipboard" type="text" value="[dcmenu ' + json['menu_id'] + ']" />' +
+								'<a onclick="reSetup();" class="btn btn-lg btn-info"><i class="fa fa-repeat"></i> {{ text_another_menu }}</a>' +
+							'</div>'
+						);
+					}
+					reloadMenusList();
+				}
+			},
+			error: function(xhr, ajaxOptions, thrownError) {
+				console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+			}
+		});
+	});
+	// Delete menu
+	function deleteMenu(menuId) {
+		if (confirm('{{ text_confirm }}')) {
+			$.ajax({
+				url: 'index.php?route={{ module_path }}/deleteMenu&user_token={{ user_token }}',
+				type: 'post',
+				data: {
+					menu_id: menuId
+				},
+				dataType: 'json',
+				success: function(json) {
+					if (json['success']) {
+						$('.be-removed').remove();
+						$('#main-nav').before('<div class="alert alert-success be-removed">' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+						$('html, body').animate({ scrollTop: 0 }, 'slow');
+						reloadMenusList();
+					}
+				},
+				error: function(xhr, ajaxOptions, thrownError) {
+					console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+				}
+			});
+		} else {
+			return false;
+		}
+	}
+	// Delete menu by language
+	function deleteMenuByLanguage(menuId, languageId) {
+		if (confirm('{{ text_confirm }}')) {
+			$.ajax({
+				url: 'index.php?route={{ module_path }}/deleteMenuByLanguage&user_token={{ user_token }}',
+				type: 'post',
+				data: {
+					menu_id: menuId,
+					language_id: languageId
+				},
+				dataType: 'json',
+				success: function(json) {
+					if (json['success']) {
+						$('.be-removed').remove();
+						$('#main-nav').before('<div class="alert alert-success be-removed">' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+						$('html, body').animate({ scrollTop: 0 }, 'slow');
+						reloadMenusList();
+					}
+				},
+				error: function(xhr, ajaxOptions, thrownError) {
+					console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+				}
+			});
+		} else {
+			return false;
+		}
+	}
+	// Toggle menu status
+	function toggleMenuStatus(menuId, btn) {
+		$.ajax({
+			url: 'index.php?route={{ module_path }}/toggleMenuStatus&user_token={{ user_token }}',
+			type: 'post',
+			data: {
+				menu_id: menuId
+			},
+			dataType: 'json',
+			beforeSend: function() {
+				$(btn).button('loading');
+			},
+			complete: function() {
+				$(btn).button('reset');
+			},
+			success: function(json) {
+				if (json['success']) {
+					reloadMenusList();
+				}
+			},
+			error: function(xhr, ajaxOptions, thrownError) {
+				console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+			}
+		});
+	}
+	// Reload menu list
+	function reloadMenusList() {
+		$('#tab-menus').load(window.location.href + ' #tab-menus > *', function() {
+			$('.copy-to-clipboard').click(function() {
+				$(this).focus();
+				$(this).select();
+				document.execCommand('copy');
+			});
+			$('[data-toggle="popover"]').popover();
+		});
+		$('[name="module_digitcart_menu_builder_override"]').load(window.location.href + ' [name="module_digitcart_menu_builder_override"] > *');
+	}
+	// Copy to clipboard
+	$('.copy-to-clipboard').click(function() {
+		$(this).focus();
+		$(this).select();
+		document.execCommand('copy');
+	});
+	// Popover init
+	$('[data-toggle="popover"]').popover();
+	// Re-setup menu editor
+	function reSetup(action = 'new') {
+		$('.be-removed').remove();
+		$('#resetup').remove();
+		if (action == 'new') {
+			$('.digitcart-menu-builder-field[name="name"]').val('');
+			$('.digitcart-menu-builder-field[name="class"]').val('navbar-default');
+			$('.digitcart-menu-builder-field[name="type"]').val(1).trigger('change');
+			$('.digitcart-menu-builder-field[name="status"]').val(1).trigger('change');
+			$('.digitcart-menu-builder-field[name="menu_id"]').val('');
+			dcEditor.setData('[]');
+		} else {
+			if(action['editMenu']) {
+				$('[href="#tab-add-menu"]').trigger('click');
+				$('<a id="resetup" onclick="reSetup();" class="btn btn-sm btn-danger"><i class="fa fa-close"></i></a>').prependTo('#tab-add-menu .content-wrapper');
+				var menuId = action['editMenu'][0];
+				var languageId = action['editMenu'][1];
+				var menuName = action['editMenu'][2];
+				var menuType = action['editMenu'][3];
+				var menuClass = action['editMenu'][4];
+				var menuStatus = action['editMenu'][5] ? 1 : 0;
+				if(action['editMenu'][6].prev('textarea').length) {
+					var menuData = action['editMenu'][6].prev('textarea').val();
+				} else {
+					var menuData = action['editMenu'][6].parent().parent().find('textarea:first-of-type').val();
+				}
+				$('.digitcart-menu-builder-field[name="name"]').val(menuName);
+				$('.digitcart-menu-builder-field[name="class"]').val(menuClass);
+				$('.digitcart-menu-builder-field[name="type"]').val(menuType).trigger('change');
+				$('.digitcart-menu-builder-field[name="status"]').val(menuStatus).trigger('change');
+				$('.digitcart-menu-builder-field[name="language_id"]').val(languageId);
+				$('.digitcart-menu-builder-field[name="menu_id"]').val(menuId);
+				dcEditor.setData(menuData);
+			}
+		}
+		$('.help-insert-form').remove();
+		$('#tab-add-menu .content-wrapper').show();
+		checkClassStr();
+	}
+	// Import / Export
+	$(document).on('show.bs.popover', function() {
+		$('#btnExport').attr('data-content', '<i onclick="$(\'#btnExport\').click();" class="fa fa-close"></i><textarea class="form-control" readonly>' + dcEditor.getString() + '</textarea>');
+		$('#btnImport').attr('data-content', '<i onclick="$(\'#btnImport\').click();" class="fa fa-close"></i><textarea id="import-data" class="form-control" Placeholder="{{ entry_string }}"></textarea><span id="import-button" class="btn btn-success btn-sm btn-block">{{ button_import }}</span>');
+	});
+	$(document).on('click', '#import-button', function() {
+        try {
+            var obj = JSON.parse($('#import-data').val());
+        } catch (err) {
+            alert('{{ error_string }}');
+            return null;
+        }
+		dcEditor.setData(obj);
+	});
+	// CSS classes
+	function checkClassStr() {
+		var class_str = $('[name="class"]').val();
+		$('.class-helper').each(function() {
+			var this_class = $(this).text();
+			if(class_str.indexOf(this_class) != -1) {
+				$(this).addClass('active');
+			} else {
+				$(this).removeClass('active');
+			}
+		});
+	}
+	$(document).on('change paste keyup', '[name="class"]', function() {
+		checkClassStr();
+	});
+	$(document).on('click', '.class-helper', function() {
+		var class_str = $('[name="class"]').val();
+		var this_class = $(this).text();
+		var new_class_str = class_str.replace($(this).data('ignore'), '');
+		if ($(this).data('ignore')) {
+			new_class_str = new_class_str.replace(this_class, '');
+		}
+		if ($(this).hasClass('active')) {
+			if (!$(this).data('ignore')) {
+				new_class_str = new_class_str.replace(this_class, '');
+			}
+		} else {
+			new_class_str = new_class_str + ' ' + this_class;
+		}
+		$('[name="class"]').val($.trim(new_class_str));
+		checkClassStr();
+	});
+	// Initial
+	checkClassStr();
+	// Code Mirror
+	$('.code-mirror').each(function() {
+		CodeMirror.fromTextArea(this, {
+			lineNumbers: true
+		});
+	});
+</script>
+{{ footer }}

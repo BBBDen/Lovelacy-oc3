@@ -1,0 +1,459 @@
+{{ header }}
+<section class="checkout">
+    <div class="container"><a class="cart__back" href="{{ cart_link }}">← Вернуться в корзину</a>
+        <div class="checkout-sm-hide">Оформление заказа</div>
+        {% if show_form == 'y' %}
+            <div class="checkout__login flex flex_fs">
+                <div class="checkout__text">
+                    <span>Введите адрес электронной почты и пароль, чтобы войти в аккаунт.</span> Зарегистрируйтесь,
+                    если у вас нет аккаунта — все ваши данные сохранятся для будущих покупок.
+                </div>
+                <div class="checkout__form login__login">
+                    {% if login_way == 'phone' %}
+                        <input class="input email-input" name="phone" type="text" placeholder="Телефон">
+                    {% else %}
+                        <input class="input email-input" name="email" type="text" placeholder="E-mail">
+                    {% endif %}
+                    <input class="input" name="password" type="password" placeholder="Пароль">
+                    <button class="btn btn-auth" data-loading="{{ text_loading }}">Войти</button>
+                    <div class="checkout__links"><a href="#">Забыли пароль?</a><span>|</span><span>Нет аккаунта? </span><a
+                                href="/create-account">Создать </a></div>
+                </div>
+            </div>
+        {% endif %}
+        <div class="checkout__info flex flex_fs">
+            <div class="checkout__title">Оформление заказа</div>
+            <form class="checkout-block">
+                <div class="payment-address">
+                    <div class="checkout-block__title">Личные данные</div>
+                    <div class="in-f">
+                        <input class="input name-input" name="name" type="text" placeholder="Имя и фамилия"
+                               value="{{ payment_name }}">
+                    </div>
+                    <input style="display: none" class="input" type="date" name="birthday" placeholder="Дата рождения"
+                           value="{{ payment_birthday }}">
+                    <div class="in-f">
+                        <input class="input phone-input" name="phone" type="text" placeholder="Телефон"
+                               value="{{ payment_phone }}">
+                    </div>
+                    <div class="in-f">
+                        <input class="input email-input" name="email" type="text" placeholder="Почта"
+                               value="{{ payment_email }}">
+                    </div>
+                    <div class="in-f">
+                        <input class="input email-input" name="social_nick" type="text" placeholder="Никнейм в инстаграм или телеграм"
+                               value="{{ payment_social_nick }}">
+                        <div class="tooltip"><a href="#" class="tooltip-toggle">?</a>
+                            <div class="tooltip-text">Менеджер свяжется с вами через <a href="https://www.instagram.com/lovelace.by/" target="_blank">инстаграм</a> или <a href="https://t.me/lovelace2021_bot" target="_blank">телеграм</a> для подтверждения заказа
+                            </div>
+                        </div>
+                    </div>
+                    {% if show_address_and_payment %}
+                        <div class="checkout-block__title">Страна и адрес доставки</div>
+                        <div class="in-f">
+                            <select class="input" name="country_id" value="{{ country_id }}" type="text" style="padding: 0 16px">
+                                {% for country in countries %}
+                                    {% if country.country_id == country_id %}
+                                        <option value="{{ country.country_id }}" selected="selected">{{ country.name }}</option>
+                                    {% else %}
+                                        <option value="{{ country.country_id }}">{{ country.name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            <div class="tooltip"><a href="#" class="tooltip-toggle">?</a>
+                                <div class="tooltip-text">Чтобы сделать заказ в страну, которой нет в списке, напишите нам в <a href="https://www.instagram.com/lovelace.by/" target="_blank">инстаграм</a> или <a href="https://t.me/lovelace2021_bot" target="_blank">телеграм</a></div>
+                            </div>
+                        </div>
+                        <div class="in-f">
+                            <select name="zone_id" id="input-shipping-zone" class="form-control input" style="padding: 0 16px" >
+                                {% if logged %}
+                                    {% if zones %}
+                                        {% for zone in zones %}
+                                            {% if payment_zone_id == zone.zone_id %}
+                                                <option value="{{ zone.zone_id }}" selected>{{ zone.name }}</option>
+                                            {% else %}
+                                                <option value="{{ zone.zone_id }}">{{ zone.name }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        {% if payment_zone and payment_zone_id %}
+                                            <option value="{{ payment_zone_id }}">{{ payment_zone }}</option>
+                                        {% else %}
+                                            <option value="0">Населенный пункт</option>
+                                        {% endif %}
+                                    {% endif %}
+                                {% else %}
+                                    <option value="">Населенный пункт</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                        <div class="in-f">
+                            <input class="input" name="city" type="text" placeholder="Населенный пункт" value="{{ payment_city }}">
+                        </div>
+                        <div class="in-f">
+                            <input class="input" name="street" type="text" placeholder="Улица" value="{{ payment_street }}">
+                        </div>
+                        <div class="flex flex_sb">
+                            <div class="in-f">
+                                <input class="input" name="house" type="text" placeholder="Дом" value="{{ payment_house }}">
+                                <input class="input" name="building" type="text" placeholder="Корпус"
+                                       value="{{ payment_building }}">
+                                <input class="input" name="flat" type="text" placeholder="Квартира" value="{{ payment_flat }}">
+                            </div>
+                        </div>
+                        <textarea class="input" name="comment" placeholder="Комментарий"></textarea>
+                    {% endif %}
+                </div>
+                {% if show_address_and_payment %}
+                <div id="collapse-shipping-method">
+                    <div class="shipping-method"></div>
+                </div>
+
+                <div class="payment-method"></div>
+                {% endif %}
+                {% for total in totals %}
+                    <div class="checkout-block__total checkout-block__total{{ loop.index }}"{% if not loop.last %} style="display: none"{% endif %}>{{ total.title }}
+                        : <span>{{ total.text }}</span></div>
+                {% endfor %}
+                <div class="checkout-total__question">Есть вопросы? Напишите нам в <a href="https://www.instagram.com/lovelace.by/" target="_blank">инстаграм</a> или <a href="https://t.me/lovelace2021_bot" target="_blank">телеграм</a>.</div>
+                <div id="buttons-confirm">
+                    <div class="buttons">
+                        {% if promo_payment %}
+                        {{ promo_payment }}
+                        {% else %}
+                        <button class="btn">{{ text_checkout_confirm }}</button>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</section>
+<script type="text/javascript" defer><!--
+    (function ($) {
+        var generateFreeShippingTitle = function (data = {}) {
+            var minskZoneId = '{{ zone_misnk_id }}',
+                countryBelarusId = '{{ country_belarus_id }}',
+                countryRussiaId = '{{ country_russia_id }}';
+
+            if (+data.zoneId === +minskZoneId && +data.countryId === +countryBelarusId) {
+                data.freeShippingMethodBlock.text('{{ free_shipping_minsk_text }}')
+            } else if (+data.zoneId !== +minskZoneId && +data.countryId === +countryBelarusId) {
+                data.freeShippingMethodBlock.text('{{ free_shipping_other_text }}')
+            } else if (+data.countryId === +countryRussiaId) {
+                data.freeShippingMethodBlock.text('{{ free_shipping_russia_text }}')
+            } else {
+                data.freeShippingMethodBlock.text(data.freeShippingMethodTitle)
+            }
+        };
+        var paymentAddressId = {
+            minsk: '{{ minsk_city }}',
+            moscow: '{{ moscow_city }}'
+        };
+        var payment_method_form = $('form.checkout-block'),
+            fields = [
+                {key: 'name', 'error': '{{ error_firstname }}'},
+                {key: 'phone', 'error': '{{ error_telephone }}'},
+                {key: 'email', 'error': '{{ error_email }}'},
+                {key: 'social_nick', 'error': '{{ error_social_nick }}'},
+                {% if show_address_and_payment %}
+                {key: 'country_id', 'error': '{{ error_country }}'},
+                {key: 'city', 'error': '{{ error_city }}'},
+                {key: 'zone_id', 'error': '{{ error_zone }}'},
+                {key: 'street', 'error': '{{ error_street }}'},
+                {key: 'house', 'error': '{{ error_house }}'}
+                {% endif %}
+            ];
+        document.addEventListener('DOMContentLoaded', function () {
+
+            {% if show_address_and_payment %}
+
+            $(document).delegate('.payment-address select[name=\'country_id\']', 'change', function () {
+                resetInput($( this ));
+
+                $('[name="zone_id"]').prop('disabled', false);
+
+                $('.shipping-method').html('');
+                $('.payment-method').html('');
+
+                $.ajax({
+                    url: 'index.php?route=checkout/checkout/country&country_id=' + this.value,
+                    dataType: 'json',
+                    beforeSend: function () {
+                        $('.payment-address select[name=\'country_id\']').prop('disabled', true);
+                    },
+                    complete: function () {
+                        $('.payment-address select[name=\'country_id\']').prop('disabled', false);
+                    },
+                    success: function (json) {
+                        if (json['postcode_required'] == '1') {
+                            $('.payment-address input[name=\'postcode\']').parent().parent().addClass('required');
+                        } else {
+                            $('.payment-address input[name=\'postcode\']').parent().parent().removeClass('required');
+                        }
+
+                        html = '<option value="">{{ text_select }}</option>';
+
+                        if (json['zone'] && json['zone'] != '') {
+                            for (i = 0; i < json['zone'].length; i++) {
+                                html += '<option value="' + json['zone'][i]['zone_id'] + '"';
+
+                                {#if (json['zone'][i]['zone_id'] == '{{ zone_id }}') {#}
+                                {#    html += ' selected="selected"';#}
+                                {#    if (Number('{{ zone_id }}') === Number(paymentAddressId.minsk) || Number('{{ zone_id }}') === Number(paymentAddressId.moscow)) {#}
+                                {#        $(document).find('[name="city"]').val(json['zone'][i]['name']);#}
+                                {#    }#}
+                                {#}#}
+
+                                html += '>' + json['zone'][i]['name'] + '</option>';
+                            }
+                        } else {
+                            html += '<option value="0" selected="selected">{{ text_none }}</option>';
+                        }
+
+                        $('.payment-address select[name=\'zone_id\']').html(html);
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                    }
+                });
+            });
+
+            {% endif %}
+
+            {% if not logged %}
+            $('.payment-address select[name=\'country_id\']').trigger('change');
+            {% endif %}
+
+            {% if show_address_and_payment %}
+                document.querySelector('select#input-shipping-zone').addEventListener('change', function () {
+                    resetInput($( this ));
+                    $(this).removeClass('wrong').closest('.in-f').next('.span_error').remove();
+                    // if (Number($(this).val()) === Number(paymentAddressId.minsk) || Number($(this).val()) === Number(paymentAddressId.moscow)) {
+                    //     $(document).find('[name="city"]').removeClass('wrong').val($(this).find('option[value="'+$(this).val()+'"]').text());
+                    //     $(document).find('[name="city"]').closest('.in-f').next('.span_error').remove();
+                    // }
+                    const data = {
+                        zone_data: {
+                            zone_id: $( this ).val(),
+                            zone: $( this ).val() ? $( this ).find('option[value="'+$( this ).val()+'"]').text() : ''
+                        }
+                    };
+                    $('.shipping-method').html('');
+                    $('.payment-method').html('');
+
+                    $.get('index.php?route=checkout/checkout/setData', data);
+
+                });
+            {% endif %}
+            document.querySelectorAll('.payment-address input').forEach(function (item) {
+                item.addEventListener('blur', function (e) {
+                    const val = e.target.value,
+                        naming = e.target.name;
+
+
+                    if (val.length && naming !== 'comment') {
+                        $.ajax({
+                            url: 'index.php?route=checkout/checkout/setData',
+                            data: {
+                                value: val,
+                                name: naming,
+                                language: VARS.language_code
+                            },
+                            dataType: 'json',
+                            type: 'get',
+                            success: function (json) {
+                                console.log(json);
+                                if (e.target.classList.contains('wrong')) {
+                                    e.target.classList.remove('wrong')
+                                }
+                                if (e.target.parentElement.nextElementSibling && e.target.parentElement.nextElementSibling.classList.contains('span_error')) {
+
+                                    e.target.parentElement.nextElementSibling.remove();
+                                }
+                                if (json['check']) {
+                                    setTimeout(function () {
+                                        $.get('index.php?route=checkout/payment_method', function (response) {
+                                            $('.payment-method').html(response)
+                                        }, 'html');
+                                    }, 100);
+                                    setTimeout(function () {
+                                        $.get('index.php?route=checkout/shipping_method', function (response) {
+                                            $('.shipping-method').html(response)
+                                        }, 'html');
+                                    }, 500);
+
+                                } else {
+                                    if (json['error_email']) {
+                                        e.target.classList.add('wrong')
+                                        $(e.target).closest('.in-f').after('<span class="span_error">'+json['error_email']+'</span>')
+                                    }
+                                }
+                            }
+                        });
+                    }
+                })
+            })
+        });
+        {% if show_address_and_payment %}
+            $('.checkout-block').on('submit', function (e) {
+                e.preventDefault();
+                $(document).find('.span_error').remove();
+                $(document).find('input').removeClass('wrong');
+                var $shippingMethod = $(document).find('[name=\'shipping_method\']:checked');
+                var $paymentMethod = $(document).find('[name=\'payment_method\']:checked');
+                if (checkFields(null, payment_method_form)) {
+                    if (!$shippingMethod.length) {
+                        $('.shipping-method').after('<span class="span_error">{{ error_shipping }}</span>');
+                    } else if (!$paymentMethod.length) {
+                        $('.payment-method').after('<span class="span_error">{{ error_payment }}</span>');
+                    }
+                }
+
+            });
+        {% endif %}
+
+        $(document).on('change', '.payment-method [name=\'payment_method\']', function () {
+            $(document).find('.span_error').remove();
+            $(document).find('input').removeClass('wrong');
+            var __payment__ = $( this );
+
+
+            if (checkFields(__payment__, payment_method_form)) {
+                $.post('index.php?route=checkout/payment_method/save', $('.payment-method input[type=\'radio\']:checked, .payment-method input[type=\'checkbox\']:checked, .payment-address textarea'), 'json')
+                    .done(function (json) {
+                        console.log(json)
+                        if ( json.hasOwnProperty('redirect') ) {
+                            // console.log(json['redirect'])
+                        } else if (json['error']) {
+
+                            if (json['error']['warning']) {
+                                $('.payment-method').after('<span class="span_error">' + json['error']['warning'] + '</span>');
+                            }
+                        } else {
+                            if (json['session']) {
+                                $.get('index.php?route=checkout/confirm', function (response) {
+                                    if (response) {
+                                        $('#buttons-confirm').html(response);
+                                    }
+                                }, 'html')
+                            }
+                        }
+                    })
+                    .fail(function (xhr, ajaxOptions, thrownError) {
+                        console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                    });
+            }
+        });
+
+        {% if show_address_and_payment %}
+
+            $(document).on('change','.shipping-method input[type=\'radio\']', function (e) {
+                e.preventDefault();
+                $(document).find('.span_error').remove();
+                $(document).find('input').removeClass('wrong');
+
+                const _ref_ = $(this),
+                    shippingMethod = {
+                        shipping_method: _ref_.val(),
+                        language: VARS.language_code
+                    };
+
+                if (checkFields(_ref_, payment_method_form)) {
+                    $.post('index.php?route=checkout/checkout/updateShipping', shippingMethod, 'json').done(function (json) {
+                        console.log(json)
+                        if (json['error']) {
+                            $('.shipping-method').after('<span class="span_error">' + json['error'] + '</span>');
+                        } else if (json['totals']) {
+                            if (json['shipping_method'] && (json['shipping_method'] === 'postal_euro') || (json['shipping_method'] === 'pickup')) {
+                                $('.radio[data-code="cod"]').hide();
+                            } else {
+                                $('.radio[data-code="cod"]').show();
+                            }
+                            $.each(json['totals'], function (key, val) {
+                                if ((key + 1) === json['totals'].length) {
+                                    $($(document).find('.checkout-block .checkout-block__total')[($(document).find('.checkout-block .checkout-block__total').length) - 1]).find('span').html(val['text'])
+                                }
+                            });
+                        }
+                    }).fail(function (xhr, ajaxOptions, thrownError) {
+                        console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                    });
+                }
+
+            });
+        {% endif %}
+
+        {% if logged %}
+        setTimeout(function () {
+            $.get('index.php?route=checkout/payment_method', function (response) {
+                $('.payment-method').html(response)
+            }, 'html');
+        }, 100);
+
+
+        setTimeout(function () {
+            $.get('index.php?route=checkout/shipping_method', function (response) {
+                $('.shipping-method').html(response)
+            }, 'html');
+        }, 500);
+        {% endif %}
+
+        function resetInput(_this_) {
+            _this_.closest('form').find('[name="city"]').val('');
+            _this_.closest('form').find('[name="street"]').val('');
+            _this_.closest('form').find('[name="house"]').val('');
+            _this_.closest('form').find('[name="building"]').val('');
+            _this_.closest('form').find('[name="flat"]').val('');
+        }
+
+        function checkFields(__ref__, payment_method_form){
+            var check = true;
+            $.each(fields, function (k, v) {
+
+                if (!payment_method_form.find('[name="'+v['key']+'"]').val().length) {
+                    if (__ref__) {
+                        __ref__.prop('checked', false);
+                    }
+                    if ($('.checkout-block').find('[name="'+v['key']+'"]').addClass('wrong').closest('div.in-f').length) {
+
+                        $('.checkout-block').find('[name="'+v['key']+'"]').addClass('wrong').closest('div.in-f').after('<span class="span_error">'+v['error']+'</span>');
+                    } else if (v['key'] === 'house') {
+                        $('.checkout-block').find('[name="'+v['key']+'"]').addClass('wrong').closest('.flex.flex_sb').after('<span class="span_error">'+v['error']+'</span>')
+                    } else {
+                        $('.checkout-block').find('[name="'+v['key']+'"]').addClass('wrong').after('<span class="span_error">'+v['error']+'</span>')
+                    }
+
+                    check = false;
+                }
+
+                if ( v['key'] === 'email' && !validateValue( payment_method_form.find('[name="'+v['key']+'"]').val(), 'email' ) ) {
+                    $('.checkout-block').find('[name="'+v['key']+'"]').addClass('wrong').closest('div.in-f').after('<span class="span_error">{{ error_email }}</span>')
+                    check = false;
+                }
+
+                if ( v['key'] === 'phone' && !validateValue( payment_method_form.find('[name="'+v['key']+'"]').val(), 'phone' ) ) {
+                    $('.checkout-block').find('[name="'+v['key']+'"]').addClass('wrong').closest('div.in-f').after('<span class="span_error">{{ error_telephone }}</span>')
+                    check = false;
+                }
+
+            });
+            if (!check) {
+                var firstWrong = document.querySelector(".span_error");
+                if(firstWrong) {
+                    console.log(firstWrong)
+                    var firstWrongTop = firstWrong.offsetTop ;
+                    window.scrollTo(0, firstWrongTop - 100)
+                }
+            }
+            return check;
+        }
+
+        function validateValue(value, r) {
+            var pattern = r === 'email' ? /^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$/ : /^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){9,14}(\s*)?$/;
+            return new RegExp( pattern ).test(value);
+        }
+    })(jQuery)
+    //--></script>
+{{ footer }}

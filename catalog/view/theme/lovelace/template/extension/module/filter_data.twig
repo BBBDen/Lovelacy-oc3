@@ -1,0 +1,48 @@
+{% if products %}
+    <div class="catalog__items flex flex_fs">
+        {% for product in products %}
+            <a class="item" href="{{ product.href }}">
+                <div class="item__img">
+                    <img class="main-img" src="{{ product.thumb }}" alt="{{ product.name }}"
+                         title="{{ product.name }}" loading="lazy">
+                    <img class="hover-img" src="{{ product.hover_image }}" alt="{{ product.name }}"
+                         title="{{ product.name }}" loading="lazy">
+                    <div class="toFavorite{{ product.wishlist }} favorite--{{ product.product_id }}">
+                        <button type="button" class="add-to-catalog"
+                                onclick="{% if product.wishlist %}wishlist.remove('{{ product.product_id }}');{% else %}wishlist.add('{{ product.product_id }}');{% endif %}return false;">
+                            <svg width="16" height="14" viewBox="0 0 16 14" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path d="M11.5757 0C14.019 0 16 1.981 16 4.42386C16 8.46166 7.9998 13.8246 7.9998 13.8246C7.9998 13.8246 0 8.65497 0 4.42382C0 1.38237 1.981 0 4.42386 0C5.89538 0 7.19522 0.721649 7.9998 1.82655C8.80449 0.721649 10.1046 0 11.5757 0Z"
+                                      fill="white" fill-opacity="0.5"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    {% if product.attributes %}
+                        <div class="item__tags">
+                            {% for attr in product.attributes %}
+                                <div class="item__block {{ attr.class }}">{{ attr.text }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="item__descr">
+                    <div class="item__title">{{ product.name }}</div>
+                    {% if not product.special %}
+                        <div class="item__price">{{ product.price }}</div>
+                    {% else %}
+                        <div class="item__price"><span class="old">{{ product.price }}</span><span
+                                    class="new">{{ product.special }}</span></div>
+                    {% endif %}
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+    {% if pagination %}
+        <div class="show-more">
+            <button class="btn btn-info btn-ajax-load-more-filter" data-start="{{ pagination_page }}" data-page="{{ pagination_page + 1 }}">Загрузить еще</button>
+        </div>
+    {% endif %}
+{% else %}
+    <p>Товары не найдены</p>
+{% endif %}
+

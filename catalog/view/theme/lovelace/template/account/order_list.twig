@@ -1,0 +1,20 @@
+{% if orders %}
+        {% for order in orders %}
+            <div class="account-info-order" data-order="{{ order.order_id }}">
+                <div class="flex flex_sb faq__title">
+                    <div class="account-info-order__title">{{ text_order_from }} {{ order.date_added }}</div>
+                    <div class="flex flex_sb">
+                        <div class="account-info-order__amount">{{ order.products }} товар</div>
+                        <div class="account-info-order__price">{{ order.total }}</div>
+                    </div>
+                </div>
+                <div class="faq__text"></div>
+            </div>
+        {% endfor %}
+                <div class="row">
+                    <div class="col-sm-6 text-left">{{ pagination }}</div>
+                </div>
+    {% else %}
+        <p>{{ text_empty }}</p>
+    {% endif %}
+

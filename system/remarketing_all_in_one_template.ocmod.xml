@@ -1,0 +1,675 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+    <name>SP Remarketing All In One Pro Template</name>
+    <code>sp_remarketing_all_in_one_pro_template</code>
+    <version>5.5 2.3.x-3.x</version> 
+    <author>spectre</author> 
+    <link>https://freelancer.od.ua/</link>
+    <file path="admin/view/template/sale/order_info.tpl">
+        <operation error="skip">
+            <search><![CDATA[<td><?php echo $shipping_method; ?></td>]]></search>
+            <add position="after" offset="2"><![CDATA[
+			<?php // remarketing ?>
+            <tr>
+               <td></td>
+               <td><a class="btn btn-primary" target="_blank" href="/index.php?route=common/remarketing/sendSuccessManual&order_id=<?php echo $order_id; ?>"><i class="fa fa-rocket fa-fw"></i> Remarketing Success Page</a></td>
+            </tr>
+			<?php if ($remarketing_data) { ?>
+            <tr>
+               <td></td>
+               <td><a class="btn btn-primary" onclick="$('.remarketing-data').show();"><i class="fa fa-rocket fa-fw"></i> Remarketing Show Data</a>
+			   <div class="remarketing-data" style="display:none">
+			   <?php foreach($remarketing_data as $key => $val) { ?>
+			   <?php if (!empty($val) && $key != 'order_data') echo $key . ': ' . $val . '<br>'; ?>
+			   <?php } ?>
+			   </div>
+			   </td>
+            </tr>
+			<?php } ?>
+			]]></add>
+        </operation>
+    </file>
+    <file path="admin/view/template/sale/order_info.twig">
+        <operation error="skip">
+            <search><![CDATA[<td>{{ shipping_method }}</td>]]></search>
+            <add position="after" offset="2"><![CDATA[
+			{# // remarketing #}
+            <tr>
+               <td></td>
+               <td><a class="btn btn-primary" target="_blank" href="/index.php?route=common/remarketing/sendSuccessManual&order_id={{ order_id }}"><i class="fa fa-rocket fa-fw"></i> Remarketing Success Page</a></td>
+            </tr>
+			{% if remarketing_data %}
+            <tr>
+               <td></td>
+               <td><a class="btn btn-primary" onclick="$('.remarketing-data').show();"><i class="fa fa-rocket fa-fw"></i> Remarketing Show Data</a>
+			   <div class="remarketing-data" style="display:none">
+			   {% for key, val in remarketing_data %}
+			   {% if val != '' and key != 'order_data' %} {{ key }} : {{ val }} <br>{% endif %}
+			   {% endfor %}
+			   </div>
+			   </td>
+            </tr>
+			{% endif %}
+			]]></add>
+        </operation>
+    </file>
+    <file path="catalog/view/theme/*/template/common/header*.tpl">
+        <operation error="skip">
+            <search><![CDATA[<head>]]></search>
+            <add position="after"><![CDATA[
+         <?php if (isset($remarketing_head)) { 
+			echo $remarketing_head; // remarketing
+         } ?>
+			]]></add>
+        </operation>
+        <operation error="skip">
+            <search><![CDATA[<body]]></search>
+            <add position="after"><![CDATA[
+         <?php if (isset($remarketing_body)) { 
+			echo $remarketing_body; 
+         } ?>
+	  <?php if (isset($google_identifier)) { ?>
+		  <input type="hidden" value="<?php echo $google_identifier; ?>" class="google_identifier" />
+      <?php } ?>
+	  <?php if (isset($ecommerce_identifier)) { ?>
+		  <input type="hidden" value="<?php echo $ecommerce_identifier; ?>" class="ecommerce_identifier" />
+      <?php } ?>
+	  <?php if (isset($remarketing_ecommerce_analytics_id)) { ?>
+		  <input type="hidden" value="<?php echo $remarketing_ecommerce_analytics_id; ?>" class="remarketing_ecommerce_analytics_id" />
+      <?php } ?>
+	  <?php if (isset($ecommerce_ga4_identifier)) { ?>
+		  <input type="hidden" value="<?php echo $ecommerce_ga4_identifier; ?>" class="ecommerce_ga4_identifier" />
+      <?php } ?>
+	  <?php if (isset($remarketing_currency)) { ?>
+		  <input type="hidden" value="<?php echo $remarketing_currency; ?>" class="currency_remarketing_code" />
+      <?php } ?>
+	  <?php if (isset($google_currency)) { ?>
+		  <input type="hidden" value="<?php echo $google_currency; ?>" class="currency_google_code" />
+      <?php } ?>
+	  <?php if (isset($facebook_currency)) { ?>
+		  <input type="hidden" value="<?php echo $facebook_currency; ?>" class="currency_facebook_code" />
+      <?php } ?>
+	  <?php if (isset($ecommerce_currency)) { ?>
+		  <input type="hidden" value="<?php echo $ecommerce_currency; ?>" class="currency_ecommerce_code" />
+      <?php } ?>
+			]]></add>
+        </operation>
+    </file>
+	<file path="catalog/view/theme/*/template/common/header*.twig">
+        <operation error="skip">
+            <search><![CDATA[</head>]]></search>
+            <add position="before"><![CDATA[
+{% if remarketing_head %}
+{{ remarketing_head }} {# // remarketing #}
+{% endif %}
+			]]></add>
+        </operation>
+        <operation error="skip">
+            <search><![CDATA[<body]]></search>
+            <add position="after"><![CDATA[
+{% if remarketing_body %}
+{{ remarketing_body }}
+{% endif %}
+
+{% if google_identifier %}
+<input type="hidden" value="{{ google_identifier }}" class="google_identifier" />
+{% endif %}
+
+{% if ecommerce_identifier %}
+<input type="hidden" value="{{ ecommerce_identifier }}" class="ecommerce_identifier" />
+{% endif %}
+
+{% if ecommerce_ga4_identifier %}
+<input type="hidden" value="{{ ecommerce_ga4_identifier }}" class="ecommerce_ga4_identifier" />
+{% endif %}
+
+{% if remarketing_currency %}
+<input type="hidden" value="{{ remarketing_currency }}" class="currency_remarketing_code" />
+{% endif %}
+
+{% if google_currency %}
+<input type="hidden" value="{{ google_currency }}" class="currency_google_code" />
+{% endif %}
+
+{% if facebook_currency %}
+<input type="hidden" value="{{ facebook_currency }}" class="currency_facebook_code" />
+{% endif %}
+
+{% if ecommerce_currency %}
+<input type="hidden" value="{{ ecommerce_currency }}" class="currency_ecommerce_code" />
+{% endif %}
+
+]]></add>
+        </operation>
+    </file>
+	<file path="catalog/view/theme/*/template/common/footer*.tpl">
+		<operation error="skip">
+      <search><![CDATA[</body>]]></search>
+      <add position="before">
+	  <![CDATA[ 
+	  <?php if (isset($remarketing_status) && $remarketing_status) { // remarketing ?>
+	  <?php if (isset($remarketing_footer)) { 
+		  echo $remarketing_footer; 
+      } ?>
+<?php if ($facebook_depth) { ?>
+<script>
+ function getCurrentPosition() {
+    return window.pageYOffset ||
+        (document.documentElement || document.body.parentNode || document.body).scrollTop;
+}
+
+function getScrollableHeight() {
+    var d = Math.max(
+        document.body.scrollHeight, document.documentElement.scrollHeight,
+        document.body.offsetHeight, document.documentElement.offsetHeight,
+        document.body.clientHeight, document.documentElement.clientHeight
+    )
+    var w = window.innerHeight ||
+        (document.documentElement || document.body).clientHeight;
+    if (d > w) {
+        return d - w;
+    }
+    return 0; // not scrollable
+}
+
+var checkPoints = [<?php echo $facebook_depth_params; ?>];
+var reached = 0;
+var scrollableHeight = getScrollableHeight();
+
+window.addEventListener('resize', function () {
+    scrollableHeight = getScrollableHeight();
+});
+window.addEventListener('scroll', function () {
+    var current;
+    if (scrollableHeight == 0) {
+        current = 100;
+    } else {
+        var current = getCurrentPosition() / scrollableHeight * 100;
+    }
+    if (current > reached) {
+        reached = current;
+        // checkpoint and send events
+        while (checkPoints.length > 0) {
+            var c = checkPoints[0];
+            if (c <= reached) {
+                checkPoints.shift();
+				if (typeof fbq != 'undefined') {
+					fbq('trackCustom', 'ViewContentCheckPoint', {
+						depth: c,
+					});
+				}
+            } else {
+                break;
+            }
+        }
+    }
+}, false);  
+ </script>
+ <?php } ?>
+ <script>
+	  <?php if ($ecommerce_status && !empty($ecommerce_selector)) { ?>
+	   $(document).on('click touchstart', '<?php echo $ecommerce_selector; ?>', function() {
+	    if (typeof ecommerce_product_data !== 'undefined') {
+		product_id = $(this).find('.remarketing_cart_button').attr('data-product_id');
+		
+		if (product_id) {
+			$(ecommerce_product_data).each(function(key, data) {
+			if (data['id'] == product_id) {
+				if (typeof ecommerce_product_data[key] !== 'undefined') {
+					if (typeof sendEcommerceClick !== 'undefined') {
+						sendEcommerceClick(ecommerce_product_data[key]);
+					}
+				}
+			} 
+		})
+		}
+		}
+	  });
+	  <?php } ?>
+	  <?php if ($ecommerce_ga4_status && !empty($ecommerce_ga4_selector)) { ?>
+	   $(document).on('click touchstart', '<?php echo $ecommerce_ga4_selector; ?>', function() {
+	    if (typeof ecommerce_ga4_product_data !== 'undefined') {
+		item_id = $(this).find('.remarketing_cart_button').attr('data-product_id');
+		$(ecommerce_ga4_product_data).each(function(key, data) {
+		if (data['item_id'] == item_id) {
+			if (typeof ecommerce_ga4_product_data[key] !== 'undefined') {
+				if (typeof sendEcommerceGa4Click !== 'undefined') {
+					sendEcommerceGa4Click(ecommerce_ga4_product_data[key]);
+				}
+			}
+		} 
+		})
+		}
+	  });
+	  <?php } ?>
+	  <?php if ($ecommerce_ga4_measurement_status && !empty($ecommerce_ga4_measurement_selector)) { ?>
+	   $(document).on('click touchstart', '<?php echo $ecommerce_ga4_measurement_selector; ?>', function() {
+	    if (typeof ecommerce_ga4_product_data !== 'undefined') {
+		item_id = $(this).find('.remarketing_cart_button').attr('data-product_id');
+		$(ecommerce_ga4_product_data).each(function(key, data) {
+		if (data['item_id'] == item_id) {
+			if (typeof ecommerce_ga4_product_data[key] !== 'undefined') {
+				if (typeof sendEcommerceGa4MeasurementClick !== 'undefined') {
+					sendEcommerceGa4MeasurementClick(ecommerce_ga4_product_data[key]);
+				}
+			}
+		} 
+		})
+		}
+	  });
+	  <?php } ?>
+	  <?php if ($ecommerce_measurement_status && !empty($ecommerce_measurement_selector)) { ?>
+	  $(document).on('click touchstart', '<?php echo $ecommerce_measurement_selector; ?>', function() {
+	    if (typeof ecommerce_product_data !== 'undefined') {
+		product_id = $(this).find('.remarketing_cart_button').attr('data-product_id');
+		$(ecommerce_product_data).each(function(key, data) {
+		if (data['id'] == product_id) {
+			if (typeof ecommerce_product_data[key] !== 'undefined') {
+				if (typeof sendEcommerceMeasurementClick !== 'undefined') {
+					sendEcommerceMeasurementClick(ecommerce_product_data[key]);
+				}
+			}
+		} 
+		})
+		}
+	  });
+	  <?php } ?>
+     </script> 
+	<?php } ?>
+]]>
+      </add>
+    </operation>
+    </file>
+	<!--
+	Lightshop - привязка
+	{% if (scroll_to_top) %}
+	-->
+	<file path="catalog/view/theme/*/template/common/footer*.twig">
+	<operation error="skip">
+      <search><![CDATA[</body>]]></search>
+      <add position="before">
+	  <![CDATA[
+{# // remarketing #}
+{% if remarketing_status %}
+{% if remarketing_footer %}
+{{ remarketing_footer }}
+{% endif %}
+{% if facebook_depth %}
+<script>
+ function getCurrentPosition() {
+    return window.pageYOffset ||
+        (document.documentElement || document.body.parentNode || document.body).scrollTop;
+}
+
+function getScrollableHeight() {
+    var d = Math.max(
+        document.body.scrollHeight, document.documentElement.scrollHeight,
+        document.body.offsetHeight, document.documentElement.offsetHeight,
+        document.body.clientHeight, document.documentElement.clientHeight
+    )
+    var w = window.innerHeight ||
+        (document.documentElement || document.body).clientHeight;
+    if (d > w) {
+        return d - w;
+    }
+    return 0; // not scrollable
+}
+
+var checkPoints = [{{ facebook_depth_params }}];
+var reached = 0;
+var scrollableHeight = getScrollableHeight();
+
+window.addEventListener('resize', function () {
+    scrollableHeight = getScrollableHeight();
+});
+window.addEventListener('scroll', function () {
+    var current;
+    if (scrollableHeight == 0) {
+        current = 100;
+    } else {
+        var current = getCurrentPosition() / scrollableHeight * 100;
+    }
+    if (current > reached) {
+        reached = current;
+        // checkpoint and send events
+        while (checkPoints.length > 0) {
+            var c = checkPoints[0];
+            if (c <= reached) {
+                checkPoints.shift();
+				if (typeof fbq != 'undefined') {
+					fbq('trackCustom', 'ViewContentCheckPoint', {
+						depth: c,
+					});
+				}
+            } else {
+                break;
+            }
+        }
+    }
+}, false);  
+ </script>
+{% endif %}
+	  <script>
+	  {% if ecommerce_status and ecommerce_selector %}
+	   $(document).on('click touchstart', '{{ ecommerce_selector }}', function() {
+	    if (typeof ecommerce_product_data !== 'undefined') {
+		product_id = $(this).find('.remarketing_cart_button').attr('data-product_id');
+		if (product_id) {
+			$(ecommerce_product_data).each(function(key, data) {
+			if (data['id'] == product_id) {
+				if (typeof ecommerce_product_data[key] !== 'undefined') {
+					if (typeof sendEcommerceClick !== 'undefined') {
+						sendEcommerceClick(ecommerce_product_data[key]);
+					}
+				}
+			} 
+		})
+		}
+		}
+	  });
+	  {% endif %}
+	  {% if ecommerce_ga4_status and ecommerce_ga4_selector %}
+	   $(document).on('click', '{{ ecommerce_ga4_selector }}', function() {
+	    if (typeof ecommerce_ga4_product_data !== 'undefined') {
+		item_id = $(this).find('.remarketing_cart_button').attr('data-product_id');
+		$(ecommerce_ga4_product_data).each(function(key, data) {
+		if (data['item_id'] == item_id) {
+			if (typeof ecommerce_ga4_product_data[key] !== 'undefined') {
+				if (typeof sendEcommerceGa4Click !== 'undefined') {
+					sendEcommerceGa4Click(ecommerce_ga4_product_data[key]);
+				}
+			}
+		} 
+		})
+		}
+	  });
+	  {% endif %}
+	  {% if ecommerce_measurement_status and ecommerce_measurement_selector %}
+	  $(document).on('click touchstart', '{{ ecommerce_measurement_selector }}', function() {
+	    if (typeof ecommerce_product_data !== 'undefined') {
+		product_id = $(this).find('.remarketing_cart_button').attr('data-product_id');
+		if (product_id) {
+			$(ecommerce_product_data).each(function(key, data) {
+			if (data['id'] == product_id) {
+				if (typeof ecommerce_product_data[key] !== 'undefined') {
+					if (typeof sendEcommerceMeasurementClick !== 'undefined') {
+						sendEcommerceMeasurementClick(ecommerce_product_data[key]);
+					}
+				}
+			} 
+		})
+		}
+		}
+	  });
+	   {% endif %}
+	 {% if ecommerce_ga4_measurement_status and ecommerce_ga4_measurement_selector %}
+	   $(document).on('click touchstart', '{{ ecommerce_ga4_measurement_selector }}', function() {
+	    if (typeof ecommerce_ga4_product_data !== 'undefined') {
+		item_id = $(this).find('.remarketing_cart_button').attr('data-product_id');
+		$(ecommerce_ga4_product_data).each(function(key, data) {
+		if (data['item_id'] == item_id) {
+			if (typeof ecommerce_ga4_product_data[key] !== 'undefined') {
+				if (typeof sendEcommerceGa4MeasurementClick !== 'undefined') {
+					sendEcommerceGa4MeasurementClick(ecommerce_ga4_product_data[key]);
+				}
+			}
+		} 
+		})
+		}
+	  });
+	  {% endif %}
+     </script>
+	{% endif %}
+]]></add>
+</operation>
+    </file>
+     <file path="catalog/view/theme/*/template/product/*.tpl">
+	<operation error="skip">
+      <search><![CDATA[<?php echo $footer; ?>]]></search>
+      <add position="before">
+      <![CDATA[
+	<?php // remarketing ?>
+	<?php if (isset($remarketing_google_json) && $remarketing_google_json) { ?>
+	<script>
+	if (typeof sendGoogleRemarketing !== 'undefined') {
+		sendGoogleRemarketing(<?php echo json_encode($remarketing_google_json); ?>);
+	}
+	</script>
+	<?php } ?>
+	<?php if (isset($remarketing_target_code) && $remarketing_target_code) echo $remarketing_target_code; ?>
+	<?php if (isset($remarketing_vk_code) && $remarketing_vk_code) echo $remarketing_vk_code; ?>
+	<?php if (isset($tiktok_remarketing_code) && $tiktok_remarketing_code) echo $tiktok_remarketing_code; ?>
+	<?php if (isset($facebook_remarketing_code) && $facebook_remarketing_code) echo $facebook_remarketing_code; ?>
+	<?php if (isset($ecommerce_status) && $ecommerce_status && isset($ecommerce_product_json) && $ecommerce_product_json) { ?>
+	<script>
+	<?php if ($remarketing_ecommerce_status) { ?> 
+	window.dataLayer = window.dataLayer || [];
+	dataLayer.push(<?php echo json_encode($ecommerce_product_json); ?>);
+	<?php } ?>
+	<?php if ($measurement_status) { ?>
+	if (typeof sendEcommerceDetails !== 'undefined') {
+		sendEcommerceDetails(<?php echo json_encode($ecommerce_product_json); ?>, true);
+	}
+	<?php } ?>
+	</script>
+	<?php } ?>
+	<?php if (isset($remarketing_ecommerce_gtag_status) && $remarketing_ecommerce_gtag_status && !empty($ecommerce_product_json['ecommerce']['detail']['products'])) { ?>
+	<script>
+	if (typeof gtag != 'undefined') {
+		gtag('event', 'view_item', {
+			'send_to': $('.remarketing_ecommerce_analytics_id').val(),
+			'items': <?php echo json_encode($ecommerce_product_json['ecommerce']['detail']['products']); ?>
+		});
+	}
+	</script>
+	<?php } ?>
+	<?php if (isset($remarketing_ecommerce_gtag_status) && $remarketing_ecommerce_gtag_status && !empty($gtag_event_params)) { ?>
+	<script>
+	if (typeof gtag != 'undefined') {
+		gtag('event', '<?php echo $gtag_event; ?>', <?php echo json_encode($gtag_event_params); ?>);
+	}
+	</script>
+	<?php } ?>
+	<?php if (isset($ecommerce_ga4_product_json) && $ecommerce_ga4_product_json) { ?>
+	<script>
+	if (typeof sendEcommerceGa4Details !== 'undefined') {
+		sendEcommerceGa4Details(<?php echo json_encode($ecommerce_ga4_product_json); ?>, <?php echo ($measurement_ga4_status) ? 'true' : 'false'; ?>);
+	}
+	</script>
+	<?php } ?>
+	<?php if (isset($remarketing_ecommerce_json) && $remarketing_ecommerce_json) { ?>
+	<script> 
+	window.ecommerce_products = window.ecommerce_products || {};
+	ecommerce_product_data = <?php echo json_encode($remarketing_ecommerce_json); ?>;
+	if (typeof sendEcommerceImpressions !== 'undefined') {
+		sendEcommerceImpressions(ecommerce_product_data, <?php echo ($measurement_status) ? 'true' : 'false'; ?>);
+	}
+	
+	ecommerce_products = $.extend(ecommerce_products, ecommerce_product_data);
+	  </script>
+	<?php } ?>
+	<?php if (isset($remarketing_ecommerce_ga4_json) && $remarketing_ecommerce_ga4_json) { ?>
+	<script>
+	window.ecommerce_ga4_products = window.ecommerce_ga4_products || {};
+	ecommerce_ga4_product_data = <?php echo json_encode($remarketing_ecommerce_ga4_json); ?>;
+	if (typeof sendEcommerceGa4Impressions !== 'undefined') {
+		sendEcommerceGa4Impressions(ecommerce_ga4_product_data, <?php echo (isset($view_search_results) && $view_search_results) ? 'true' : 'false'; ?>, <?php echo ($measurement_ga4_status) ? 'true' : 'false'; ?>);
+	}
+	ecommerce_ga4_products = $.extend(ecommerce_ga4_products, ecommerce_ga4_product_data);
+	  </script>
+	  <?php } ?>
+	<?php if (isset($facebook_remarketing_status) && $facebook_remarketing_status && isset($facebook_data_json) && $facebook_data_json) { ?>
+	<script>
+	if (typeof sendFacebookDetails !== 'undefined') {
+		sendFacebookDetails(<?php echo json_encode($facebook_data_json); ?>);
+	}
+	  </script>
+	<?php } ?> 
+	<?php if (isset($facebook_remarketing_status) && $facebook_remarketing_status && isset($facebook_data_json_category) && $facebook_data_json_category) { ?>
+	<script>
+	if (typeof sendFacebookCategoryDetails !== 'undefined') {
+		sendFacebookCategoryDetails(<?php echo json_encode($facebook_data_json_category); ?>, <?php echo (isset($view_search_results) && $view_search_results) ? 'true' : 'false'; ?>);
+	}
+	  </script>
+	<?php } ?>
+
+	<?php if (isset($esputnik_remarketing_status) && $esputnik_remarketing_status && isset($esputnik_data_json) && $esputnik_data_json) { ?>
+	<script>
+	if (typeof sendEsputnikDetails !== 'undefined') {
+		sendEsputnikDetails(<?php echo json_encode($esputnik_data_json); ?>);
+	}
+	</script>
+	<?php } ?> 
+	<?php if (isset($esputnik_remarketing_status) && $esputnik_remarketing_status && isset($esputnik_data_category_json) && $esputnik_data_category_json) { ?>
+	<script>
+	if (typeof sendEsputnikCategoryDetails !== 'undefined') {
+		sendEsputnikCategoryDetails(<?php echo json_encode($esputnik_data_category_json); ?>);
+	}
+	</script>
+	<?php } ?> 
+	  ]]>
+      </add>
+    </operation>
+  </file>
+  <file path="catalog/view/theme/*/template/product/*.twig">
+	<operation error="skip">
+      <search><![CDATA[{{ footer }}]]></search>
+      <add position="before">
+      <![CDATA[
+	  {# // remarketing #}
+{% if remarketing_google_json %}
+	<script>
+	if (typeof sendGoogleRemarketing !== 'undefined') {
+		sendGoogleRemarketing({{ remarketing_google_json|json_encode() }});
+	}
+	</script>
+	{% endif %}
+	
+	{% if remarketing_target_code %}
+	{{ remarketing_target_code }}
+	{% endif %}
+	
+	{% if remarketing_vk_code %}
+	{{ remarketing_vk_code }}
+	{% endif %}
+	
+	{% if tiktok_remarketing_code %}
+	{{ tiktok_remarketing_code }}
+	{% endif %}
+	
+	{% if facebook_remarketing_code %}
+	{{ facebook_remarketing_code }}
+	{% endif %}
+	
+	{% if ecommerce_status and ecommerce_product_json %}
+	<script>
+	{% if remarketing_ecommerce_status %}
+	window.dataLayer = window.dataLayer || [];
+	dataLayer.push({{ ecommerce_product_json|json_encode() }});
+	{% endif %}
+	{% if measurement_status %}
+	if (typeof sendEcommerceDetails !== 'undefined') {
+		sendEcommerceDetails({{ ecommerce_product_json|json_encode() }}, true);
+	}
+	{% endif %}
+	</script>
+	{% endif %}
+	{% if ecommerce_ga4_status and ecommerce_ga4_product_json %}
+	<script>
+	if (typeof sendEcommerceGa4Details !== 'undefined') {
+		sendEcommerceGa4Details({{ ecommerce_ga4_product_json|json_encode() }}, {% if measurement_ga4_status %}true{% else %}false{% endif %});
+	}
+	</script>
+	{% endif %}
+	
+	{% if remarketing_ecommerce_json %}
+	<script>
+	window.ecommerce_products = window.ecommerce_products || {};
+	ecommerce_product_data = {{ remarketing_ecommerce_json|json_encode() }};
+
+	if (typeof sendEcommerceImpressions !== 'undefined') {
+		sendEcommerceImpressions(ecommerce_product_data, {% if measurement_status %}true{% else %}false{% endif %});
+	}
+	
+	 ecommerce_products = $.extend(ecommerce_products, ecommerce_product_data);
+	  </script>
+	 {% endif %}
+	{% if remarketing_ecommerce_ga4_json %}
+	<script>
+	window.ecommerce_ga4_products = window.ecommerce_ga4_products || {};
+	ecommerce_ga4_product_data = {{ remarketing_ecommerce_ga4_json|json_encode() }};
+
+	if (typeof sendEcommerceGa4Impressions !== 'undefined') {
+		sendEcommerceGa4Impressions(ecommerce_ga4_product_data, {% if view_search_results %}true{% else %}false{% endif %}, {% if measurement_ga4_status %}true{% else %}false{% endif %});
+	}
+	
+	 ecommerce_ga4_products = $.extend(ecommerce_ga4_products, ecommerce_ga4_product_data);
+	  </script>
+	 {% endif %}
+	 
+	 
+	 {% if facebook_remarketing_status and facebook_data_json %}
+	<script>
+	if (typeof sendFacebookDetails !== 'undefined') {
+		sendFacebookDetails({{ facebook_data_json|json_encode() }});
+	}
+	  </script>
+	{% endif %}
+	 {% if facebook_remarketing_status and facebook_data_json_category %}
+	<script>
+	if (typeof sendFacebookCategoryDetails !== 'undefined') {
+		sendFacebookCategoryDetails({{ facebook_data_json_category|json_encode() }}, {% if view_search_results %}'true'{% else %}'false'{% endif %});
+	}
+	  </script>
+	{% endif %}
+	{% if esputnik_remarketing_status and esputnik_data_json %}
+	<script>
+	if (typeof sendEsputnikDetails !== 'undefined') {
+		sendEsputnikDetails({{ esputnik_data_json|json_encode() }});
+	}
+	</script>
+	{% endif %}
+	{% if esputnik_remarketing_status and esputnik_data_category_json %}
+	<script>
+	if (typeof sendEsputnikCategoryDetails !== 'undefined') {
+		sendEsputnikCategoryDetails({{ esputnik_data_category_json|json_encode() }});
+	}
+	</script>
+	{% endif %}
+	  ]]>
+      </add>
+    </operation>
+  </file>
+  <file path="catalog/view/theme/*/template/checkout/simplecheckout_cart.tpl">
+	<operation error="skip">
+      <search><![CDATA[<?php if ($display_header) { ?>]]></search>
+      <add position="before">
+      <![CDATA[
+		<?php // remarketing ?> 
+		<?php if (!empty($facebook_output)) echo $facebook_output; ?>
+		<?php if (!empty($ga4_output)) echo $ga4_output; ?>
+		<?php if (!empty($gtag_output)) echo $gtag_output; ?>
+	  ]]>
+      </add>
+    </operation>
+  </file>
+  <file path="catalog/view/theme/*/template/checkout/simplecheckout_cart.twig">
+	<operation error="skip">
+      <search><![CDATA[{% if display_header %}]]></search> 
+      <add position="before">
+      <![CDATA[
+		{# // remarketing #}
+		{% if facebook_output %}
+		{{ facebook_output }}
+		{% endif %}
+		{% if ga4_output %}
+		{{ ga4_output }}
+		{% endif %}
+		{% if gtag_output %}
+		{{ gtag_output }}
+		{% endif %}
+	  ]]>
+      </add>
+    </operation>
+  </file>
+</modification>

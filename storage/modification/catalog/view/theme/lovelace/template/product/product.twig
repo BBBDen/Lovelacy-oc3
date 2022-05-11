@@ -1,0 +1,560 @@
+{{ header }}
+<div class="breadcrumbs">
+    <div class="container">
+        <ul itemscope itemtype="https://schema.org/BreadcrumbList">
+            {% for breadcrumb in breadcrumbs %}
+                <li class="breadcrumbs-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                    <a href="{{ breadcrumb.href }}" itemprop="item" href="https://example.com/books">
+                        <span itemprop="name">{{ breadcrumb.text }}</span>
+                        <meta itemprop="position" content="{{ loop.index }}" />
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+        <a class="breadcrumbs-back" href="#">← Назад</a>
+    </div>
+</div>
+<section id="product" class="product" itemtype="https://schema.org/Product" itemscope>
+    <meta itemprop="sku" content="{{ model }}" />
+    <meta itemprop="isbn" content="{{ model }}" />
+    <meta itemprop="name" content="{{ heading_title }}" />
+    <meta itemprop="description" content="{{ description }}" />
+    <div class="container">
+        <div class="product__wrapper flex flex_fs flex">
+            {% if thumb or images %}
+                <div class="product-block-wrapper">
+                    <div class="product-imgs flex flex flex_fs">
+                        <div class="product-imgs__mini"></div>
+                        <div class="product-imgs__wrapper">
+                            <div class="product-imgs__block">
+                                {% if thumb %}
+                                    <img
+                                            itemprop="image"
+                                            src="{{ thumb }}"
+                                            alt="{{ heading_title }}"
+                                            title="{{ heading_title }}"
+                                            loading="lazy"
+                                    >
+                                {% endif %}
+                                {% if images %}
+                                    {% for image in images %}
+                                        <img
+                                                itemprop="image"
+                                                src="{{ image.popup }}"
+                                                alt="{{ heading_title }}"
+                                                title="{{ heading_title }}"
+                                                loading="lazy"
+                                        >
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            <div class="wishlist-tooltip--wrapper">
+                                <div class="tooltip-stock"><span id="tooltip-stock">{% if product_in_favorite %}<span class="w-rm">Удалить из избранного</span>{% else %}<span class="w-add">Добавить в избранное</span>{% endif %}</span></div>
+                                <div class="toFavorite{{ product_in_favorite }} {% if product_in_favorite %}toFavorite_active{% endif %} favorite--{{ product_id }}" data-wishlist-add="Добавить в избранное" data-wishlist-remove="Удалить из избранного">
+                                    <button type="button" data-text="Удалить из избранного" class="add-to-catalog"
+                                            onclick="{% if product_in_favorite %}wishlist.remove('{{ product_id }}');{% else %}wishlist.add('{{ product_id }}');{% endif %}return false;">
+                                        <svg width="16" height="14" viewBox="0 0 16 14" fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M11.5757 0C14.019 0 16 1.981 16 4.42386C16 8.46166 7.9998 13.8246 7.9998 13.8246C7.9998 13.8246 0 8.65497 0 4.42382C0 1.38237 1.981 0 4.42386 0C5.89538 0 7.19522 0.721649 7.9998 1.82655C8.80449 0.721649 10.1046 0 11.5757 0Z"
+                                                  fill="white" fill-opacity="0.5"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="product__descr" itemprop="offers" itemtype="https://schema.org/Offer" itemscope>
+                <link itemprop="url" href="http://www.example.com/trinket_offer" />
+                <meta itemprop="itemCondition" content="https://schema.org/NewCondition" />
+                <meta itemprop="availability" content="https://schema.org/InStock" />
+                <meta itemprop="price" content="{% if not meta_special %}{{ meta_price }}{% else %}{{ meta_special }}{% endif %}" />
+                <meta itemprop="priceCurrency" content="{{ currency_code }}" />
+                <h2 class="product__title">{{ heading_title }}</h2>
+                {% if price %}
+
+                    {% if not special %}
+                        <div class="product__price">{{ price }}</div>
+                    {% else %}
+                        <div class="item__price" style="text-align: left"><span
+                                    class="old product__price">{{ price }}</span><span
+                                    class="new product__price">{{ special }}</span></div>
+                    {% endif %}
+                    {% if points %}
+                        <ul>
+                            <li>{{ text_points }} {{ points }}</li>
+                        </ul>
+                    {% endif %}
+                    {% if discounts %}
+                        <ul>
+                            <li>
+                                <hr>
+                            </li>
+                            {% for discount in discounts %}
+                                <li>{{ discount.quantity }}{{ text_discount }}{{ discount.price }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                {% endif %}
+                {% if sale_description %}
+                    <div class="sale-text-description">
+                        {{ sale_description }}
+                    </div>
+                {% endif %}
+                <form>
+                    <input type="hidden" name="product_id" value="{{ product_id }}" />
+                    <input type="hidden" name="quantity" value="{{ minimum }}" />
+                    {% if product_variations %}
+                        <div class="product__color">
+                            <label>цвет</label>
+                            <div class="flex">
+                                {% for variation in product_variations|reverse %}
+                                    {% if not variation.href %}
+                                        <label class="custom-input product-variation">
+                                            <input type="radio" name="color">
+                                            <span class="current">
+                                                {% if variation.image %}
+                                                    <img src="{{ variation.image }}" alt="{{ variation.name }}" title="{{ variation.name }}" loading="lazy">
+                                                {% endif %}
+                                            </span>
+                                        </label>
+                                    {% else %}
+                                        <label class="custom-input product-variation">
+                                            <input type="radio" name="color">
+                                            <span>
+                                                <a href="{{ variation.href }}" onclick="window.location.href = this.getAttribute('href')">
+                                                    <img src="{{ variation.image }}" alt="{{ variation.name }}" title="{{ variation.name }}" loading="lazy">
+                                                </a>
+                                            </span>
+                                        </label>
+                                    {% endif %}
+
+                                {% endfor %}
+
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if options %}
+                        {% for option in options %}
+                            <div class="product__lif">
+                                <label>{{ option.name }}</label>
+                                <div class="flex">
+                                    {% for option_value in option.product_option_value %}
+                                        <label class="custom-input">
+                                            <input type="radio" name="option[{{ option.product_option_id }}]" class="{{ option_value.name }}" value="{{ option_value.product_option_value_id }}" {{ option_value.disabled }}/>
+                                            <span class="{{ option_value.name }} {{ option_value.disabled }}">{{ option_value.name }}</span>
+                                            {% if option_value.disabled %}
+                                                <div class="tooltip-stock">Нет в наличии</div>
+                                            {% endif %}
+                                        </label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    {{ text_size_guide }}
+                    <div class="div-cart">
+                        {{ text_cart }}
+                    </div>
+                </form>
+                <div class="product__faq">
+                    <div class="faq-item">
+                        <div class="faq__title">
+                            Детали
+                            <svg width="25" height="16" viewBox="0 0 25 16" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                      d="M3.41421 0.585798C2.63316 -0.195251 1.36683 -0.195251 0.585786 0.585798C-0.195262 1.36685 -0.195262 2.63318 0.585786 3.41423L10.9642 13.7926L12.3784 15.2068L13.7926 13.7926L24.171 3.41423C24.952 2.63318 24.952 1.36685 24.171 0.585798C23.3899 -0.195251 22.1236 -0.195251 21.3425 0.585798L12.3784 9.54996L3.41421 0.585798Z"
+                                      fill="#ECA3C8"/>
+                            </svg>
+                        </div>
+                        <div class="faq__text">{{ description }}</div>
+                        {% if product_attribute_groups %}
+                            <div class="faq__extra">
+                                {% for item in product_attribute_groups %}
+                                    <div class="flex flex_nowrap flex_fs">
+                                        <div class="faq__key faq__text">{{ item.name }}</div>
+                                        <div class="faq__text">{{ item.text }}</div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    {{ column_right }}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% if products_completes %}
+    <section class="extra">
+        <div class="container">
+            <div class="title">{{ text_image }}</div>
+            <div class="slide-block">
+                {% if products_completes|length > 4 %}
+                    {% set class_name = 'extra__slider' %}
+                {% else %}
+                    {% set class_name = 'extra__flex' %}
+                {% endif %}
+                <div class="{{ class_name }}">
+                    <div class="extra__wrapper flex flex_mt32 flex_nowrap">
+                        {% for product_complete in products_completes %}
+                            <a class="item" href="{{ product_complete.href }}">
+                                <div class="item__img">
+                                    <img class="main-img" src="{{ product_complete.thumb }}" alt="{{ product_complete.name }}"
+                                         title="{{ product_complete.name }}" loading="lazy">
+                                    <img class="hover-img" src="{{ product_complete.hover_image }}" alt="{{ product_complete.name }}"
+                                         title="{{ product_complete.name }}" loading="lazy">
+                                    <div class="toFavorite{{ product_complete.wishlist }} favorite--{{ product_complete.product_id }}">
+                                        <button type="button" class="add-to-catalog"
+                                                onclick="{% if product_complete.wishlist %}wishlist.remove('{{ product_complete.product_id }}');{% else %}wishlist.add('{{ product_complete.product_id }}');{% endif %}return false;">
+                                            <svg width="16" height="14" viewBox="0 0 16 14" fill="none"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M11.5757 0C14.019 0 16 1.981 16 4.42386C16 8.46166 7.9998 13.8246 7.9998 13.8246C7.9998 13.8246 0 8.65497 0 4.42382C0 1.38237 1.981 0 4.42386 0C5.89538 0 7.19522 0.721649 7.9998 1.82655C8.80449 0.721649 10.1046 0 11.5757 0Z"
+                                                      fill="white" fill-opacity="0.5"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    {% if product_complete.attributes %}
+                                        <div class="item__tags">
+                                            {% for attr in product_complete.attributes %}
+                                                <div class="item__block {{ attr.class }}">{{ attr.text }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="item__descr">
+                                    <div class="item__title">{{ product_complete.name }}</div>
+                                    {% if not product_complete.special %}
+                                        <div class="item__price">{{ product_complete.price }}</div>
+                                    {% else %}
+                                        <div class="item__price"><span class="old">{{ product_complete.price }}</span><span
+                                                    class="new">{{ product_complete.special }}</span></div>
+                                    {% endif %}
+                                </div>
+                            </a>
+                        {% endfor %}
+
+                    </div>
+                </div>
+                {% if products_completes|length > 4 %}
+                    <div class="slider__btns">
+                        <div class="slider__btn left">
+                            <svg width="18" height="30" viewBox="0 0 18 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd"
+                                      d="M17.1112 3.41421C17.8923 2.63317 17.8923 1.36683 17.1112 0.585786C16.3302 -0.195262 15.0639 -0.195262 14.2828 0.585786L1.48282 13.3858L0.0686035 14.8L1.48282 16.2142L14.2828 29.0142C15.0639 29.7953 16.3302 29.7953 17.1112 29.0142C17.8923 28.2332 17.8923 26.9668 17.1112 26.1858L5.72546 14.8L17.1112 3.41421Z"
+                                      fill="#7D7D7D"/>
+                            </svg>
+                        </div>
+                        <div class="slider__btn right">
+                            <svg width="18" height="30" viewBox="0 0 18 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd"
+                                      d="M0.888756 26.5858C0.107708 27.3668 0.107708 28.6332 0.888756 29.4142C1.66981 30.1953 2.93613 30.1953 3.71718 29.4142L16.5172 16.6142L17.9314 15.2L16.5172 13.7858L3.71719 0.985785C2.93614 0.204737 1.66981 0.204737 0.888758 0.985785C0.10771 1.76683 0.10771 3.03316 0.888758 3.81421L12.2745 15.2L0.888756 26.5858Z"
+                                      fill="#7D7D7D"/>
+                            </svg>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endif %}
+{% if products %}
+    <section class="similar mt104">
+        <div class="container">
+            <div class="title">{{ text_related2 }}</div>
+            <div class="slide-block">
+                <div class="similar__slider">
+                    <div class="similar__wrapper flex flex_mt32 flex_nowrap">
+                        {% for product in products %}
+                            <a class="item" href="{{ product.href }}">
+                                <div class="item__img">
+                                    <img class="main-img" src="{{ product.thumb }}" alt="{{ product.name }}"
+                                         title="{{ product.name }}" loading="lazy">
+                                    <img class="hover-img" src="{{ product.hover_image }}" alt="{{ product.name }}"
+                                         title="{{ product.name }}" loading="lazy">
+                                    <div class="toFavorite{{ product.wishlist }} favorite--{{ product.product_id }}">
+                                        <button type="button" class="add-to-catalog"
+                                                onclick="{% if product.wishlist %}wishlist.remove('{{ product.product_id }}');{% else %}wishlist.add('{{ product.product_id }}');{% endif %}return false;">
+                                            <svg width="16" height="14" viewBox="0 0 16 14" fill="none"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M11.5757 0C14.019 0 16 1.981 16 4.42386C16 8.46166 7.9998 13.8246 7.9998 13.8246C7.9998 13.8246 0 8.65497 0 4.42382C0 1.38237 1.981 0 4.42386 0C5.89538 0 7.19522 0.721649 7.9998 1.82655C8.80449 0.721649 10.1046 0 11.5757 0Z"
+                                                      fill="white" fill-opacity="0.5"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    {% if product.attributes %}
+                                        <div class="item__tags">
+                                            {% for attr in product.attributes %}
+                                                <div class="item__block {{ attr.class }}">{{ attr.text }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="item__descr">
+                                    <div class="item__title">{{ product.name }}</div>
+                                    {% if not product.special %}
+                                        <div class="item__price">{{ product.price }}</div>
+                                    {% else %}
+                                        <div class="item__price"><span class="old">{{ product.price }}</span><span
+                                                    class="new">{{ product.special }}</span></div>
+                                    {% endif %}
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="slider__btns">
+                    <div class="slider__btn left">
+                        <svg width="18" height="30" viewBox="0 0 18 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd"
+                                  d="M17.1112 3.41421C17.8923 2.63317 17.8923 1.36683 17.1112 0.585786C16.3302 -0.195262 15.0639 -0.195262 14.2828 0.585786L1.48282 13.3858L0.0686035 14.8L1.48282 16.2142L14.2828 29.0142C15.0639 29.7953 16.3302 29.7953 17.1112 29.0142C17.8923 28.2332 17.8923 26.9668 17.1112 26.1858L5.72546 14.8L17.1112 3.41421Z"
+                                  fill="#7D7D7D"/>
+                        </svg>
+                    </div>
+                    <div class="slider__btn right">
+                        <svg width="18" height="30" viewBox="0 0 18 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd"
+                                  d="M0.888756 26.5858C0.107708 27.3668 0.107708 28.6332 0.888756 29.4142C1.66981 30.1953 2.93613 30.1953 3.71718 29.4142L16.5172 16.6142L17.9314 15.2L16.5172 13.7858L3.71719 0.985785C2.93614 0.204737 1.66981 0.204737 0.888758 0.985785C0.10771 1.76683 0.10771 3.03316 0.888758 3.81421L12.2745 15.2L0.888756 26.5858Z"
+                                  fill="#7D7D7D"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endif %}
+{% if seo_description %}
+    <section class="seo">
+        <div class="container">
+            <div class="seo__text">
+                {{ seo_description }}
+            </div>
+            <a class="seo__more" href="#">Подробнее ↓</a>
+        </div>
+    </section>
+
+{% endif %}
+<script type="text/javascript"><!--
+    $(document).delegate('#button-cart', 'click', function(e) {
+        e.preventDefault();
+        var $sizesBlock = document.querySelectorAll('.product__lif .flex');
+
+        if (typeof $sizesBlock !== 'undefined' && $sizesBlock.length > 0) {
+            var $size = $('.product__lif input:checked').val();
+            if (!$size){
+                $('.product__lif').append('<span class="span_error" style="margin-top: 10px;display:inline-block;">{{ text_size_error }}</span>');
+                return;
+            }
+        }
+
+        $.ajax({
+            url: 'index.php?route=checkout/cart/add',
+            type: 'post',
+            data: $('#product input[type=\'text\'], #product input[type=\'hidden\'], #product input[type=\'radio\']:checked, #product input[type=\'checkbox\']:checked, #product select, #product textarea'),
+            dataType: 'json',
+            beforeSend: function() {
+                $('.product__lif .span_error').remove();
+                $('#button-cart').button('loading');
+            },
+            success: function(json) {
+                console.log(json)
+                if (json['error']) {
+                    if (json['error']['option']) {
+                        for (i in json['error']['option']) {
+                            var element = $('#input-option' + i.replace('_', '-'));
+
+                            if (element.parent().hasClass('input-group')) {
+                                element.parent().after('<div class="text-danger">' + json['error']['option'][i] + '</div>');
+                            } else {
+                                element.after('<div class="text-danger">' + json['error']['option'][i] + '</div>');
+                            }
+                        }
+                    }
+
+                    if (json['error']['recurring']) {
+                        $('select[name=\'recurring_id\']').after('<div class="text-danger">' + json['error']['recurring'] + '</div>');
+                    }
+
+                    // Highlight any found errors
+                    $('.text-danger').parent().addClass('has-error');
+                }
+
+                if (json['success']) {
+
+                    var $cart = document.querySelector('.cart-btn');
+
+                    if ($cart && !$cart.classList.contains('added')) {
+                        $cart.classList.add('added');
+                    }
+
+                    $('.div-cart').html('{{ text_in_cart_exists }}');
+                }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+            }
+        });
+    });
+    //--></script>
+
+<script type="text/javascript" defer><!--
+    $('.product__lif .custom-input').on('change', function () {
+        if ($(document).find('.div-cart a').hasClass('btn-cart-added')) {
+            $(document).find('.div-cart').html('{{ text_cart }}');
+        }
+    })
+    //--></script>
+<script type="text/javascript"><!--
+    $(document).delegate('.btn-cart-added', 'click', function (e) {
+        e.preventDefault();
+        location = '{{ cart_url }}'
+    })
+    //--></script>
+
+
+<script type="text/javascript"><!--
+    dataLayer.push({
+        "ecommerce": {
+            "currencyCode": "{{ currency_code }}",
+            "detail": {
+                "products": [
+                    {
+                        "id": "{{ metrica_product_id }}",
+                        "name" : "{{ metrica_product_name }}",
+                        "price": {{ metrica_product_price }},
+                        "brand": "{{ metrica_product_manufacturer }}",
+                        "category": "{{ metrica_product_category }}"
+                    }
+                ]
+            }
+        }
+    });
+    //--></script>
+
+
+	  {# // remarketing #}
+{% if remarketing_google_json %}
+	<script>
+	if (typeof sendGoogleRemarketing !== 'undefined') {
+		sendGoogleRemarketing({{ remarketing_google_json|json_encode() }});
+	}
+	</script>
+	{% endif %}
+	
+	{% if remarketing_target_code %}
+	{{ remarketing_target_code }}
+	{% endif %}
+	
+	{% if remarketing_vk_code %}
+	{{ remarketing_vk_code }}
+	{% endif %}
+	
+	{% if tiktok_remarketing_code %}
+	{{ tiktok_remarketing_code }}
+	{% endif %}
+	
+	{% if facebook_remarketing_code %}
+	{{ facebook_remarketing_code }}
+	{% endif %}
+	
+	{% if ecommerce_status and ecommerce_product_json %}
+	<script>
+	{% if remarketing_ecommerce_status %}
+	window.dataLayer = window.dataLayer || [];
+	dataLayer.push({{ ecommerce_product_json|json_encode() }});
+	{% endif %}
+	{% if measurement_status %}
+	if (typeof sendEcommerceDetails !== 'undefined') {
+		sendEcommerceDetails({{ ecommerce_product_json|json_encode() }}, true);
+	}
+	{% endif %}
+	</script>
+	{% endif %}
+	{% if ecommerce_ga4_status and ecommerce_ga4_product_json %}
+	<script>
+	if (typeof sendEcommerceGa4Details !== 'undefined') {
+		sendEcommerceGa4Details({{ ecommerce_ga4_product_json|json_encode() }}, {% if measurement_ga4_status %}true{% else %}false{% endif %});
+	}
+	</script>
+	{% endif %}
+	
+	{% if remarketing_ecommerce_json %}
+	<script>
+	window.ecommerce_products = window.ecommerce_products || {};
+	ecommerce_product_data = {{ remarketing_ecommerce_json|json_encode() }};
+
+	if (typeof sendEcommerceImpressions !== 'undefined') {
+		sendEcommerceImpressions(ecommerce_product_data, {% if measurement_status %}true{% else %}false{% endif %});
+	}
+	
+	 ecommerce_products = $.extend(ecommerce_products, ecommerce_product_data);
+	  </script>
+	 {% endif %}
+	{% if remarketing_ecommerce_ga4_json %}
+	<script>
+	window.ecommerce_ga4_products = window.ecommerce_ga4_products || {};
+	ecommerce_ga4_product_data = {{ remarketing_ecommerce_ga4_json|json_encode() }};
+
+	if (typeof sendEcommerceGa4Impressions !== 'undefined') {
+		sendEcommerceGa4Impressions(ecommerce_ga4_product_data, {% if view_search_results %}true{% else %}false{% endif %}, {% if measurement_ga4_status %}true{% else %}false{% endif %});
+	}
+	
+	 ecommerce_ga4_products = $.extend(ecommerce_ga4_products, ecommerce_ga4_product_data);
+	  </script>
+	 {% endif %}
+	 
+	 
+	 {% if facebook_remarketing_status and facebook_data_json %}
+	<script>
+	if (typeof sendFacebookDetails !== 'undefined') {
+		sendFacebookDetails({{ facebook_data_json|json_encode() }});
+	}
+	  </script>
+	{% endif %}
+	 {% if facebook_remarketing_status and facebook_data_json_category %}
+	<script>
+	if (typeof sendFacebookCategoryDetails !== 'undefined') {
+		sendFacebookCategoryDetails({{ facebook_data_json_category|json_encode() }}, {% if view_search_results %}'true'{% else %}'false'{% endif %});
+	}
+	  </script>
+	{% endif %}
+	{% if esputnik_remarketing_status and esputnik_data_json %}
+	<script>
+	if (typeof sendEsputnikDetails !== 'undefined') {
+		sendEsputnikDetails({{ esputnik_data_json|json_encode() }});
+	}
+	</script>
+	{% endif %}
+	{% if esputnik_remarketing_status and esputnik_data_category_json %}
+	<script>
+	if (typeof sendEsputnikCategoryDetails !== 'undefined') {
+		sendEsputnikCategoryDetails({{ esputnik_data_category_json|json_encode() }});
+	}
+	</script>
+	{% endif %}
+	  
+
+          <script type="text/javascript"><!--
+            dataLayer.push({
+              "ecommerce": {
+                "currencyCode": "{{ currency_code }}",
+                "detail": {
+                  "products": [
+                    {
+                      "id": "{{ metrica_product_id }}",
+                      "name" : "{{ metrica_product_name }}",
+                      "price": {{ metrica_product_price }},
+                      "brand": "{{ metrica_product_manufacturer }}",
+                      "category": "{{ metrica_product_category }}"
+                    }
+                  ]
+                }
+              }
+            });
+          //--></script>
+        
+{{ footer }}

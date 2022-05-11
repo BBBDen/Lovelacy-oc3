@@ -1,0 +1,111 @@
+
+<aside class="catalog-filters">
+  <form>
+      {% if category_children %}
+          <div class="faq-item faq-filter categories-children faq-item_active">
+              <div class="faq__title">
+                  {{ text_all_linen }}
+                  <svg width="15" height="9" viewBox="0 0 15 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M1.16187 1L7.16187 7L13.1619 1" stroke="black" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+              </div>
+              <div class="faq__text">
+                  {% for child in category_children %}
+                      <a class="faq-link" data-category-id="{{ child.category_id }}" href="{{ child.href }}">{{ child.name }}</a>
+                  {% endfor %}
+              </div>
+          </div>
+      {% endif %}
+    {% for filter_group in filter_groups %}
+      <div class="faq-item faq-filter">
+        <div class="faq__title">
+          {{ filter_group.name }}
+          <svg width="15" height="9" viewBox="0 0 15 9" fill="none"
+               xmlns="http://www.w3.org/2000/svg">
+            <path d="M1.16187 1L7.16187 7L13.1619 1" stroke="black" stroke-width="2"
+                  stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="faq__text filter-group-{{ filter_group.filter_group_id }}">
+          {% for filter in filter_group.filter %}
+            {% if filter.image %}
+                <div class="product__color">
+                    <label class="custom-input">
+                        <input type="radio" name="filter[]" value="{{ filter.filter_id }}">
+                        <span class="{{ filter.name|lower }}">
+                  <img src="{{ filter.image }}" alt="{{ filter.name }}" loading="lazy">
+                </span>
+                    </label>
+                </div>
+
+            {% else %}
+              <div class="checkbox">
+                <label class="custom-checkbox">
+                  <input type="checkbox" name="filter[]" value="{{ filter.filter_id }}">
+                  <span class="flex">
+                  <span class="checkbox-button"></span>
+                  <span class="custom-checkbox__text">{{ filter.name }}</span>
+                </span>
+                </label>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+    <div class="faq-item faq-filter">
+      <div class="faq__title">
+        Цена
+        <svg width="15" height="9" viewBox="0 0 15 9" fill="none"
+             xmlns="http://www.w3.org/2000/svg">
+          <path d="M1.16187 1L7.16187 7L13.1619 1" stroke="black" stroke-width="2"
+                stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="faq__text faq__range">
+               <span class="rangeValues"> от <input name="filter[]" type="text" id="rangeFrom"> до <input name="filter[]" type="text" id="rangeTo"> BYN
+</span>
+        <div class="range-slider">
+            <input type="text" class="js-range-slider" name="my_range" value=""  data-type="double"
+                   data-min="0"
+                   data-max="1000"
+                   data-from="200"
+                   data-to="500"
+                   data-grid="true">
+        </div>
+      </div>
+    </div>
+    <button id="btn--filter" class="btn">Применить фильтр</button>
+    <a class="btn btn_transparent" href="javascript:void(0)" onclick="window.location = window.location.pathname;">Очистить фильтр </a>
+  </form>
+    <script type="text/javascript">
+        if($(".js-range-slider") && !(document.querySelector(".range-slider .irs"))) {
+            $(".js-range-slider").ionRangeSlider({
+                onChange: function(data) {
+                    fromInput.value = data.from;
+                    toInput.value = data.to;
+                }
+            });
+            let my_range = $(".js-range-slider").data("ionRangeSlider");
+            const fromInput = document.getElementById("rangeFrom")
+            const toInput = document.getElementById("rangeTo")
+            my_range.update({
+                from: fromInput.value,
+                to: toInput.value
+            });
+            fromInput.addEventListener("change", function(e) {
+                my_range.update({
+                    from: e.target.value,
+                });
+            })
+            toInput.addEventListener("change", function(e) {
+                my_range.update({
+                    to: e.target.value,
+                });
+            })
+        }
+
+
+        var ACTION_FILTER = '{{ action }}';
+    </script>
+</aside>

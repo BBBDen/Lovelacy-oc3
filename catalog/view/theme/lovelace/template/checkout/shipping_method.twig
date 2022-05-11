@@ -1,0 +1,37 @@
+{% if shipping_methods %}
+<div class="checkout-block__title">{{ text_shipping_method }}</div>
+  {% for key, shipping_method in shipping_methods %}
+    {% if not shipping_method.error %}
+      <div
+              class="radio"
+              data-code="{{ shipping_method.quote[key].code }}"
+      >
+        <label class="custom-radio">
+          <input
+                  type="radio"
+                  name="shipping_method"
+                  value="{{ shipping_method.quote[key].code }}"
+                  {% if current_shipping_method == shipping_method.quote[key].code %}
+                    checked="checked"
+                  {% elseif shipping_method.quote[key].code == 'free.free' or shipping_method.quote[key].code == 'free_ru.free_ru' %}
+                      checked="checked"
+                  {% endif %}
+          >
+          <span class="flex">
+            <span class="radio-button"></span>
+            <span class="custom-radio__text">
+              {{ shipping_method.title }}
+            </span>
+          </span>
+        </label>
+      </div>
+    {% else %}
+      <div class="alert alert-danger alert-dismissible">{{ shipping_method.error }}</div>
+    {% endif %}
+    {% if shipping_method.quote[key].code == 'free.free' or shipping_method.quote[key].code == 'free_ru.free_ru' %}
+      <script type="text/javascript"><!--
+          $('input[name="{{ shipping_method.quote[key].code }}"]').trigger('change')
+        //--></script>
+    {% endif %}
+  {% endfor %}
+{% endif %}

@@ -1,0 +1,159 @@
+{{ header }}
+{{ description }}
+{{ content_top }}
+
+<section class="subscription-form" id="subscribe-block">
+    <div class="container">
+        {% if status == 'failed' %}
+            {{ status }}
+        {% else %}
+            <div class="subscription-subtitle">{{ text_subscribe_title }}
+            </div>
+            {% if auth == 0 %}
+                <div class="subscription-form__subtitle">{{ text_account }}</div>
+            {% endif %}
+            <form class="form-submition">
+                <div class="subscription-form__label">{{ text_personal_data }}</div>
+                <div>
+                    <input class="input" name="name" type="text" placeholder="{{ text_name }}" value="{{ name }}">
+                </div>
+                <div>
+                    <input class="input" name="phone" type="text" placeholder="{{ text_phone }}" value="{{ telephone }}">
+                </div>
+                <div>
+                    <input class="input" name="email" type="text" placeholder="{{ text_mail }}" value="{{ email }}">
+                </div>
+                <div class="subscription-form__label">{{ text_address_data }}</div>
+                <select class="input" name="country_id" type="text" style="padding: 0 16px">
+                    <option value="0"> {{ text_country }} </option>
+                    {% for country in countries %}
+                    <option value="{{ country.country_id }}" {% if country.country_id == country_id %}{{ 'selected' }}{% endif %}>{{ country.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <select name="zone_id" id="input-shipping-zone" class="form-control input" style="padding: 0 16px">
+                    <option value="0"> {{ text_locality }} </option>
+                </select>
+                <input class="input" name="street" type="text" placeholder="{{ text_street }}" value="{{ street }}">
+                <div class="flex flex_sb flex_checkbox">
+                    <input class="input" name="house" type="text" placeholder="{{ text_house }}" value="{{ house }}">
+                    <input class="input" name="building" type="text" placeholder="{{ text_building }}" value="{{ building }}">
+                    <input class="input" name="flat" type="text" placeholder="{{ text_flat }}" value="{{ flat }}">
+                </div>
+                {% if auth == 0 %}
+                <textarea class="input" name="requests" placeholder="{{ text_comment }}"></textarea>
+                {% endif %}
+                <div class="account-info__checkbox checkbox account-info__checkbox-agree">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" name="agree"><span class="flex"><span class="checkbox-button"></span>{{ text_policy }}</span>
+                    </label>
+                </div>
+                {% if auth == 0 %}
+                <div class="account-info__checkbox checkbox account-info__checkbox-create">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" name="create"><span class="flex"><span class="checkbox-button"></span><span class="custom-checkbox__text">{{ text_agree }}</span></span>
+                    </label>
+                </div>
+                {% endif %}
+                <div class="account-info__checkbox checkbox account-info__checkbox-charge">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" name="charge"><span class="flex"><span class="checkbox-button"></span><span class="custom-checkbox__text">{{ text_subs }}</span></span>
+                    </label>
+                </div>
+
+                <button class="btn" type="submit">{{ text_pay }}</button>
+            </form>
+        {% endif %}
+    </div>
+
+</section>
+<script>
+    (function ($) {
+        $('.form-submition').on('submit', function (e) {
+            e.preventDefault();
+            var _self = $( this ),
+                btn = _self.find('[type="submit"]'),
+                btnText = btn.text();
+            $.ajax({
+                url: 'index.php?route=information/information/submitHandlerSubscribe&language=' + encodeURIComponent(VARS.language_code) + '&language_id=' + encodeURIComponent(VARS.language_id),
+                data: _self.serialize(),
+                type: 'post',
+                dataType: 'json',
+                beforeSend: function () {
+                    btn.text('Отправка...')
+                },
+                complete: function () {
+                    btn.text(btnText)
+                },
+                success: function (response) {
+                    _self.find('.span_error').remove();
+                    _self.find('input, textarea, select').removeClass('wrong');
+
+                    if (!response.success) {
+                        if (response.hasOwnProperty('error_subscribe') || response.hasOwnProperty('critical_error')) {
+                            var alert_ = response.hasOwnProperty('error_subscribe') ? response.error_subscribe : response.critical_error;
+                            alert(alert_)
+                        } else {
+                            $.each(response.errors, function (i, v) {
+                                if (i === 'agree' || i === 'create' || i === 'charge') {
+                                    _self.find('.account-info__checkbox-' + i).after('<span class="span_error">'+ v +'</span>');
+                                } else if (i === 'house') {
+                                    _self.find('[name="'+i+'"]').addClass('wrong');
+                                    _self.find('.flex.flex_sb.flex_checkbox').after('<span class="span_error" style="display: block">'+ v +'</span>');
+                                } else {
+                                    _self.find('[name="'+i+'"]').addClass('wrong');
+                                    _self.find('[name="'+ i +'"]').after('<span class="span_error">'+ v +'</span>');
+                                }
+                            });
+                        }
+                    } else {
+                        window.location.href = response.redirect
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                }
+            });
+        });
+        $('[name="country_id"]').on('change', function () {
+            var countryId = $( this ).val();
+            var get = '&country_id='+ encodeURIComponent(countryId);
+            {% if auth == 1 %}
+                get += '&zone_id=' + encodeURIComponent('{{ zone_id }}');
+            {% endif %}
+            $.ajax({
+                url: "index.php?route=information/information/getStates" + get,
+                type: 'get',
+                dataType: 'html',
+                success: function (response) {
+                    $('#input-shipping-zone').append(response);
+                }
+            });
+        });
+        {% if auth == 1 %}
+            $('[name="country_id"]').trigger('change');
+        {% endif %}
+    })(jQuery)
+</script>
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://google.com/article"
+        },
+        "headline": "{{ heading_title }}",
+        "datePublished": "{{ date }}",
+        "dateModified": "{{ date_modified }}",
+        "publisher": {
+            "@type": "Organization",
+            "name": "Google",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "{{ logo }}"
+            }
+        }
+    }
+</script>
+{{ footer }}

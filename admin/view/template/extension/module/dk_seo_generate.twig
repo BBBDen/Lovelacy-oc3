@@ -1,0 +1,303 @@
+{{ header }}
+<style type="text/css">
+
+</style>
+{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-module" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+        <div class="alert alert-info">
+          {{ text_alert }}
+        </div>
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-module" class="form-horizontal">
+          <div class="form-group">
+            <label for="cats_all" class="col-sm-4 control-label">{{ text_replace_for_all }}</label>
+            <div class="col-sm-1">
+              <input type="radio" id="cats_all" name="for_all" class="form-control" checked value="all">
+            </div>
+            <div class="col-sm-7">
+              <div class="alert alert-warning">
+                <i>{{ text_alert_all }}</i>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="cats_empty" class="col-sm-4 control-label">{{ text_replace_for_empty }}</label>
+            <div class="col-sm-1">
+              <input type="radio" id="cats_empty" name="for_all" class="form-control" value="only_empty" checked>
+            </div>
+            <div class="col-sm-7">
+              <div class="alert alert-warning">
+                <i>{{ text_alert_empty }}</i>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="language_prefix" class="col-sm-4 control-label">{{ text_add_language_prefix }}</label>
+            <div class="col-sm-1">
+              <input type="checkbox" id="language_prefix" name="language_prefix" class="form-control" checked>
+            </div>
+            <div class="col-sm-7">
+              <div class="alert alert-warning">
+                <i>{{ text_alert_prefix }}</i>
+              </div>
+            </div>
+          </div>
+          <fieldset class="category">
+            <legend>{{ text_categories }}</legend>
+            <div class="form-group">
+              <label class="col-sm-4 control-label" for="input-generate">{{ entry_generate }}</label>
+              <div class="col-sm-2">
+                <button class="btn btn-success g-category" {% if not module_dk_seo_generate_status %}disabled{% endif %} data-loading="{{ text_loading }}">{{ text_btn_generate }}</button>
+              </div>
+              <h4 class="col-sm-6">{{ text_cats_count }} <strong>{{ count_categories }}</strong></h4>
+            </div>
+            <div class="form-group">
+              <label for="category_index_process" class="col-sm-4 control-label" style="padding: 0">{{ text_id_instruction }}</label>
+              <div class="col-sm-1">
+                <input id="category_index_process" type="text" name="category_index_process" class="form-control">
+              </div>
+              <div class="col-sm-7">
+                <div class="alert alert-danger"><i>{{ text_alert_category_instruction }}</i></div>
+              </div>
+            </div>
+            <div class="form-group done" style="display: block">
+              <label class="control-label col-sm-4" style="padding: 0">{{ text_done }} </label>
+              <div class="col-sm-8">
+                <input type="text" name="" class="form-control" style="max-width: 100px" readonly>
+              </div>
+            </div>
+          </fieldset>
+          <fieldset class="product" style="">
+            <legend>{{ text_product }}</legend>
+            <div class="form-group">
+              <label class="col-sm-4 control-label" for="input-generate-products">{{ entry_generate_products }}</label>
+              <div class="col-sm-2">
+                <button class="btn btn-success g-products" {% if not module_dk_seo_generate_status %}disabled{% endif %} data-loading="{{ text_loading }}">{{ text_btn_generate }}</button>
+              </div>
+              <h4 class="col-sm-6">{{ text_prod_count }} <strong>{{ count_products }}</strong></h4>
+
+            </div>
+            <div class="form-group">
+              <label for="product_index_process" class="col-sm-4 control-label" style="padding: 0">{{ text_id_instruction }}</label>
+              <div class="col-sm-1">
+                <input id="product_index_process" type="text" name="product_index_process" class="form-control">
+              </div>
+              <div class="col-sm-7">
+                <div class="alert alert-danger"><i>{{ text_alert_product_instruction }}</i></div>
+              </div>
+            </div>
+            <div class="form-group done">
+              <label class="control-label col-sm-4" style="padding: 0">{{ text_done }} </label>
+              <div class="col-sm-6">
+                <input type="text" name="" class="form-control" style="max-width: 100px" readonly>
+              </div>
+            </div>
+          </fieldset>
+          <fieldset class="article">
+            <legend>{{ text_articles }}</legend>
+            <div class="form-group">
+              <label class="col-sm-4 control-label" for="input-generate-articles">{{ entry_generate_articles }}</label>
+              <div class="col-sm-2">
+                <button class="btn btn-success g-article" {% if not module_dk_seo_generate_status %}disabled{% endif %} data-loading="{{ text_loading }}">{{ text_btn_generate }}</button>
+              </div>
+              <h4 class="col-sm-6">{{ text_arts_count }} <strong>{{ count_articles }}</strong></h4>
+
+            </div>
+            <div class="form-group">
+              <label for="article_index_process" class="col-sm-4 control-label" style="padding: 0">{{ text_id_instruction }}</label>
+              <div class="col-sm-1">
+                <input id="article_index_process" type="text" name="article_index_process" class="form-control">
+              </div>
+              <div class="col-sm-7">
+                <div class="alert alert-danger"><i>{{ text_alert_article_instruction }}</i></div>
+              </div>
+            </div>
+            <div class="form-group done" style="display: block">
+              <label class="control-label col-sm-4" style="padding: 0">{{ text_done }} </label>
+              <div class="col-sm-8">
+                <input type="text" name="" class="form-control" style="max-width: 100px" readonly>
+              </div>
+            </div>
+          </fieldset>
+          <div class="results" style="display: none;">
+            <div class="form-group">
+              <div id="progress-bar" class="progress">
+                <div
+                        class="progress-bar progress-bar-striped bg-success"
+                        role="progressbar"
+                        style="width: 0"
+                        aria-valuenow="0"
+                        aria-valuemin="0"
+                        aria-valuemax="100"></div>
+              </div>
+            </div>
+            <table class="table table-bordered">
+              <thead>
+              <tr>
+                <th scope="col">{{ text_category_id }}</th>
+                <th scope="col">{{ text_category_name }}</th>
+                <th scope="col">{{ text_url }}</th>
+                <th scope="col">{{ text_language }}</th>
+              </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+            <div class="col-sm-10">
+              <select name="module_dk_seo_generate_status" id="input-status" class="form-control">
+                {% if module_dk_seo_generate_status %}
+                <option value="1" selected="selected">{{ text_enabled }}</option>
+                <option value="0">{{ text_disabled }}</option>
+                {% else %}
+                <option value="1">{{ text_enabled }}</option>
+                <option value="0" selected="selected">{{ text_disabled }}</option>
+                {% endif %}
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script !src="" type="text/javascript"><!--
+  (function ($) {
+    var cIndex = 0;
+    var typeEmpty = '';
+    var className = '';
+
+    function loadingProcess(btnClass, beforeOrComplete) {
+      var $button = $(btnClass),
+              btnCurrentText = '{{ text_btn_generate }}',
+              loading = $button.data('loading');
+
+      if (beforeOrComplete === 'before') {
+        $button.text(loading)
+      }
+
+      if (beforeOrComplete === 'complete') {
+        $button.text(btnCurrentText)
+      }
+    }
+    function urlGenerator(type) {
+      var startIndexWith = $('[name="'+type+'_index_process"]');
+      if (startIndexWith.val()) {
+        cIndex = startIndexWith.val();
+        startIndexWith.val('')
+      }
+      if (type === 'category') {
+        className = '.g-category';
+      }
+
+      if (type === 'product') {
+        className = '.g-products';
+      }
+
+      if (type === 'article') {
+        className = '.g-article';
+      }
+
+      typeEmpty = $('[name="for_all"]:checked').val();
+
+      $.ajax({
+        url: 'index.php?route=extension/module/dk_seo_generate/generate_urls&user_token={{ user_token }}',
+        data: {
+          type: type,
+          index: cIndex,
+          store_id: '{{ store_id }}',
+          type_empty: typeEmpty,
+          language: '{{ language }}',
+          language_prefix: $('#language_prefix').prop('checked')
+        },
+        type: 'POST',
+        beforeSend: function () {
+          loadingProcess(className, 'before');
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+          if (cIndex > 0) {
+            $('fieldset.'+type+' .done').show();
+            $('fieldset.'+type+' .done input').val(cIndex)
+          }
+          loadingProcess(className, 'complete');
+          console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+        },
+        success: function (json) {
+          if (json.index <= (json.total - 1)) {
+            cIndex++;
+            urlGenerator(type);
+            var _w_ = (json.index * 100) / (json.total-1);
+            var $html = $('#progress-bar .progress-bar');
+            $html.css({
+              width: _w_ + '%'
+            });
+            $html.attr('aria-valuenow', _w_ + '%');
+            $html.attr('aria-valuemax',json.total);
+
+            var markup = ' <tr>\n' +
+                    '              <th scope="row">'+ json.position.id +'</th>\n' +
+                    '              <td>'+ json.position.name +'</td>\n' +
+                    '              <td>'+ json.url +'</td>\n' +
+                    '              <td>'+ json.language +'</td>\n' +
+                    '            </tr>';
+
+
+            $('tbody').append(markup);
+          } else {
+            cIndex = 0;
+            loadingProcess(className, 'complete');
+          }
+          $('fieldset.'+type+' .done input').val(json.index)
+        }
+      });
+    }
+    $(document).ready(function () {
+        $('.g-category').on('click', function (e) {
+          e.preventDefault();
+          $('tbody').html('');
+          $('.results').show();
+          urlGenerator('category');
+        })
+
+      $('.g-products').on('click', function (e) {
+          e.preventDefault();
+          $('tbody').html('');
+          $('.results').show();
+          urlGenerator('product');
+        })
+
+      $('.g-article').on('click', function (e) {
+          e.preventDefault();
+          $('tbody').html('');
+          $('.results').show();
+          urlGenerator('article');
+        })
+    });
+  })(jQuery);
+  //--></script>
+{{ footer }}

@@ -1,0 +1,250 @@
+{{ header }}
+
+<section class="cart">
+    <div class="container">
+        <a class="cart__back" href="{{ main_category }}">{{ text_back }}</a>
+        {% if error_warning %}
+            <div class="row">
+                <div class="col">
+                    <div class="alert alert-danger alert-dismissible"
+                         style="color: #a94442; margin-top: 20px">{{ error_warning }}
+                        <button type="button" class="close btn-close" data-dismiss="alert">&times;</button>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        {% if success %}
+            <div class="row">
+                <div class="col">
+                    <div class="alert alert-success alert-dismissible"
+                         style="color: #155724; margin-top: 20px">{{ success }}
+                        <button type="button" class="close btn-close" data-dismiss="alert">&times;</button>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        {% if attention %}
+            <div class="row">
+                <div class="col">
+                    <div class="alert alert-info" style="color: #0c5460; margin-top: 20px">{{ attention }}
+                        <button type="button" class="close btn-close" data-dismiss="alert">&times;</button>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        {{ column_left }}
+        <div id="cart__form-b">
+            <form class="cart__form">
+                <div class="cart__header flex flex_sb">
+                    <div class="cart__name">товар</div>
+                    <div class="flex flex_sb cart__block">
+                        <div class="cart__name">количество</div>
+                        <div class="cart__name">сумма</div>
+                    </div>
+                </div>
+
+                {% if promo_notification %}
+                    <div class="tooltip-text-promo">{{ promo_notification }}</div>
+                {% endif %}
+
+                {% for product in products %}
+                    <div
+                            id="cart--item{{ product.cart_id }}"
+                            class="cart-item flex flex_sb flex_fs"
+                            data-cart-id="{{ product.cart_id }}"
+                            data-product-id="{{ product.product_id }}"
+                    >
+                        <div class="cart-item__block flex flex_fs">
+                            <div class="cart-item__img">
+                                {% if product.thumb %}
+                                    <img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.title }}"
+                                         loading="lazy">
+                                {% endif %}
+                            </div>
+                            <div class="cart-item__info"><a class="cart-item__title"
+                                                            href="{{ product.href }}">{{ product.name }}</a>
+                                {% if not product.stock %} <span class="text-danger">***</span> {% endif %}
+                                {% if product.color %}
+                                    <div class="cart-item__flex">
+                                        <div class="cart-item__name">{{ text_color }}</div>
+                                        <div class="cart-item__data"><img src="{{ product.color }}"
+                                                                          alt="{{ product.name }}"></div>
+                                    </div>
+                                {% endif %}
+                                {% if product.option and not product.certificate %}
+                                    {% for option in product.option %}
+                                        <div class="cart-item__flex">
+                                            <div class="cart-item__name">{{ option.name }}</div>
+                                            <div class="cart-item__data">{{ option.value }}</div>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+
+                            </div>
+                        </div>
+                        <div class="cart-item__extra flex flex_sb flex_fs">
+                            <div class="cart-item__amount">
+                                {% if not product.promo %}
+                                    <div class="dots amount">
+                                        {% if product.certificate %}
+                                            <input type="text" name="quantity[{{ product.cart_id }}]"
+                                                   value="{{ product.quantity }}" size="1" class="amount amount__total"
+                                                   readonly/>
+                                        {% else %}
+                                            <div class="arrow amount amount__less"
+                                                 onclick="cart.update('{{ product.cart_id }}', parseInt($('#cart--item{{ product.cart_id }}').find('.amount__total').val()) - 1)">
+                                                ‒
+                                            </div>
+                                            <input type="text" name="quantity[{{ product.cart_id }}]"
+                                                   value="{{ product.quantity }}" size="1" class="amount amount__total"
+                                                   readonly/>
+                                            <div class="amount arrow amount__more"
+                                                 onclick="cart.update('{{ product.cart_id }}', parseInt($('#cart--item{{ product.cart_id }}').find('.amount__total').val()) + 1)">
+                                                +
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                                {% if product.certificate %}
+                                    <a class="cart-item__remove" href="javascript:void(0);"
+                                       onclick="cart.removeCertificate('{{ product.cart_id }}', '{{ product.certificate_key }}');return false;">Удалить </a>
+                                {% else %}
+                                    <a class="cart-item__remove" href="javascript:void(0);"
+                                       onclick="cart.remove('{{ product.cart_id }}', '{{ product.product_id }}');return false;">Удалить </a>
+                                {% endif %}
+                            </div>
+                            {% if not product.special %}
+                                <div class="cart-item__price"><span
+                                            class="product_total{{ product.cart_id }}">{{ product.total }}</span></div>
+                            {% else %}
+                                <div class="cart-item__price old"><span
+                                            class="product_total{{ product.cart_id }}">{{ product.total }}</span></div>
+                                <div class="cart-item__price new"><span
+                                            class="product_total{{ product.cart_id }}">{{ product.special }}</span></div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+                {% if categories %}
+                    <input type="hidden" class="categories_ids" name="categories_ids" value="{{ categories|join(',') }}">
+                {% endif %}
+                {% if product_ids %}
+                    <input type="hidden" class="product_ids" name="product_ids" value="{{ product_ids|join(',') }}">
+                {% endif %}
+
+                <div class="cart__footer flex flex_sb">
+                    <div class="cart__promo">
+                        <div>
+                            <input class="input" type="text" name="promo" placeholder="Промокод"><a class="btn" href="#"
+                                                                                                    data-loading="{{ text_loading }}">Применить </a>
+                        </div>
+                        <span class="span_error" style="display: none">{{ promo_error }}</span>
+                    </div>
+                    <div class="cart__checkout flex">
+                        {% for total in totals %}
+                            <div
+                                    class="cart__total"
+                                    {% if not loop.last %}style="display: none;"{% else %} data-total-price="{{ total.total_value }}"{% endif %} >
+                                {{ total.title }}:
+                                <span class="total{{ loop.index }}">{{ total.text }}</span>
+                            </div>
+                        {% endfor %}
+                        <div class="btn--checkout">
+                            <a href="{{ checkout }}" class="btn">{{ button_checkout }} →</a>
+                        </div>
+                    </div>
+                    {% if promo_gift %}
+                        <div class="g-block">
+                            <div class="gift-span">{{ promo_gift.text }}</div>
+                            <div class="gift-block">
+                                <ul class="gift-ul">
+                                    {% for gift in promo_gift.products %}
+                                        <li class="gift"><img src="{{ gift.image }}" alt=""><a href="{{ gift.href }}">{{ gift.name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+
+    </div>
+</section>
+<div class="overflow">
+    <form class="add-chocker">
+        <button class="add-chocker-close">✕</button>
+        <div id="product-wrapper">
+            <div class="product__wrapper flex flex_fs flex">
+                <div class="product-block-wrapper">
+                    <div class="product-imgs flex flex flex_fs">
+                        <div class="product-imgs__mini"></div>
+                        <div class="product-imgs__wrapper">
+                            <div class="product-imgs__block">
+                                {% if charity_product.thumb %}
+                                    <img src="{{ charity_product.thumb }}" alt="{{ charity_product.name }}"
+                                         title="{{ charity_product.name }}" loading="lazy">
+                                {% endif %}
+                                {% if charity_product.images %}
+                                    {% for image in charity_product.images %}
+                                        <img src="{{ image.popup }}" alt="{{ charity_product.name }}"
+                                             title="{{ charity_product.name }}" loading="lazy">
+                                    {% endfor %}
+                                {% endif %}
+                            </div>{#<a class="toFavorite toFavorite_active" href="#">
+              <svg width="16" height="14" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M11.5757 0C14.019 0 16 1.981 16 4.42386C16 8.46166 7.9998 13.8246 7.9998 13.8246C7.9998 13.8246 0 8.65497 0 4.42382C0 1.38237 1.981 0 4.42386 0C5.89538 0 7.19522 0.721649 7.9998 1.82655C8.80449 0.721649 10.1046 0 11.5757 0Z" fill="white" fill-opacity="0.5"/>
+              </svg></a>#}
+                        </div>
+                    </div>
+                </div>
+                <div class="product__descr">
+                    <div class="product-target">
+                        <h2 class="product__title">{{ charity_product.name }}</h2>
+                        <div class="product__price">{{ charity_product.price }}</div>
+                    </div>
+
+                    <form>
+                        {% if product_variations and not product.certificate %}
+                            <div class="product__color">
+                                <label>цвет</label>
+                                <div class="flex">
+                                    {% for variation in product_variations|reverse %}
+                                        {% if not variation.href %}
+                                            <label class="custom-input product-variation"
+                                                   data-product="{{ variation.product_id }}">
+                                                <input type="radio" name="color">
+                                                <span class="current">
+                                                <img src="{{ variation.image }}" alt="{{ variation.name }}"
+                                                     title="{{ variation.name }}" loading="lazy">
+                                            </span>
+                                            </label>
+                                        {% else %}
+                                            <label class="custom-input product-variation"
+                                                   data-product="{{ variation.product_id }}">
+                                                <input type="radio" name="color">
+                                                <span>
+                                                <a href="{{ variation.href }}">
+                                                    <img src="{{ variation.image }}" alt="{{ variation.name }}"
+                                                         title="{{ variation.name }}" loading="lazy">
+                                                </a>
+                                            </span>
+                                            </label>
+                                        {% endif %}
+
+                                    {% endfor %}
+
+                                </div>
+                            </div>
+                        {% endif %}
+                        <a class="btn" href="javascript:void(0);"
+                           onclick="cart.add('{{ charity_product.product_id }}');window.location.reload()">В
+                            корзину </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+{{ footer }}

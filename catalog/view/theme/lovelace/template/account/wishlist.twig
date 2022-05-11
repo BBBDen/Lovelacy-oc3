@@ -1,0 +1,75 @@
+{{ header }}
+<div class="breadcrumbs">
+    <div class="container">
+        <ul itemscope itemtype="https://schema.org/BreadcrumbList">
+            {% for breadcrumb in breadcrumbs %}
+                <li class="breadcrumbs-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                    <a href="{{ breadcrumb.href }}" itemprop="item">
+                        <span itemprop="name">{{ breadcrumb.text }}</span>
+                        <meta itemprop="position" content="{{ loop.index }}" />
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>{{ text_back_button }}
+    </div>
+</div>
+{% if products %}
+    <section class="favorites">
+        <div class="container">
+
+            <div class="catalog__items flex flex_fs">
+                {% for product in products %}
+                    <a class="item" href="{{ product.href }}">
+                        <div class="item__img">
+                            <img class="main-img" src="{{ product.thumb }}" alt="{{ product.name }}"
+                                 title="{{ product.name }}" loading="lazy">
+                            <img class="hover-img" src="{{ product.hover_image }}" alt="{{ product.name }}"
+                                 title="{{ product.name }}" loading="lazy">
+                            <div class="toFavorite{{ product.wishlist }} toFavorite_active favorite--{{ product.product_id }}">
+                                <button type="button" class="add-to-catalog"
+                                        onclick="wishlist.remove('{{ product.product_id }}', 'wishlist');return false;">
+                                    <svg width="16" height="14" viewBox="0 0 16 14" fill="none"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11.5757 0C14.019 0 16 1.981 16 4.42386C16 8.46166 7.9998 13.8246 7.9998 13.8246C7.9998 13.8246 0 8.65497 0 4.42382C0 1.38237 1.981 0 4.42386 0C5.89538 0 7.19522 0.721649 7.9998 1.82655C8.80449 0.721649 10.1046 0 11.5757 0Z"
+                                              fill="white" fill-opacity="0.5"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            {% if product.attributes %}
+                                <div class="item__tags">
+                                    {% for attr in product.attributes %}
+                                        <div class="item__block {{ attr.class }}">{{ attr.text }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="item__descr">
+                            <div class="item__title">{{ product.name }}</div>
+                            {% if not product.special %}
+                                <div class="item__price">{{ product.price }}</div>
+                            {% else %}
+                                <div class="item__price"><span class="old">{{ product.price }}</span><span
+                                            class="new">{{ product.special }}</span></div>
+                            {% endif %}
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+
+
+        </div>
+    </section>
+{% else %}
+    <section class="favorites">
+        <div class="container">
+            <div class="favorites__bg"><svg width="360" height="312" viewBox="0 0 360 312" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M260.147 0C315.057 0 359.577 44.655 359.577 99.721C359.577 190.74 179.784 311.628 179.784 311.628C179.784 311.628 0 195.097 0 99.7202C0 31.1609 44.5201 0 99.4198 0C132.49 0 161.702 16.2671 179.784 41.1733C197.868 16.2671 227.085 0 260.147 0Z" fill="#FDF6FA"/>
+                </svg>
+            </div>
+            <div class="favorites__text">
+                {{ text_empty }}
+            </div>
+        </div>
+    </section>
+{% endif %}
+{{ footer }}

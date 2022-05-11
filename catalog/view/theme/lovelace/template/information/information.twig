@@ -1,0 +1,38 @@
+{{ header }}
+<div class="breadcrumbs">
+  <div class="container">
+      <ul itemscope itemtype="https://schema.org/BreadcrumbList">
+          {% for breadcrumb in breadcrumbs %}
+              <li class="breadcrumbs-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                  <a href="{{ breadcrumb.href }}" itemprop="item">
+                      <span itemprop="name">{{ breadcrumb.text }}</span>
+                      <meta itemprop="position" content="{{ loop.index }}" />
+                  </a>
+              </li>
+          {% endfor %}
+      </ul>{{ text_back_button }}
+  </div>
+</div>
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://google.com/article"
+        },
+        "headline": "{{ heading_title }}",
+        "datePublished": "{{ date }}",
+        "dateModified": "{{ date_modified }}",
+        "publisher": {
+            "@type": "Organization",
+            "name": "Google",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "{{ logo }}"
+            }
+        }
+    }
+</script>
+{{ description }}
+{{ footer }}

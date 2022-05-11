@@ -1,0 +1,28 @@
+{{ header }}
+<div class="breadcrumbs">
+    <div class="container">
+        <ul itemscope itemtype="https://schema.org/BreadcrumbList">
+            {% for breadcrumb in breadcrumbs %}
+                <li class="breadcrumbs-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                    <a href="{{ breadcrumb.href }}" itemprop="item">
+                        <span itemprop="name">{{ breadcrumb.text }}</span>
+                        <meta itemprop="position" content="{{ loop.index }}" />
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>{{ text_back_button }}
+    </div>
+</div>
+<section class="account account__create">
+    <div class="container">
+        <div class="account__wrapper flex flex_fs">
+            <div class="account-info" style="width: 535px;">
+                <div class="account-info__title">{{ heading_title }}</div>
+              {{ text_message }}
+              <a href="{{ continue }}" class="btn">{{ button_continue }}</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{ footer }}

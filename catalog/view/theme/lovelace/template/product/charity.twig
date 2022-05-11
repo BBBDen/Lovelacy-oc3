@@ -1,0 +1,340 @@
+<div class="product__wrapper flex flex_fs flex">
+    <div class="product-block-wrapper">
+        <div class="product-imgs flex flex flex_fs">
+            <div class="product-imgs__mini"></div>
+            <div class="product-imgs__wrapper">
+                <div class="product-imgs__block">
+                    {% if product.thumb %}
+                        <img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" loading="lazy">
+                    {% endif %}
+                    {% if product.images %}
+                        {% for image in product.images %}
+                            <img src="{{ image.popup }}" alt="{{ product.name }}" title="{{ product.name }}" loading="lazy">
+                        {% endfor %}
+                    {% endif %}
+                </div>{#<a class="toFavorite toFavorite_active" href="#">
+              <svg width="16" height="14" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M11.5757 0C14.019 0 16 1.981 16 4.42386C16 8.46166 7.9998 13.8246 7.9998 13.8246C7.9998 13.8246 0 8.65497 0 4.42382C0 1.38237 1.981 0 4.42386 0C5.89538 0 7.19522 0.721649 7.9998 1.82655C8.80449 0.721649 10.1046 0 11.5757 0Z" fill="white" fill-opacity="0.5"/>
+              </svg></a>#}
+            </div>
+        </div>
+    </div>
+    <div class="product__descr">
+        <div class="product-target">
+            <h2 class="product__title">{{ product.name }}</h2>
+            <div class="product__price">{{ product.price }}</div>
+        </div>
+
+        <form>
+            {% if product_variations %}
+                <div class="product__color">
+                    <label>цвет</label>
+                    <div class="flex">
+                        {% for variation in product_variations|reverse %}
+                            {% if not variation.href %}
+                                <label class="custom-input product-variation" data-product="{{ variation.product_id }}">
+                                    <input type="radio" name="color">
+                                    <span class="current">
+                                                <img src="{{ variation.image }}" alt="{{ variation.name }}" title="{{ variation.name }}" loading="lazy">
+                                            </span>
+                                </label>
+                            {% else %}
+                                <label class="custom-input product-variation" data-product="{{ variation.product_id }}">
+                                    <input type="radio" name="color">
+                                    <span>
+                                                <a href="{{ variation.href }}">
+                                                    <img src="{{ variation.image }}" alt="{{ variation.name }}" title="{{ variation.name }}" loading="lazy">
+                                                </a>
+                                            </span>
+                                </label>
+                            {% endif %}
+
+                        {% endfor %}
+
+                    </div>
+                </div>
+            {% endif %}
+            <a class="btn" href="javascript:void(0);" onclick="cart.add('{{ product.product_id }}');window.location.reload()">В корзину </a>
+        </form>
+    </div>
+</div>
+<script>
+    var chockerMenu = document.querySelector('.add-chocker');
+    var chockerBtn = document.querySelector('.choose-chocker');
+    var overflow = document.querySelector('.overflow')
+
+    if(chockerBtn) {
+        var imgsSlider = document.querySelector('.add-chocker .product-imgs');
+        var initPos = imgsSlider.parentElement;
+        var targetPos = document.querySelector('.product-target')
+        if(document.documentElement.clientWidth < 768) {
+            targetPos.insertAdjacentElement('afterend', imgsSlider);
+        }
+        window.addEventListener('resize', function() {
+            if(document.documentElement.clientWidth < 768) {
+                targetPos.insertAdjacentElement('afterend', imgsSlider);
+            } else {
+                initPos.appendChild(imgsSlider);
+            }
+        })
+    }
+
+    var pureSlider = function pureSlider(slidesTag, type, style, items) {
+        var noTouch = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+        var height = arguments.length > 5 ? arguments[5] : undefined;
+        var autoPlaytime = arguments.length > 6 ? arguments[6] : undefined;
+        var pure = document.querySelectorAll(slidesTag);
+
+        if (pure) {
+            if (style === 'opacity') {
+                pure.forEach(function (slider) {
+                    if (type === 'imgs') {
+                        var _viewSlide = 0;
+
+                        for (var i = 0; i < slider.children.length; i++) {
+                            var img = document.createElement('div');
+                            img.setAttribute('class', 'product-imgs__mini-item');
+                            var picture = document.createElement('img');
+                            picture.setAttribute('src', slider.children[i].src);
+                            slider.parentElement.previousElementSibling.appendChild(img);
+                            img.appendChild(picture);
+                            img.setAttribute('data-slide-to', i + 1);
+                        }
+
+                        slider.parentElement.parentElement.querySelector('.product-imgs__mini-item').classList.add('active');
+
+                        var _imgs = slider.parentElement.parentElement.querySelectorAll('.product-imgs__mini-item');
+
+                        _imgs.forEach(function (img) {
+                            return img.classList.remove('active');
+                        });
+
+                        _imgs[_viewSlide].classList.add('active');
+
+                        slider.children.forEach(function (item) {
+                            item.classList.remove('active-slide');
+                        });
+
+                        slider.children[_viewSlide].classList.add('active-slide');
+
+                        _imgs.forEach(function (img) {
+                            img.addEventListener('click', function (e) {
+                                // console.log(e.target);
+                                var slideTo = e.target.getAttribute('data-slide-to');
+                                _viewSlide = slideTo - 1;
+                                slider.children.forEach(function (item) {
+                                    item.classList.remove('active-slide');
+                                });
+                                // console.log(_viewSlide);
+
+                                slider.children[_viewSlide].classList.add('active-slide');
+
+                                _imgs.forEach(function (img) {
+                                    return img.classList.remove('active');
+                                });
+
+                                _imgs[_viewSlide].classList.add('active');
+                            });
+                        });
+                    }
+
+                    if (type === 'dots') {
+                        for (var _i4 = 0; _i4 < slider.children.length; _i4++) {
+                            var dot = document.createElement('div');
+                            dot.setAttribute('class', 'dot');
+                            slider.nextElementSibling.appendChild(dot);
+                            dot.setAttribute('data-slide-to', _i4 + 1);
+                        }
+
+                        slider.parentElement.querySelector('.dot').classList.add('dot_active');
+                    }
+
+                    var imgs = slider.parentElement.parentElement.querySelectorAll('.product-imgs__mini-item');
+                    var viewSlide = 0,
+                        viewport = slider.parentElement.offsetWidth,
+                        posx = 0,
+                        paused = false;
+
+                    function prevSlide() {
+                        if (viewSlide > 0) {
+                            viewSlide--;
+                        } else {
+                            viewSlide = slider.children.length - 1;
+                        }
+
+                        if (type === 'imgs') {
+                            imgs.forEach(function (img) {
+                                img.classList.remove('active');
+                            });
+
+                            if (viewSlide > 0) {
+                                imgs[viewSlide].classList.add('active');
+                            } else {
+                                imgs[slider.children.length - 1].classList.add('active');
+                            }
+                        }
+
+                        if (type === 'dots') {
+                            dots.forEach(function (dot) {
+                                return dot.classList.remove('dot_active');
+                            });
+                            dots[viewSlide].classList.add('dot_active');
+                        }
+
+                        slider.children.forEach(function (item) {
+                            return item.classList.remove('active-slide');
+                        });
+                        slider.children[viewSlide].classList.add('active-slide');
+                        ;
+                    }
+
+                    function nextSlide() {
+                        if (viewSlide < slider.children.length) {
+                            viewSlide++;
+                        } else {
+                            viewSlide = 0;
+                        }
+
+                        if (type === 'dots') {
+                            dots.forEach(function (dot) {
+                                return dot.classList.remove('dot_active');
+                            });
+
+                            if (dots[viewSlide]) {
+                                dots[viewSlide].classList.add('dot_active');
+                            } else {
+                                dots[0].classList.add('dot_active');
+                            }
+                        }
+
+                        if (type === 'imgs') {
+                            imgs.forEach(function (img) {
+                                img.classList.remove('active');
+                            });
+
+                            if (viewSlide < slider.children.length) {
+                                imgs[viewSlide].classList.add('active');
+                            } else {
+                                imgs[0].classList.add('active');
+                            }
+                        }
+
+                        slider.children.forEach(function (item) {
+                            return item.classList.remove('active-slide');
+                        });
+
+                        if (slider.children[viewSlide]) {
+                            slider.children[viewSlide].classList.add('active-slide');
+                        } else {
+                            slider.children[0].classList.add('active-slide');
+                        }
+                    } // let viewport = slider.parentElement.offsetWidth;
+
+
+                    function mouseDown(e) {
+                        if (e.identifier === 0) {
+                            posx = e.clientX;
+                            slider.style.transition = '.9s all';
+                            // console.log(posx);
+                            return posx;
+                        } else {
+                            e.preventDefault();
+                            // console.log(posx);
+                            posx = e.clientX;
+                            slider.style.transition = '.9s all';
+                            return posx;
+                        }
+                    }
+
+                    function mouseUp(e) {
+                        // console.log(viewport);
+                        // console.log(posx);
+                        return posx;
+                    }
+
+                    function moving(e) {
+                        function leaving() {
+                            slider.style.transition = '0.9s';
+                            posx = 0;
+                        }
+
+                        slider.addEventListener('mouseleave', function () {
+                            leaving();
+                        });
+
+                        if (posx > 0) {
+                            slider.style.transition = '0s';
+
+                            if (-posx + e.clientX < -viewport * 0.3) {
+                                slider.style.transition = '0.9s';
+                                nextSlide();
+                                posx = 0;
+                            } else if (e.clientX - posx > viewport * 0.3) {
+                                slider.style.transition = '0.9s';
+                                prevSlide();
+                                posx = 0;
+                            }
+                        } else if (posx == 0) {
+                            slider.removeEventListener('mousemove', moving);
+                            slider.removeEventListener('touchmove', moving);
+                        }
+                    }
+
+                    if (!noTouch) {
+                        slider.addEventListener('touchstart', function (e) {
+                            posx = e.touches[0].clientX;
+                            slider.style.transition = '.9s all';
+                            return posx;
+                        }, {
+                            passive: true
+                        });
+                        slider.addEventListener('touchmove', function (e) {
+                            moving(e.touches[0]);
+                        }, {
+                            passive: true
+                        });
+                        slider.addEventListener('touchend', function (e) {
+                            mouseUp(e);
+                        });
+                        slider.addEventListener("mousedown", function (e) {
+                            mouseDown(e);
+                        });
+                        slider.addEventListener('mouseup', function (e) {
+                            mouseUp(e);
+                        });
+                        slider.addEventListener('mousemove', function (e) {
+                            moving(e);
+                        });
+                    }
+
+                    var dots = slider.parentElement.querySelectorAll('.dot');
+
+                    if (type === 'dots') {
+                        var addListener = function addListener() {
+                            dots.forEach(function (dot) {
+                                dot.addEventListener('click', function (e) {
+                                    var slideTo = e.target.getAttribute('data-slide-to');
+                                    viewSlide = slideTo - 1;
+                                    slider.children.forEach(function (item) {
+                                        return item.classList.add('disabled');
+                                    });
+                                    slider.children[viewSlide].classList.remove('disabled');
+                                    dots.forEach(function (dot) {
+                                        return dot.classList.remove('dot_active');
+                                    });
+                                    dots[viewSlide].classList.add('dot_active');
+                                });
+                            });
+                        };
+
+                        addListener();
+                        window.addEventListener('resize', function () {
+                            addListener();
+                        });
+                    }
+                });
+            }
+        }
+    };
+    pureSlider('.product-imgs__block', 'imgs', 'opacity')
+</script>

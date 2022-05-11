@@ -1,0 +1,16 @@
+{% if products %}
+  {% for product in products %}
+    <div class="flex_sb flex account-info-order__item">
+      <div class="account-info-order__title">{{ product.name }}</div>
+      <div class="flex flex_sb">
+        <div class="account-info-order__amount">{{ product.quantity }} шт.</div>
+        <div class="account-info-order__price">{{ product.total }}</div>
+      </div>
+    </div>
+  {% endfor %}
+  <div class="flex flex_sb account-info-order__extra">
+    {% for total in totals %}
+    <div class="account-info-order__text">{{ total.title }}: <span>{{ total.text }}</span></div>
+    {% endfor %}
+  </div>
+{% endif %}

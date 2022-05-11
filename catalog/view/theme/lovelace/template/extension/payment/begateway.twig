@@ -1,0 +1,24 @@
+﻿{% if not token %}
+<div class="alert alert-warning">
+<i class="fa fa-exclamation-circle"></i>
+{{ token_error }}
+</div>
+{% else %}
+  <div class="buttons">
+    <div class="pull-right">
+      <input type="submit" value="{{ button_confirm }}" id="button-confirm" class="btn btn-primary" />
+    </div>
+  </div>
+  <script !src="" type="text/javascript"><!--
+    (function ($) {
+      var payBtn = document.getElementById('button-confirm');
+      if (payBtn) {
+        payBtn.addEventListener('click', function () {
+          var form = '<form id="pgwaction" action="{{ action }}" style="display:none;"><input type="hidden" name="token" value="{{ token }}" /></form>';
+          $('body').append(form);
+          $('#pgwaction').trigger('submit');
+        });
+      }
+    })(jQuery)
+    //--></script>
+{% endif %}

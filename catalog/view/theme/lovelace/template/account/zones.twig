@@ -1,0 +1,5 @@
+{% if zones %}
+    {% for zone in zones %}
+        <option value="{{ zone.zone_id }}" {% if zone_id and zone_id == zone.zone_id %}{{ 'selected' }}{% endif %}> {{ zone.name }} </option>
+    {% endfor %}
+{% endif %}

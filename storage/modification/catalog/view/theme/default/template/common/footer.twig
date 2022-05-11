@@ -1,0 +1,241 @@
+<footer>
+  <div class="container">
+    <div class="row">
+      {% if informations %}
+      <div class="col-sm-3">
+        <h5>{{ text_information }}</h5>
+        <ul class="list-unstyled">
+         {% for information in informations %}
+          <li><a href="{{ information.href }}">{{ information.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+      <div class="col-sm-3">
+        <h5>{{ text_service }}</h5>
+        <ul class="list-unstyled">
+          <li><a href="{{ contact }}">{{ text_contact }}</a></li>
+          <li><a href="{{ return }}">{{ text_return }}</a></li>
+          <li><a href="{{ sitemap }}">{{ text_sitemap }}</a></li>
+        </ul>
+      </div>
+      <div class="col-sm-3">
+        <h5>{{ text_extra }}</h5>
+        <ul class="list-unstyled">
+          <li><a href="{{ manufacturer }}">{{ text_manufacturer }}</a></li>
+          <li><a href="{{ voucher }}">{{ text_voucher }}</a></li>
+          <li><a href="{{ affiliate }}">{{ text_affiliate }}</a></li>
+          <li><a href="{{ special }}">{{ text_special }}</a></li>
+        </ul>
+      </div>
+      <div class="col-sm-3">
+        <h5>{{ text_account }}</h5>
+        <ul class="list-unstyled">
+          <li><a href="{{ account }}">{{ text_account }}</a></li>
+          <li><a href="{{ order }}">{{ text_order }}</a></li>
+          <li><a href="{{ wishlist }}">{{ text_wishlist }}</a></li>
+          <li><a href="{{ newsletter }}">{{ text_newsletter }}</a></li>
+        </ul>
+      </div>
+    </div>
+    <hr>
+    <p>{{ powered }}</p>
+  </div>
+</footer>
+{% for style in styles %}
+<link href="{{ style.href }}" type="text/css" rel="{{ style.rel }}" media="{{ style.media }}" />
+{% endfor %}
+{% for script in scripts %}
+<script src="{{ script }}" type="text/javascript"></script>
+{% endfor %}
+<!--
+OpenCart is open source software and you are free to remove the powered by OpenCart if you want, but its generally accepted practise to make a small donation.
+Please donate via PayPal to donate@opencart.com
+//-->
+
+{# // remarketing #}
+{% if remarketing_status %}
+{% if remarketing_footer %}
+{{ remarketing_footer }}
+{% endif %}
+{% if facebook_depth %}
+<script>
+ function getCurrentPosition() {
+    return window.pageYOffset ||
+        (document.documentElement || document.body.parentNode || document.body).scrollTop;
+}
+
+function getScrollableHeight() {
+    var d = Math.max(
+        document.body.scrollHeight, document.documentElement.scrollHeight,
+        document.body.offsetHeight, document.documentElement.offsetHeight,
+        document.body.clientHeight, document.documentElement.clientHeight
+    )
+    var w = window.innerHeight ||
+        (document.documentElement || document.body).clientHeight;
+    if (d > w) {
+        return d - w;
+    }
+    return 0; // not scrollable
+}
+
+var checkPoints = [{{ facebook_depth_params }}];
+var reached = 0;
+var scrollableHeight = getScrollableHeight();
+
+window.addEventListener('resize', function () {
+    scrollableHeight = getScrollableHeight();
+});
+window.addEventListener('scroll', function () {
+    var current;
+    if (scrollableHeight == 0) {
+        current = 100;
+    } else {
+        var current = getCurrentPosition() / scrollableHeight * 100;
+    }
+    if (current > reached) {
+        reached = current;
+        // checkpoint and send events
+        while (checkPoints.length > 0) {
+            var c = checkPoints[0];
+            if (c <= reached) {
+                checkPoints.shift();
+				if (typeof fbq != 'undefined') {
+					fbq('trackCustom', 'ViewContentCheckPoint', {
+						depth: c,
+					});
+				}
+            } else {
+                break;
+            }
+        }
+    }
+}, false);  
+ </script>
+{% endif %}
+	  <script>
+	  {% if ecommerce_status and ecommerce_selector %}
+	   $(document).on('click touchstart', '{{ ecommerce_selector }}', function() {
+	    if (typeof ecommerce_product_data !== 'undefined') {
+		product_id = $(this).find('.remarketing_cart_button').attr('data-product_id');
+		if (product_id) {
+			$(ecommerce_product_data).each(function(key, data) {
+			if (data['id'] == product_id) {
+				if (typeof ecommerce_product_data[key] !== 'undefined') {
+					if (typeof sendEcommerceClick !== 'undefined') {
+						sendEcommerceClick(ecommerce_product_data[key]);
+					}
+				}
+			} 
+		})
+		}
+		}
+	  });
+	  {% endif %}
+	  {% if ecommerce_ga4_status and ecommerce_ga4_selector %}
+	   $(document).on('click', '{{ ecommerce_ga4_selector }}', function() {
+	    if (typeof ecommerce_ga4_product_data !== 'undefined') {
+		item_id = $(this).find('.remarketing_cart_button').attr('data-product_id');
+		$(ecommerce_ga4_product_data).each(function(key, data) {
+		if (data['item_id'] == item_id) {
+			if (typeof ecommerce_ga4_product_data[key] !== 'undefined') {
+				if (typeof sendEcommerceGa4Click !== 'undefined') {
+					sendEcommerceGa4Click(ecommerce_ga4_product_data[key]);
+				}
+			}
+		} 
+		})
+		}
+	  });
+	  {% endif %}
+	  {% if ecommerce_measurement_status and ecommerce_measurement_selector %}
+	  $(document).on('click touchstart', '{{ ecommerce_measurement_selector }}', function() {
+	    if (typeof ecommerce_product_data !== 'undefined') {
+		product_id = $(this).find('.remarketing_cart_button').attr('data-product_id');
+		if (product_id) {
+			$(ecommerce_product_data).each(function(key, data) {
+			if (data['id'] == product_id) {
+				if (typeof ecommerce_product_data[key] !== 'undefined') {
+					if (typeof sendEcommerceMeasurementClick !== 'undefined') {
+						sendEcommerceMeasurementClick(ecommerce_product_data[key]);
+					}
+				}
+			} 
+		})
+		}
+		}
+	  });
+	   {% endif %}
+	 {% if ecommerce_ga4_measurement_status and ecommerce_ga4_measurement_selector %}
+	   $(document).on('click touchstart', '{{ ecommerce_ga4_measurement_selector }}', function() {
+	    if (typeof ecommerce_ga4_product_data !== 'undefined') {
+		item_id = $(this).find('.remarketing_cart_button').attr('data-product_id');
+		$(ecommerce_ga4_product_data).each(function(key, data) {
+		if (data['item_id'] == item_id) {
+			if (typeof ecommerce_ga4_product_data[key] !== 'undefined') {
+				if (typeof sendEcommerceGa4MeasurementClick !== 'undefined') {
+					sendEcommerceGa4MeasurementClick(ecommerce_ga4_product_data[key]);
+				}
+			}
+		} 
+		})
+		}
+	  });
+	  {% endif %}
+     </script>
+	{% endif %}
+
+
+          <script type="text/javascript">
+            function sendDataForEcommerceYandexMetrica(options) {
+              let id = options.id; // required
+              let event = options.event; // required
+              let id_type = (typeof(options.id_type) != 'undefined' ? options.id_type : 'product_id');
+              let quantity = (typeof(options.quantity) != 'undefined' ? options.quantity : 'null');
+              let async = (typeof(options.async) != 'undefined' ? options.async : true);
+
+              $.ajax({
+                url: 'index.php?route=product/product/getProductDataForYandexMetrica',
+                async: (typeof(async) != 'undefined' ? async : true),
+                type: 'post',
+                data: 'id=' + id + '&event=' + event + '&id_type=' + id_type + '&quantity=' + quantity,
+                dataType: 'json',
+                success: function(json) {
+                  if (event == 'add') {
+                    dataLayer.push({"ecommerce": {"currencyCode": json['currency_code'], "add": {"products": [json['product']]}}});
+                  } else if (event == 'remove') {
+                    dataLayer.push({"ecommerce": {"currencyCode": json['currency_code'], "remove": {"products": [json['product']]}}});
+                  }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                  alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                }
+              });
+            }
+
+            cart['add_original'] = cart['add'];
+            cart['add'] = function(product_id, quantity) {
+              sendDataForEcommerceYandexMetrica({
+                id: product_id,
+                event: 'add',
+                id_type: 'product_id',
+                quantity: quantity
+              });
+              cart.add_original(product_id, quantity);
+            };
+
+            cart['remove_original'] = cart['remove'];
+            cart['remove'] = function(key) {
+              sendDataForEcommerceYandexMetrica({
+                id: key,
+                event: 'remove',
+                id_type: 'key',
+                async: false
+              });
+              setTimeout(function() {
+                cart.remove_original(key);
+              }, 500);
+            };
+          </script>
+        
+</body></html>

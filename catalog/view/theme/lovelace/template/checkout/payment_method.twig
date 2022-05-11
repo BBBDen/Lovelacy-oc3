@@ -1,0 +1,31 @@
+{% if payment_methods %}
+    <div class="checkout-block__title">Способ оплаты</div>
+    {% for payment_method in payment_methods %}
+        <div
+                class="radio"
+                data-code="{{ payment_method.code }}"
+                {% if payment_method.code == 'cod' and shipping_method == 'postal_euro.postal_euro' %}
+                    style="display: none;"
+                {% endif %}
+        >
+            <label class="custom-radio">
+                <input
+                        type="radio"
+                        name="payment_method"
+                        value="{{ payment_method.code }}"
+                >
+                <span class="flex">
+                    <span class="radio-button"></span>
+                    <span class="custom-radio__text">
+                        {{ payment_method.title }}
+                    </span>
+                </span>
+            </label>
+        </div>
+    {% endfor %}
+{% endif %}
+{#{% if current_payment_method %}#}
+{#    <script type="text/javascript"><!--#}
+{#        $('input[value="{{ current_payment_method }}"]').trigger('change')#}
+{#        //--></script>#}
+{#{% endif %}#}

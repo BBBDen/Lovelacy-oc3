@@ -1,0 +1,114 @@
+{% if view_type == 'menu' %}
+	<div class="digitcart-menu">
+		{% if override %}<div class="container override-main-menu">{% endif %}
+			<nav class="navbar {{ class }}">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#dc-navbar-{{ menu_id }}" aria-expanded="false" aria-controls="navbar">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<strong class="menu-name pull-left">{{ name }}</strong>
+				</div>
+				<div id="dc-navbar-{{ menu_id }}" class="navbar-collapse collapse">
+					{{ menu }}
+				</div>
+			</nav>
+		{% if override %}</div>{% endif %}
+	</div>
+{% endif %}
+{% if view_type == 'head' %}
+	<style id="digitcart-menu-builder-style">
+	.digitcart-menu .dropdown-menu .dropdown-menu {
+	  left: 100%;
+	  top: 0;
+	  margin-top: -5px;
+	}
+	.digitcart-menu .dropdown-menu .caret {
+	  transform: rotate(-90deg);
+	}
+	[dir="rtl"] .digitcart-menu .dropdown-menu .caret {
+	  transform: rotate(90deg);
+	}
+	[dir="rtl"] .digitcart-menu .dropdown-menu .dropdown-menu {
+		left: auto;
+		right: 100%;
+	}
+	.digitcart-menu .dropdown-menu li > a:hover {
+	  background-image: none;
+	  background-color: #fafafa;
+	  color: #000;
+	}
+	#column-left .digitcart-menu .flex-column .dropdown-menu {
+	  left: 100%;
+	  top: 0;
+	}
+	#column-right .digitcart-menu .flex-column .dropdown-menu {
+	  left: auto;
+	  right: 100%;
+	  top: 0;
+	}
+	.digitcart-menu .caret {
+	  display: none;
+	}
+	.digitcart-menu .menu-name {
+		display: block;
+		line-height: 40px;
+		padding: 0 10px;
+		margin-top: 5px;
+	}
+	.digitcart-menu .fa-plus {
+	  position: absolute;
+	  right: 0;
+	  top: 0;
+	  height: 40px;
+	  width: 40px;
+	  text-align: center;
+	  line-height: 40px;
+	  cursor: pointer;
+	}
+	[dir="rtl"] .digitcart-menu .fa-plus {
+	  right: auto;
+	  left: 0;
+	}
+	@media screen and (min-width: 768px) {
+		.digitcart-menu .dropdown:hover > .dropdown-menu {
+		  display: block;
+		}
+		.digitcart-menu .caret {
+		  display: inline-block;
+		}
+		.digitcart-menu .navbar-collapse {
+		  padding-right: 0;
+		  padding-left: 0;
+		}
+		.digitcart-menu .fa-plus, .digitcart-menu .menu-name {
+		  display: none;
+		}
+	}
+	@media screen and (max-width: 767px) {
+		.digitcart-menu .dropdown-menu {
+		  position: relative;
+		  float: none;
+		  background-color: transparent;
+		  box-shadow: none;
+		  left: 0 !important;
+		  right: 0 !important;
+		  top: 0 !important;
+		  bottom: 0 !important;
+		  margin: 10px !important;
+		}
+		.digitcart-menu .minused::before {
+		  content: "\f068";
+		}
+	}
+	{% if css %}{{ css }}{% endif %}
+	</style>
+	<script>
+	$(function() {
+		$('.digitcart-menu .fa-plus').on('click', function() {
+			$(this).toggleClass('minused').next().slideToggle();
+		});
+	});
+	</script>
+{% endif %}

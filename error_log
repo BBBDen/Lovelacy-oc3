@@ -1,0 +1,70 @@
+[11-May-2022 07:53:50 UTC] PHP Fatal error:  Uncaught Exception: Error: Could not load model extension/retailcrm/customer! in /home/sunautob/public_html/storage/modification/system/engine/loader.php:89
+Stack trace:
+#0 /home/sunautob/public_html/catalog/controller/extension/module/retailcrm.php(160): Loader->model('extension/retai...')
+#1 /home/sunautob/public_html/storage/modification/system/engine/action.php(79): ControllerExtensionModuleRetailcrm->customer_create('account/custome...', Array, 6055)
+#2 /home/sunautob/public_html/system/engine/event.php(62): Action->execute(Object(Registry), Array)
+#3 /home/sunautob/public_html/storage/modification/system/engine/loader.php(255): Event->trigger('model/account/c...', Array)
+#4 /home/sunautob/public_html/system/engine/proxy.php(47): Loader->{closure}(Array, Array)
+#5 /home/sunautob/public_html/catalog/controller/account/register.php(467): Proxy->__call('addCustomer', Array)
+#6 /home/sunautob/public_html/storage/modification/system/engine/action.php(79): ControllerAccountRegister->registration()
+#7 /home/sun in /home/sunautob/public_html/storage/modification/system/engine/loader.php on line 89
+[11-May-2022 08:27:43 UTC] PHP Fatal error:  Uncaught Exception: Error: Could not load model extension/retailcrm/customer! in /home/sunautob/public_html/storage/modification/system/engine/loader.php:89
+Stack trace:
+#0 /home/sunautob/public_html/catalog/controller/extension/module/retailcrm.php(163): Loader->model('extension/retai...')
+#1 /home/sunautob/public_html/storage/modification/system/engine/action.php(79): ControllerExtensionModuleRetailcrm->customer_create('account/custome...', Array, 6056)
+#2 /home/sunautob/public_html/system/engine/event.php(62): Action->execute(Object(Registry), Array)
+#3 /home/sunautob/public_html/storage/modification/system/engine/loader.php(255): Event->trigger('model/account/c...', Array)
+#4 /home/sunautob/public_html/system/engine/proxy.php(47): Loader->{closure}(Array, Array)
+#5 /home/sunautob/public_html/catalog/controller/account/register.php(467): Proxy->__call('addCustomer', Array)
+#6 /home/sunautob/public_html/storage/modification/system/engine/action.php(79): ControllerAccountRegister->registration()
+#7 /home/sun in /home/sunautob/public_html/storage/modification/system/engine/loader.php on line 89
+[11-May-2022 08:31:44 UTC] PHP Fatal error:  Uncaught Exception: Error: Could not load model extension/retailcrm/customer! in /home/sunautob/public_html/storage/modification/system/engine/loader.php:89
+Stack trace:
+#0 /home/sunautob/public_html/catalog/controller/extension/module/retailcrm.php(163): Loader->model('extension/retai...')
+#1 /home/sunautob/public_html/storage/modification/system/engine/action.php(79): ControllerExtensionModuleRetailcrm->customer_create('account/custome...', Array, 6057)
+#2 /home/sunautob/public_html/system/engine/event.php(62): Action->execute(Object(Registry), Array)
+#3 /home/sunautob/public_html/storage/modification/system/engine/loader.php(255): Event->trigger('model/account/c...', Array)
+#4 /home/sunautob/public_html/system/engine/proxy.php(47): Loader->{closure}(Array, Array)
+#5 /home/sunautob/public_html/catalog/controller/account/register.php(467): Proxy->__call('addCustomer', Array)
+#6 /home/sunautob/public_html/storage/modification/system/engine/action.php(79): ControllerAccountRegister->registration()
+#7 /home/sun in /home/sunautob/public_html/storage/modification/system/engine/loader.php on line 89
+[11-May-2022 08:32:15 UTC] PHP Fatal error:  Uncaught Exception: Error: Could not load model extension/retailcrm/customer! in /home/sunautob/public_html/storage/modification/system/engine/loader.php:89
+Stack trace:
+#0 /home/sunautob/public_html/catalog/controller/extension/module/retailcrm.php(163): Loader->model('extension/retai...')
+#1 /home/sunautob/public_html/storage/modification/system/engine/action.php(79): ControllerExtensionModuleRetailcrm->customer_create('account/custome...', Array, 6058)
+#2 /home/sunautob/public_html/system/engine/event.php(62): Action->execute(Object(Registry), Array)
+#3 /home/sunautob/public_html/storage/modification/system/engine/loader.php(255): Event->trigger('model/account/c...', Array)
+#4 /home/sunautob/public_html/system/engine/proxy.php(47): Loader->{closure}(Array, Array)
+#5 /home/sunautob/public_html/catalog/controller/account/register.php(467): Proxy->__call('addCustomer', Array)
+#6 /home/sunautob/public_html/storage/modification/system/engine/action.php(79): ControllerAccountRegister->registration()
+#7 /home/sun in /home/sunautob/public_html/storage/modification/system/engine/loader.php on line 89
+[11-May-2022 08:44:49 UTC] PHP Fatal error:  Uncaught Exception: Error: Could not load model extension/retailcrm/customer! in /home/sunautob/public_html/storage/modification/system/engine/loader.php:89
+Stack trace:
+#0 /home/sunautob/public_html/catalog/controller/extension/module/retailcrm.php(163): Loader->model('extension/retai...')
+#1 /home/sunautob/public_html/storage/modification/system/engine/action.php(79): ControllerExtensionModuleRetailcrm->customer_create('account/custome...', Array, 6059)
+#2 /home/sunautob/public_html/system/engine/event.php(62): Action->execute(Object(Registry), Array)
+#3 /home/sunautob/public_html/storage/modification/system/engine/loader.php(255): Event->trigger('model/account/c...', Array)
+#4 /home/sunautob/public_html/system/engine/proxy.php(47): Loader->{closure}(Array, Array)
+#5 /home/sunautob/public_html/catalog/controller/account/register.php(467): Proxy->__call('addCustomer', Array)
+#6 /home/sunautob/public_html/storage/modification/system/engine/action.php(79): ControllerAccountRegister->registration()
+#7 /home/sun in /home/sunautob/public_html/storage/modification/system/engine/loader.php on line 89
+[11-May-2022 08:50:19 UTC] PHP Fatal error:  Uncaught Exception: Error: Could not load model extension/retailcrm/customer! in /home/sunautob/public_html/storage/modification/system/engine/loader.php:89
+Stack trace:
+#0 /home/sunautob/public_html/catalog/controller/extension/module/retailcrm.php(163): Loader->model('extension/retai...')
+#1 /home/sunautob/public_html/storage/modification/system/engine/action.php(79): ControllerExtensionModuleRetailcrm->customer_create('account/custome...', Array, 6062)
+#2 /home/sunautob/public_html/system/engine/event.php(62): Action->execute(Object(Registry), Array)
+#3 /home/sunautob/public_html/storage/modification/system/engine/loader.php(255): Event->trigger('model/account/c...', Array)
+#4 /home/sunautob/public_html/system/engine/proxy.php(47): Loader->{closure}(Array, Array)
+#5 /home/sunautob/public_html/catalog/controller/account/register.php(467): Proxy->__call('addCustomer', Array)
+#6 /home/sunautob/public_html/storage/modification/system/engine/action.php(79): ControllerAccountRegister->registration()
+#7 /home/sun in /home/sunautob/public_html/storage/modification/system/engine/loader.php on line 89
+[11-May-2022 08:52:45 UTC] PHP Fatal error:  Uncaught Exception: Error: Could not load model extension/retailcrm/customer! in /home/sunautob/public_html/storage/modification/system/engine/loader.php:89
+Stack trace:
+#0 /home/sunautob/public_html/catalog/controller/extension/module/retailcrm.php(163): Loader->model('extension/retai...')
+#1 /home/sunautob/public_html/storage/modification/system/engine/action.php(79): ControllerExtensionModuleRetailcrm->customer_create('account/custome...', Array, 6064)
+#2 /home/sunautob/public_html/system/engine/event.php(62): Action->execute(Object(Registry), Array)
+#3 /home/sunautob/public_html/storage/modification/system/engine/loader.php(255): Event->trigger('model/account/c...', Array)
+#4 /home/sunautob/public_html/system/engine/proxy.php(47): Loader->{closure}(Array, Array)
+#5 /home/sunautob/public_html/catalog/controller/account/register.php(467): Proxy->__call('addCustomer', Array)
+#6 /home/sunautob/public_html/storage/modification/system/engine/action.php(79): ControllerAccountRegister->registration()
+#7 /home/sun in /home/sunautob/public_html/storage/modification/system/engine/loader.php on line 89

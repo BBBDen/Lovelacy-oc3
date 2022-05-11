@@ -1,0 +1,17 @@
+User-agent: *
+Disallow: /*-quotczunamiquot-*
+Disallow: /*-quotmangaquot-*
+Disallow: /*-quotserotoninquot-*
+Disallow: /*-quotkukriquot-*
+Disallow: /*-quottokioquot-*
+Disallow: /*-quotfudziquot-*
+Disallow: /*-quotsakuraquot-*
+Disallow: /*-quotkunoitiquot-*
+Disallow: /*-quotkupalnik-*
+Disallow: /*-quotkupalnik-*
+Disallow: /*-pantonquot-*
+Disallow: /*-quotdofaminquot-*
+Disallow: /*-quotnekoquot-*
+Disallow: /katalog/plate*
+Disallow: /katalog/poyas*
+Allow: /

@@ -1,0 +1,229 @@
+{{ header }}
+<div class="breadcrumbs">
+    <div class="container">
+        <ul itemscope itemtype="https://schema.org/BreadcrumbList">
+            {% for breadcrumb in breadcrumbs %}
+                <li class="breadcrumbs-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                    <a href="{{ breadcrumb.href }}" itemprop="item">
+                        <span itemprop="name">{{ breadcrumb.text }}</span>
+                        <meta itemprop="position" content="{{ loop.index }}" />
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+<div id="products--filters" data-category="{{ main_category }}" data-group-id="{{ group_id }}" data-store-id="{{ store_id }}">
+    <div class="products-filters">
+        <section class="catalog">
+            <div class="container">
+                <div class="flex flex_sb flex_fs">
+                    {{ content_top }}
+
+                    <div class="catalog-open-filters">
+                        <svg width="32" height="38" viewBox="0 0 32 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M24 12H0V13.6667H24V12Z" fill="black"/>
+                            <path d="M0 18.6667H24V20.3333H0V18.6667Z" fill="black"/>
+                            <path d="M0 25.3333H24V27H0V25.3333Z" fill="black"/>
+                            <path d="M9.3335 12.3335C9.3335 13.9904 7.99035 15.3335 6.3335 15.3335C4.67664 15.3335 3.3335 13.9904 3.3335 12.3335C3.3335 10.6766 4.67664 9.3335 6.3335 9.3335C7.99035 9.3335 9.3335 10.6766 9.3335 12.3335Z"
+                                  fill="black"/>
+                            <path d="M21.3335 19C21.3335 20.6569 19.9904 22 18.3335 22C16.6766 22 15.3335 20.6569 15.3335 19C15.3335 17.3431 16.6766 16 18.3335 16C19.9904 16 21.3335 17.3431 21.3335 19Z"
+                                  fill="black"/>
+                            <path d="M12 25.6665C12 27.3234 10.6569 28.6665 9 28.6665C7.34315 28.6665 6 27.3234 6 25.6665C6 24.0096 7.34315 22.6665 9 22.6665C10.6569 22.6665 12 24.0096 12 25.6665Z"
+                                  fill="black"/>
+                        </svg>
+                    </div>
+                    <div class="catalog__filters">
+                        <div class="catalog__btn dropdown__btn">
+                            {% for sorts in sorts %}
+                                {% if sorts.value == '%s-%s'|format(sort, order) %}
+                                    {{ sorts.text }}
+                                {% endif %}
+                            {% endfor %}
+                            <span>
+                        <svg width="13" height="9" viewBox="0 0 13 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path
+                                    d="M1 1L5.71368 6.99923C6.11406 7.5088 6.88594 7.5088 7.28632 6.99923L12 1"
+                                    stroke="black" stroke-width="1.5"/></svg>
+                    </span>
+                        </div>
+                        <div class="catalog__menu catalog__sorts">
+                            {% for sorts in sorts %}
+                                <a class="catalog__item" href="{{ sorts.href }}">{{ sorts.text }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="catalog__wrapper flex flex_sb flex_fs">
+                    {{ column_left }}
+                    <div id="catalog__item-products">
+                        <div class="catalog__item-products" data-path="{{ request_path }}" data-category-id="{{ category_id }}">
+                            {% if products %}
+                                <div class="catalog__items flex flex_fs">
+                                    {% for product in products %}
+                                        <a class="item" href="{{ product.href }}">
+                                            <div class="item__img">
+                                                <img class="main-img" src="{{ product.thumb }}" alt="{{ product.name }}"
+                                                     title="{{ product.name }}" loading="lazy">
+                                                <img class="hover-img" src="{{ product.hover_image }}" alt="{{ product.name }}"
+                                                     title="{{ product.name }}" loading="lazy">
+                                                <div class="toFavorite{{ product.wishlist }} favorite--{{ product.product_id }}">
+                                                    <button type="button" class="add-to-catalog"
+                                                            onclick="{% if product.wishlist %}wishlist.remove('{{ product.product_id }}');{% else %}wishlist.add('{{ product.product_id }}');{% endif %}return false;">
+                                                        <svg width="16" height="14" viewBox="0 0 16 14" fill="none"
+                                                             xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M11.5757 0C14.019 0 16 1.981 16 4.42386C16 8.46166 7.9998 13.8246 7.9998 13.8246C7.9998 13.8246 0 8.65497 0 4.42382C0 1.38237 1.981 0 4.42386 0C5.89538 0 7.19522 0.721649 7.9998 1.82655C8.80449 0.721649 10.1046 0 11.5757 0Z"
+                                                                  fill="white" fill-opacity="0.5"></path>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                                {% if product.attributes %}
+                                                    <div class="item__tags">
+                                                        {% for attr in product.attributes %}
+                                                            <div class="item__block {{ attr.class }}">{{ attr.text }}</div>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="item__descr">
+                                                <div class="item__title">{{ product.name }}</div>
+                                                {% if not product.special %}
+                                                    <div class="item__price">{{ product.price }}</div>
+                                                {% else %}
+                                                    <div class="item__price"><span class="old">{{ product.price }}</span><span
+                                                                class="new">{{ product.special }}</span></div>
+                                                {% endif %}
+                                            </div>
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                                {% if pagination %}
+                                    <div class="show-more">
+                                        <button class="btn btn-info btn-ajax-load-more">Загрузить еще</button>
+                                    </div>
+                                    <div class="row" style="display: none">
+                                        <div class="col-sm-6">{{ pagination }}</div>
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                <p>Товары не найдены</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+    </div>
+</div>
+
+<section class="seo">
+    <div class="container">
+        <div class="seo__text">{{ description }}</div>
+        <a class="seo__more" href="#">{{ description_more }}</a>
+    </div>
+</section>
+
+
+	  {# // remarketing #}
+{% if remarketing_google_json %}
+	<script>
+	if (typeof sendGoogleRemarketing !== 'undefined') {
+		sendGoogleRemarketing({{ remarketing_google_json|json_encode() }});
+	}
+	</script>
+	{% endif %}
+	
+	{% if remarketing_target_code %}
+	{{ remarketing_target_code }}
+	{% endif %}
+	
+	{% if remarketing_vk_code %}
+	{{ remarketing_vk_code }}
+	{% endif %}
+	
+	{% if tiktok_remarketing_code %}
+	{{ tiktok_remarketing_code }}
+	{% endif %}
+	
+	{% if facebook_remarketing_code %}
+	{{ facebook_remarketing_code }}
+	{% endif %}
+	
+	{% if ecommerce_status and ecommerce_product_json %}
+	<script>
+	{% if remarketing_ecommerce_status %}
+	window.dataLayer = window.dataLayer || [];
+	dataLayer.push({{ ecommerce_product_json|json_encode() }});
+	{% endif %}
+	{% if measurement_status %}
+	if (typeof sendEcommerceDetails !== 'undefined') {
+		sendEcommerceDetails({{ ecommerce_product_json|json_encode() }}, true);
+	}
+	{% endif %}
+	</script>
+	{% endif %}
+	{% if ecommerce_ga4_status and ecommerce_ga4_product_json %}
+	<script>
+	if (typeof sendEcommerceGa4Details !== 'undefined') {
+		sendEcommerceGa4Details({{ ecommerce_ga4_product_json|json_encode() }}, {% if measurement_ga4_status %}true{% else %}false{% endif %});
+	}
+	</script>
+	{% endif %}
+	
+	{% if remarketing_ecommerce_json %}
+	<script>
+	window.ecommerce_products = window.ecommerce_products || {};
+	ecommerce_product_data = {{ remarketing_ecommerce_json|json_encode() }};
+
+	if (typeof sendEcommerceImpressions !== 'undefined') {
+		sendEcommerceImpressions(ecommerce_product_data, {% if measurement_status %}true{% else %}false{% endif %});
+	}
+	
+	 ecommerce_products = $.extend(ecommerce_products, ecommerce_product_data);
+	  </script>
+	 {% endif %}
+	{% if remarketing_ecommerce_ga4_json %}
+	<script>
+	window.ecommerce_ga4_products = window.ecommerce_ga4_products || {};
+	ecommerce_ga4_product_data = {{ remarketing_ecommerce_ga4_json|json_encode() }};
+
+	if (typeof sendEcommerceGa4Impressions !== 'undefined') {
+		sendEcommerceGa4Impressions(ecommerce_ga4_product_data, {% if view_search_results %}true{% else %}false{% endif %}, {% if measurement_ga4_status %}true{% else %}false{% endif %});
+	}
+	
+	 ecommerce_ga4_products = $.extend(ecommerce_ga4_products, ecommerce_ga4_product_data);
+	  </script>
+	 {% endif %}
+	 
+	 
+	 {% if facebook_remarketing_status and facebook_data_json %}
+	<script>
+	if (typeof sendFacebookDetails !== 'undefined') {
+		sendFacebookDetails({{ facebook_data_json|json_encode() }});
+	}
+	  </script>
+	{% endif %}
+	 {% if facebook_remarketing_status and facebook_data_json_category %}
+	<script>
+	if (typeof sendFacebookCategoryDetails !== 'undefined') {
+		sendFacebookCategoryDetails({{ facebook_data_json_category|json_encode() }}, {% if view_search_results %}'true'{% else %}'false'{% endif %});
+	}
+	  </script>
+	{% endif %}
+	{% if esputnik_remarketing_status and esputnik_data_json %}
+	<script>
+	if (typeof sendEsputnikDetails !== 'undefined') {
+		sendEsputnikDetails({{ esputnik_data_json|json_encode() }});
+	}
+	</script>
+	{% endif %}
+	{% if esputnik_remarketing_status and esputnik_data_category_json %}
+	<script>
+	if (typeof sendEsputnikCategoryDetails !== 'undefined') {
+		sendEsputnikCategoryDetails({{ esputnik_data_category_json|json_encode() }});
+	}
+	</script>
+	{% endif %}
+	  
+{{ footer }} 

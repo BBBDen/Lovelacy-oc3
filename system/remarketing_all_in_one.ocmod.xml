@@ -1,0 +1,1770 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+    <name>SP Remarketing All In One Pro</name>
+    <code>sp_remarketing_all_in_one_pro</code>
+    <version>5.5 2.3.x-3.x</version>
+    <author>spectre</author>
+    <link>https://freelancer.od.ua/</link>
+    <file path="catalog/controller/common/header.php"> 
+        <operation error="skip">
+            <search><![CDATA[$data['title'] = $this->document->getTitle();]]></search>
+            <add position="after"><![CDATA[
+		// remarketing all in one
+		$this->load->model('tool/remarketing');
+		if ($this->config->get('remarketing_status')) {
+			$data['remarketing_head'] = $this->load->controller('common/remarketing/header');
+		}
+		if ($this->config->get('remarketing_status') && !$this->model_tool_remarketing->isBot()) {
+            $data['remarketing_body'] = $this->load->controller('common/remarketing/body');
+			$data['google_status'] = $this->config->get('remarketing_google_status');
+			$data['google_code'] = $this->config->get('remarketing_google_identifier');
+			$data['facebook_status'] = $this->config->get('remarketing_facebook_status');
+			$data['ecommerce_selector'] = $this->config->get('remarketing_ecommerce_selector');
+			$data['google_currency'] = $this->config->get('remarketing_google_currency');	
+			$data['facebook_currency'] = $this->config->get('remarketing_facebook_currency');	
+			$data['ecommerce_currency'] = $this->config->get('remarketing_ecommerce_currency');	
+			$data['remarketing_currency'] = $this->session->data['currency'];	
+			$data['google_identifier'] = $this->config->get('remarketing_google_identifier');
+			$data['ecommerce_identifier'] = $this->config->get('remarketing_ecommerce_identifier');
+			$data['remarketing_ecommerce_analytics_id'] = $this->config->get('remarketing_ecommerce_analytics_id');
+			$data['ecommerce_ga4_identifier'] = $this->config->get('remarketing_ecommerce_ga4_identifier');
+			$data['ecommerce_measurement_selector'] = $this->config->get('remarketing_ecommerce_measurement_selector');
+			
+			$this->model_tool_remarketing->getCid();  
+			$this->model_tool_remarketing->trackUtm();  
+ 			
+			$this->document->addScript('catalog/view/javascript/sp_remarketing.js');
+		}
+			]]></add>
+        </operation>
+    </file>
+    <file path="catalog/controller/common/footer.php">
+        <operation error="skip">
+            <search><![CDATA[// Whos Online]]></search>
+            <add position="before"><![CDATA[
+			// remarketing all in one 
+			
+			$this->load->model('tool/remarketing');
+			if ($this->config->get('remarketing_status') && !$this->model_tool_remarketing->isBot()) {
+				$data['remarketing_footer'] = $this->load->controller('common/remarketing/footer');
+				$data['google_currency'] = $this->config->get('remarketing_google_currency');	
+				$data['facebook_currency'] = $this->config->get('remarketing_facebook_currency');	
+				$data['ecommerce_currency'] = $this->config->get('remarketing_ecommerce_currency');	
+				$data['remarketing_currency'] = $this->session->data['currency'];	
+				$data['remarketing_status'] = $this->config->get('remarketing_status');	
+				$data['facebook_status'] = ($this->config->get('remarketing_facebook_status') && $this->config->get('remarketing_facebook_identifier'));	
+				$data['facebook_depth'] = ($this->config->get('remarketing_facebook_depth') && $this->config->get('remarketing_facebook_depth_params'));	
+				$data['facebook_depth_params'] = $this->config->get('remarketing_facebook_depth_params');	
+				$data['google_status'] = ($this->config->get('remarketing_google_status') && $this->config->get('remarketing_google_identifier'));
+				$data['google_identifier'] = $this->config->get('remarketing_google_identifier');
+				$data['ecommerce_status'] = $this->config->get('remarketing_ecommerce_status');
+				$data['ecommerce_ga4_status'] = $this->config->get('remarketing_ecommerce_ga4_status');
+				$data['ecommerce_selector'] = $this->config->get('remarketing_ecommerce_selector');
+				$data['ecommerce_ga4_selector'] = $this->config->get('remarketing_ecommerce_ga4_selector');
+				$data['ecommerce_measurement_status'] = $this->config->get('remarketing_ecommerce_measurement_status');
+				$data['ecommerce_measurement_selector'] = $this->config->get('remarketing_ecommerce_measurement_selector');
+				$data['ecommerce_ga4_measurement_status'] = $this->config->get('remarketing_ecommerce_ga4_measurement_status');
+				$data['ecommerce_ga4_measurement_selector'] = $this->config->get('remarketing_ecommerce_ga4_measurement_selector');
+			}
+			]]></add>
+        </operation>
+    </file>
+	<file path="catalog/controller/checkout/success.php">
+ 	<operation error="skip">
+      <search><![CDATA[unset($this->session->data['order_id']);]]></search>
+      <add position="replace">
+	  <![CDATA[//unset($this->session->data['order_id']);]]>
+      </add>
+    </operation>
+	<operation error="skip">
+      <search><![CDATA[if (isset($this->session->data['order_id'])) {]]></search>
+      <add position="after">
+	  <![CDATA[
+			$this->session->data['remarketing_order_id'] = $this->session->data['order_id'];
+	  ]]>
+      </add>
+    </operation>
+  </file>
+	<file path="catalog/controller/extension/ocdevwizard/smart_order_success_page_pro.php">
+ 	<operation error="skip">
+      <search><![CDATA[unset($this->session->data['order_id']);]]></search>
+      <add position="replace">
+	  <![CDATA[//unset($this->session->data['order_id']);]]>
+      </add>
+    </operation>
+	<operation error="skip">
+      <search><![CDATA[if (isset($this->session->data['order_id'])) {]]></search>
+      <add position="after">
+	  <![CDATA[
+			$this->session->data['remarketing_order_id'] = $this->session->data['order_id'];
+	  ]]>
+      </add>
+    </operation>
+  </file> 
+  <file path="catalog/controller/product/product.php">
+	<operation error="skip">
+      <search><![CDATA[$this->model_catalog_product->updateViewed($this->request->get['product_id']);]]></search>
+      <add position="before">
+      <![CDATA[
+	    // remarketing all in one
+		$data['facebook_remarketing_code'] = '';
+		$data['google_remarketing_code'] = '';
+		$data['remarketing_vk_code'] = '';
+		$data['tiktok_remarketing_code'] = '';
+		$data['facebook_remarketing_status'] = false;
+		$data['google_remarketing_status'] = false;
+		$this->load->model('tool/remarketing');
+		
+		if ($this->config->get('remarketing_status') && !$this->model_tool_remarketing->isBot()) {
+			$current_price = $product_info['special'] ? $product_info['special'] : $product_info['price'];
+			$product_price = $this->currency->format($current_price, $this->session->data['currency'], '', false);
+			$google_price = $this->currency->format($current_price, $this->config->get('remarketing_google_currency'), '', false);
+			$facebook_price = $this->currency->format($current_price, $this->config->get('remarketing_facebook_currency'), '', false);
+			$ecommerce_price = $this->currency->format($current_price, $this->config->get('remarketing_ecommerce_currency'), '', false);
+			
+			$fb_time = time();
+			
+			if ($this->config->get('remarketing_facebook_status') && $this->config->get('remarketing_facebook_identifier') && $this->config->get('remarketing_facebook_pixel_status')) {
+				$data['facebook_remarketing_status'] = true;
+				$data['facebook_remarketing_code'] .= '<script>' . "\n";
+				$data['facebook_remarketing_code'] .= "$(document).ready(function() {" . "\n";
+				$data['facebook_remarketing_code'] .= "if (typeof fbq != 'undefined') {"."\n";
+				$data['facebook_remarketing_code'] .= "fbq('track', 'ViewContent', {" . "\n";
+				$data['facebook_remarketing_code'] .= "content_name: '" . addslashes($product_info['name']) . "'," . "\n";
+				if (!empty($category_info['name'])) $data['facebook_remarketing_code'] .= "content_category: '" . addslashes($category_info['name']) . "'," . "\n";
+				$data['facebook_remarketing_code'] .= "content_ids: ['" . ($this->config->get('remarketing_facebook_id') == 'id' ? $product_info['product_id'] : $product_info['model']) . "']," . "\n";
+				$data['facebook_remarketing_code'] .= "content_type: 'product'," . "\n";
+				$data['facebook_remarketing_code'] .= 'value: ' . $facebook_price . ',' . "\n";
+				$data['facebook_remarketing_code'] .= "currency: '" . $this->config->get('remarketing_facebook_currency') . "'" . "\n";
+				$data['facebook_remarketing_code'] .= '}, {eventID: ' . $fb_time . '})}});' . "\n</script>\n";	
+				$data['facebook_price'] = $facebook_price;
+				$data['facebook_currency'] = $this->config->get('remarketing_facebook_currency');
+				$data['facebook_name'] = addslashes($product_info['name']);
+				$data['facebook_id'] = ($this->config->get('remarketing_facebook_id') == 'id') ? $product_info['product_id'] : $product_info['model'];
+			}
+			
+			if ($this->config->get('remarketing_tiktok_status')) { 
+				$data['tiktok_remarketing_status'] = true;
+				$data['tiktok_remarketing_code'] .= '<script>' . "\n";
+				$data['tiktok_remarketing_code'] .= "$(document).ready(function() {" . "\n";
+				$data['tiktok_remarketing_code'] .= "if (typeof ttq != 'undefined') {"."\n";
+				$data['tiktok_remarketing_code'] .= "ttq.track('ViewContent', {" . "\n"; 
+				$data['tiktok_remarketing_code'] .= "content_name: '" . addslashes($product_info['name']) . "'," . "\n";
+				if (!empty($category_info['name'])) $data['tiktok_remarketing_code'] .= "content_category: '" . addslashes($category_info['name']) . "'," . "\n";
+				$data['tiktok_remarketing_code'] .= "content_id: '" . $product_info['product_id'] . "'," . "\n";
+				$data['tiktok_remarketing_code'] .= "content_type: 'product'," . "\n";
+				$data['tiktok_remarketing_code'] .= 'value: ' . $product_price . ',' . "\n";
+				$data['tiktok_remarketing_code'] .= "currency: '" . $this->session->data['currency'] ."'" . "\n";
+				$data['tiktok_remarketing_code'] .= '})}});' . "\n</script>\n";	
+				$data['tiktok_price'] = $product_price;
+				$data['tiktok_currency'] = $this->session->data['currency'];
+				$data['tiktok_name'] = addslashes($product_info['name']);
+				$data['tiktok_id'] = $product_info['product_id'];
+			}
+			
+			if ($this->config->get('remarketing_facebook_status') && $this->config->get('remarketing_facebook_server_side') && $this->config->get('remarketing_facebook_token')) {
+				$data['facebook_remarketing_status'] = true; 
+				$data['facebook_data_json']['products'] = [
+					'value'            => $facebook_price,
+					'currency'         => $this->config->get('remarketing_facebook_currency'),
+					'content_ids'      => [$data['facebook_id']],
+					'content_type'     => 'product',
+					'content_name'     => addslashes($product_info['name']),
+					'content_category' => !empty($category_info['name']) ? addslashes($category_info['name']) : '',
+					'opt_out'          => false
+				];
+	
+				$data['facebook_data_json']['time'] = $fb_time;
+			}
+			
+			if ($this->config->get('remarketing_vk_status') && $this->config->get('remarketing_vk_identifier')) {	
+				$related = [];
+				if (isset($data['products']) && !empty($data['products']) && is_array($data['products'])) {
+					foreach ($data['products'] as $product) {
+						$related[] = $this->config->get('remarketing_vk_id') == 'id' ? $product['product_id'] : $product['model'];
+					}
+				}
+				$eventParams = [];
+				$eventParams['currency_code'] = $this->session->data['currency'];
+				$eventParams['products'] = [];
+				$eventParams['products'][] = [
+					'id' =>  $this->config->get('remarketing_vk_id') == 'id' ? $product_info['product_id'] : $product_info['model'],
+					'price' => $product_price,
+					'products_recommended_ids' => (!empty($related) ? implode(',', $related) : '')
+				]; 
+				
+				$data['remarketing_vk_code'] .= '<script>' . "\n";
+				$data['remarketing_vk_code'] .= "$(document).ready(function() { setTimeout(function() { if (typeof VK != 'undefined') {" . "\n";
+				$data['remarketing_vk_code'] .= "VK.Retargeting.ProductEvent(" . $this->config->get('remarketing_vk_identifier') . ", 'view_product', " . json_encode($eventParams) . ");" . "\n";
+				$data['remarketing_vk_code'] .= '}}, 1000)})' . "\n";
+				$data['remarketing_vk_code'] .= '</script>' . "\n";
+			}
+			
+			if ($this->config->get('remarketing_google_status') && $this->config->get('remarketing_google_identifier')) {
+				$data['google_remarketing_status'] = true;
+				
+				$data['google_price'] = $google_price;
+				$data['google_code'] = $this->config->get('remarketing_google_identifier');
+				$data['google_id'] = ($this->config->get('remarketing_google_id') == 'id') ? $product_info['product_id'] : $product_info['model'];
+			}	
+		
+			if (($this->config->get('remarketing_ecommerce_status') || $this->config->get('remarketing_ecommerce_measurement_status'))|| $this->config->get('remarketing_ecommerce_gtag_status')) {
+				$data['ecommerce_product_json'] = [];
+				$data['measurement_status'] = false;
+				$data['remarketing_ecommerce_status'] = $this->config->get('remarketing_ecommerce_status');
+				$data['remarketing_ecommerce_gtag_status'] = $this->config->get('remarketing_ecommerce_gtag_status');
+				$data['ecommerce_status'] = true;
+				
+				$product_impressions = [];
+				$i = 1;
+				if (isset($data['products']) && is_array($data['products'])) {
+					foreach ($data['products'] as $product) {
+						if (!empty($product['name'])) {
+							$product_impressions[] = [
+								'name'     => addslashes($product['name']),
+								'id'       => ($this->config->get('remarketing_ecommerce_id') == 'id') ? $product['product_id'] : $product['model'], 
+								'price'    => $this->currency->format($product['special'] ? $product['special'] : $product['price'], $this->config->get('remarketing_ecommerce_currency'), '', false),
+								'brand'    => !empty($product['manufacturer']) ? addslashes($product['manufacturer']) : '',
+								'category' => $this->model_catalog_product->getRemarketingCategories($product['product_id']),
+								'position' => $i
+							];
+						$i++;
+						}
+					}
+				}
+				$data['ecommerce_product_json'] = [
+					'ecommerce' => [
+						'currencyCode' => $this->config->get('remarketing_ecommerce_currency'),
+						'detail' => [
+							'actionField' => [
+									'list' => addslashes($data['heading_title'])
+							],
+							'products' => [[
+								'name'     => addslashes($product_info['name']),
+								'id'       => ($this->config->get('remarketing_ecommerce_id') == 'id') ? $product_info['product_id'] : $product_info['model'],
+								'price'    => $ecommerce_price,
+								'brand'    => addslashes($product_info['manufacturer']),
+								'category' => !empty($category_info['name']) ? addslashes($category_info['name']) : ''
+							]],
+						],
+					],
+					'event'                        => 'gtm-ee-event',
+					'gtm-ee-event-category'        => 'Enhanced Ecommerce',
+					'gtm-ee-event-action'          => 'Product Details',
+					'gtm-ee-event-non-interaction' => 'True'
+				];
+				
+				if (!empty($product_impressions)) {
+					$data['ecommerce_product_json']['ecommerce']['impressions'] = $product_impressions;
+				}
+				
+				if ($this->config->get('remarketing_ecommerce_measurement_status')) {
+					$data['measurement_status'] = true;
+				}
+			}
+
+			if (($this->config->get('remarketing_ecommerce_ga4_status') || $this->config->get('remarketing_ecommerce_ga4_measurement_status')) && isset($data['products'])) {
+				$data['ecommerce_ga4_product_json'] = [];
+				$data['ecommerce_ga4_status'] = true;
+				$data['measurement_ga4_status'] = $this->config->get('remarketing_ecommerce_ga4_measurement_status');
+				
+				$item = [
+					'item_name'      => addslashes($product_info['name']),
+					// Google refuses id 'item_id'        => ($this->config->get('remarketing_ecommerce_ga4_id') == 'id') ? $product_info['product_id'] : $product_info['model'],
+					'price'          => $ecommerce_price,
+					'index'          => 1,
+					'quantity'       => 1
+				];
+				if(!empty($product_info['manufacturer'])) $item['item_brand'] = addslashes($product_info['manufacturer']);
+				if(!empty($category_info['name'])) $item['item_category'] = $item['item_list_name'] = addslashes($category_info['name']);
+
+				$data['ecommerce_ga4_product_json'] = [ 
+						'send_to' => $this->config->get('remarketing_ecommerce_ga4_identifier'),
+						'currency' => $this->config->get('remarketing_ecommerce_currency'),
+						'items' => [$item],
+				];
+			}
+			
+			if ($this->config->get('remarketing_esputnik_status') && $this->customer->isLogged()) {
+				$data['esputnik_remarketing_status'] = true;
+				$data['esputnik_data_json'] = [
+					'productId' => addslashes($product_info['name']),
+					'quantity' => $product_info['quantity'],
+					'price' => $product_price,
+					'isInStock' => $product_info['quantity'] > 0 ? '1' : '0'
+				];
+			} 
+		}
+	]]> 
+      </add>
+    </operation>
+	<operation error="skip">
+      <search><![CDATA[$data['products'][] = array(]]></search>
+      <add position="after">
+      <![CDATA[
+	 'manufacturer'    => !empty($result['manufacturer']) ? $result['manufacturer'] : '',
+	 'brand'           => !empty($result['manufacturer']) ? $result['manufacturer'] : '',
+	 'product_id'      => $result['product_id'],
+	 'model'           => $result['model'],
+	 'clear_price'     => $this->currency->format($result['special'] ? $result['special'] : $result['price'], $this->session->data['currency'], '', false),
+	 'google_price'    => $this->currency->format($result['special'] ? $result['special'] : $result['price'], $this->config->get('remarketing_google_currency'), '', false),
+	 'facebook_price'  => $this->currency->format($result['special'] ? $result['special'] : $result['price'], $this->config->get('remarketing_facebook_currency'), '', false),
+	 'ecommerce_price' => $this->currency->format($result['special'] ? $result['special'] : $result['price'], $this->config->get('remarketing_ecommerce_currency'), '', false),
+	  ]]></add>
+    </operation>
+  </file>
+  <file path="catalog/controller/product/{category,manufacturer,special,search}.php"> 
+	<operation error="skip">
+      <search><![CDATA[$product_total =]]></search>
+      <add position="after">
+      <![CDATA[
+	  $data['remarketing_google_ids'] = [];
+	  $data['remarketing_facebook_ids'] = [];
+	  $data['remarketing_target_ids'] = [];
+	  $data['remarketing_vk_ids'] = [];
+	  ]]>
+      </add>
+    </operation>
+	<operation error="skip">
+      <search><![CDATA[$data['products'][] = array(]]></search>
+      <add position="before">
+      <![CDATA[
+	  $data['remarketing_google_ids'][] = $this->config->get('remarketing_google_id') == 'id' ? $result['product_id'] : $result['model'];
+	  $data['remarketing_facebook_ids'][] = $this->config->get('remarketing_facebook_id') == 'id' ? $result['product_id'] : $result['model'];
+	  $data['remarketing_target_ids'][] = $this->config->get('remarketing_mytarget_id') == 'id' ? $result['product_id'] : $result['model'];
+	  $data['remarketing_vk_ids'][] = $this->config->get('remarketing_vk_id') == 'id' ? $result['product_id'] : $result['model'];
+	  ]]>
+      </add>
+    </operation>
+	<operation error="skip">
+      <search><![CDATA[$data['products'][] = array(]]></search>
+      <add position="after">
+      <![CDATA[
+	 'manufacturer'    => !empty($result['manufacturer']) ? $result['manufacturer'] : '',
+	 'brand'           => !empty($result['manufacturer']) ? $result['manufacturer'] : '',
+	 'product_id'      => $result['product_id'],
+	 'model'           => $result['model'],
+	 'clear_price'     => $this->currency->format($result['special'] ? $result['special'] : $result['price'], $this->session->data['currency'], '', false),
+	 'google_price'    => $this->currency->format($result['special'] ? $result['special'] : $result['price'], $this->config->get('remarketing_google_currency'), '', false),
+	 'facebook_price'  => $this->currency->format($result['special'] ? $result['special'] : $result['price'], $this->config->get('remarketing_facebook_currency'), '', false),
+	 'ecommerce_price' => $this->currency->format($result['special'] ? $result['special'] : $result['price'], $this->config->get('remarketing_ecommerce_currency'), '', false),
+	  ]]>
+      </add>
+    </operation>
+	<!-- 
+	если шаблон Revolution
+	привязка ниже к
+	$filter_gr = array();
+	и before
+	только для категории, остальные продублировать
+	-->
+	<operation error="skip">
+      <search><![CDATA[$data['pagination'] = $pagination->render();]]></search>
+      <add position="after">
+      <![CDATA[
+	  // remarketing all in one
+	  $search_page = (!empty($this->request->get['route']) && $this->request->get['route'] == 'product/search' && !empty($this->request->get['search'])) ? true : false;
+	  if (empty($data['heading_title'])) $data['heading_title'] = $this->language->get('heading_title');
+	  
+	  $data['remarketing_target_code'] = '';
+	  $data['facebook_remarketing_code'] = '';
+	  $data['target_page'] = 'category';
+	  $data['google_page'] = 'view_item_list';
+	  $data['vk_page'] = 'view_category';
+	  $data['remarketing_vk_code'] = '';
+	  
+	  if ($search_page) {
+	      $data['google_page'] = 'view_search_results';
+	      $data['target_page'] = 'category';
+		  $data['vk_page'] = 'view_search';
+		  $data['view_search_results'] = true;
+		  $data['search_term'] = $this->request->get['search'];
+	  }
+	  
+	  $this->load->model('tool/remarketing');
+	  
+	  if ($this->config->get('remarketing_status') && !$this->model_tool_remarketing->isBot()) {
+	  if ($this->config->get('remarketing_google_status') && $this->config->get('remarketing_google_identifier')) {
+		  $data['remarketing_google_json'] = [];
+		  if ($data['google_page']) {
+			$items = [];
+			if (isset($data['remarketing_google_ids']) && count($data['remarketing_google_ids']) > 0) {
+				foreach ($data['remarketing_google_ids'] as $item) {
+					$items[] = [
+						'id' => $item, 
+						'google_business_vertical' => 'retail'
+					];
+				}
+			}
+			$data['remarketing_google_json'] = [
+				'event' => $data['google_page'],
+				'data'  => [
+					'send_to' => $this->config->get('remarketing_google_identifier'),
+					'items'   => $items
+				]
+			];
+			}
+	  }
+	  
+	  $fb_time = time();
+	   
+	  if ($this->config->get('remarketing_facebook_status') && $this->config->get('remarketing_facebook_identifier') && $this->config->get('remarketing_facebook_pixel_status')) {
+	  	  $data['facebook_remarketing_status'] = true;
+	  	  $data['facebook_remarketing_code'] .= '<script>' . "\n";
+	  	  $data['facebook_remarketing_code'] .= "$(document).ready(function() {" . "\n";
+	  	  $data['facebook_remarketing_code'] .= "if (typeof fbq != 'undefined') {"."\n";
+		  if (!$search_page) {
+			  $data['facebook_remarketing_code'] .= "fbq('trackCustom', 'ViewCategory', {" . "\n";
+		  } else {
+			  $data['facebook_remarketing_code'] .= "fbq('track', 'Search', {" . "\n";
+			  $data['facebook_remarketing_code'] .= "search_string: '" . $this->request->get['search'] . "'," . "\n";
+		  }
+	  	  $data['facebook_remarketing_code'] .= "content_name: '" . $data['heading_title'] . "'," . "\n";
+	  	  if (!empty($data['remarketing_facebook_ids'])) {
+			  $data['facebook_remarketing_code'] .= "content_ids: ['" . implode('\',\'', $data['remarketing_facebook_ids']) . "']," . "\n";
+	  	  }
+	  	  $data['facebook_remarketing_code'] .= "content_type: 'product'," . "\n";
+	  	  $data['facebook_remarketing_code'] .= "currency: '" . $this->config->get('remarketing_facebook_currency') ."'," . "\n";
+	  	  $data['facebook_remarketing_code'] .= "value: 0" . "\n";
+	  	  $data['facebook_remarketing_code'] .= '}, {eventID: ' . $fb_time . '})}});' . "\n</script>\n";
+	  }
+	
+	  if ($this->config->get('remarketing_facebook_status') && $this->config->get('remarketing_facebook_server_side') && $this->config->get('remarketing_facebook_token')) {
+		  $data['facebook_remarketing_status'] = true;
+		  $content_ids = [];
+		  if (isset($data['remarketing_facebook_ids']) && count($data['remarketing_facebook_ids']) > 0) {
+			foreach ($data['remarketing_facebook_ids'] as $id) {
+				$content_ids[] = $id;
+			}
+	  	  }
+		if (!$search_page) {
+			$data['facebook_data_json_category']['products'] = [
+				'value'            => 0,
+				'currency'         => $this->config->get('remarketing_facebook_currency'),
+				'content_ids'      => $content_ids,
+				'content_type'     => 'product',
+				'content_name'     => addslashes($data['heading_title']),
+				'content_category' => !empty($category_info['name']) ? addslashes($category_info['name']) : '',
+				'opt_out'          => false
+			];
+		} else {
+			$data['facebook_data_json_category']['products'] = [
+				'value'            => 0,
+				'currency'         => $this->config->get('remarketing_facebook_currency'),
+				'content_ids'      => $content_ids,
+				'content_type'     => 'product',
+				'content_name'     => addslashes($data['heading_title']),
+				'search_string'    => $this->request->get['search'],
+				'content_category' => !empty($category_info['name']) ? addslashes($category_info['name']) : '',
+				'opt_out'          => false
+			];
+		}
+		$data['facebook_data_json_category']['time'] = $fb_time;
+	  }
+	  
+	  if ($this->config->get('remarketing_mytarget_status') && $this->config->get('remarketing_mytarget_identifier') && $data['target_page']) {	
+		  if (count($data['remarketing_target_ids']) > 1) {
+			  $target_itemid = '[\'' . implode('\',\'', $data['remarketing_target_ids']) . '\']';
+		  } elseif (!empty($data['remarketing_target_ids'])) {
+			  $target_itemid = "'" . $data['remarketing_target_ids'][0] . "'";
+		  } else {
+	          $target_itemid = '';
+		  }
+		  $data['remarketing_target_code'] .= '<!-- Rating@Mail.ru counter dynamic remarketing appendix -->' . "\n";
+		  $data['remarketing_target_code'] .= '<script>' . "\n";
+		  $data['remarketing_target_code'] .= 'var _tmr = _tmr || [];' . "\n";
+		  $data['remarketing_target_code'] .= '_tmr.push({' . "\n";
+		  $data['remarketing_target_code'] .= "type: 'itemView'," . "\n";
+		  if (!empty($target_itemid)) $data['remarketing_target_code'] .= "productid: " . $target_itemid . "," . "\n";
+		  if (!empty($data['target_page'])) $data['remarketing_target_code'] .= "pagetype: '" . $data['target_page'] . "'," . "\n"; 
+		  $data['remarketing_target_code'] .= "list: '" . $this->config->get('remarketing_mytarget_identifier') . "'," . "\n";
+		  $data['remarketing_target_code'] .= '});' . "\n"; 
+		  $data['remarketing_target_code'] .= '</script>' . "\n";
+		  $data['remarketing_target_code'] .= '<!-- // Rating@Mail.ru counter dynamic remarketing appendix -->' . "\n";
+	  }
+	  
+	  if ($this->config->get('remarketing_vk_status') && $this->config->get('remarketing_vk_identifier') && $data['vk_page']) {	
+		  if (!empty($data['products'])) {
+			 $eventParams = [];
+			 $eventParams['currency_code'] = $this->session->data['currency'];
+			 foreach ($data['products'] as $product) {
+			 $eventParams['products'][] = [
+				'id'    =>  $this->config->get('remarketing_vk_id') == 'id' ? $result['product_id'] : $result['model'],
+				'price' => $product['clear_price']
+				]; 
+			 }
+			 $data['remarketing_vk_code'] .= '<script>' . "\n";
+			 $data['remarketing_vk_code'] .= "$(document).ready(function() { setTimeout(function() { if (typeof VK != 'undefined') {" . "\n";
+			 $data['remarketing_vk_code'] .= "VK.Retargeting.ProductEvent(" . $this->config->get('remarketing_vk_identifier') . ", '" . $data['vk_page'] . "', " . json_encode($eventParams) . ");" . "\n";
+			 $data['remarketing_vk_code'] .= '}}, 1000)})' . "\n";
+			 $data['remarketing_vk_code'] .= '</script>' . "\n";
+		  }
+	  }
+	
+	if ($this->config->get('remarketing_ecommerce_status') || $this->config->get('remarketing_ecommerce_measurement_status') || $this->config->get('remarketing_ecommerce_gtag_status')) {
+			$data['remarketing_ecommerce_status'] = $this->config->get('remarketing_ecommerce_status');
+			$data['remarketing_ecommerce_gtag_status'] = $this->config->get('remarketing_ecommerce_gtag_status');
+			$data['remarketing_ecommerce_json'] = [];
+			$data['measurement_status'] = $this->config->get('remarketing_ecommerce_measurement_status');
+			$currency = $this->config->get('remarketing_ecommerce_currency');
+			$i = 0;
+			foreach ($data['products'] as $product) {
+				$data['remarketing_ecommerce_json'][$i] = [];
+				$data['remarketing_ecommerce_json'][$i]['name'] = addslashes($product['name']);
+				$data['remarketing_ecommerce_json'][$i]['id'] = ($this->config->get('remarketing_ecommerce_id') == 'id' ? $product['product_id'] : $product['model']);
+				$data['remarketing_ecommerce_json'][$i]['price'] = $product['ecommerce_price'];
+				$data['remarketing_ecommerce_json'][$i]['brand'] = addslashes($product['brand']);
+				$data['remarketing_ecommerce_json'][$i]['list'] = addslashes($data['heading_title']);
+				$data['remarketing_ecommerce_json'][$i]['list_name'] = addslashes($data['heading_title']);
+				$data['remarketing_ecommerce_json'][$i]['currency'] = $currency;
+				$data['remarketing_ecommerce_json'][$i]['category'] = addslashes($data['heading_title']);
+				$data['remarketing_ecommerce_json'][$i]['position'] = $i+1;
+				$i++; 
+			}
+			
+			if ($this->config->get('remarketing_ecommerce_gtag_status')) {
+				$data['gtag_event'] = $search_page ? 'view_search_results' : 'view_item_list';
+				$data['gtag_event_params'] = [
+					'send_to' => $this->config->get('remarketing_ecommerce_analytics_id'),
+					'items' => $data['remarketing_ecommerce_json']
+				];
+				if ($search_page) $data['gtag_event_params']['search_term'] = $data['search_term'];
+			}			
+		
+			$data['ecommerce_selector'] = $this->config->get('remarketing_ecommerce_selector');
+		}
+		
+		
+		
+		if ($this->config->get('remarketing_ecommerce_ga4_status') || $this->config->get('remarketing_ecommerce_ga4_measurement_status')) {
+			$data['ecommerce_ga4_status'] = true;
+			$data['remarketing_ecommerce_ga4_json'] = [];
+			$data['measurement_ga4_status'] = $this->config->get('remarketing_ecommerce_ga4_measurement_status');
+			
+			$currency = $this->config->get('remarketing_ecommerce_currency');
+			$i = 0;
+			foreach ($data['products'] as $product) {
+				$data['remarketing_ecommerce_ga4_json'][$i] = [];
+				$data['remarketing_ecommerce_ga4_json'][$i]['item_name'] = addslashes($product['name']);
+				$data['remarketing_ecommerce_ga4_json'][$i]['item_id'] = ($this->config->get('remarketing_ecommerce_ga4_id') == 'id' ? $product['product_id'] : $product['model']);
+				$data['remarketing_ecommerce_ga4_json'][$i]['price'] = $product['ecommerce_price'];
+				if (!empty($product['brand'])) $data['remarketing_ecommerce_ga4_json'][$i]['item_brand'] = addslashes($product['brand']);
+				$data['remarketing_ecommerce_ga4_json'][$i]['item_list_name'] = addslashes($data['heading_title']);
+				$data['remarketing_ecommerce_ga4_json'][$i]['item_category'] = addslashes($data['heading_title']);
+				$data['remarketing_ecommerce_ga4_json'][$i]['index'] = $i+1;
+				$data['remarketing_ecommerce_ga4_json'][$i]['quantity'] = 1;
+				$i++;
+			}
+
+			$data['remarketing_ecommerce_ga4_selector'] = $this->config->get('remarketing_ecommerce_ga4_selector');
+		}
+		
+		if ($this->config->get('remarketing_esputnik_status') && $this->customer->isLogged()) {
+			$data['esputnik_remarketing_status'] = true;
+			$data['esputnik_data_category_json'] = [
+				'productCategoryId' => addslashes($data['heading_title'])
+			];
+		} 
+	}
+
+	  ]]>
+      </add>
+    </operation>
+  </file> 
+   <file path="catalog/model/catalog/product.php">
+	<operation error="skip">
+      <search><![CDATA[public function getProfiles($product_id) {]]></search>
+      <add position="before">
+      <![CDATA[
+		public function getRemarketingCategories($product_id) {
+			$category_data = '';
+			
+			$category_query = $this->db->query("SELECT DISTINCT cd.name FROM `" . DB_PREFIX . "product_to_category` pc LEFT JOIN `" . DB_PREFIX . "category_description` cd ON pc.category_id = cd.category_id LEFT JOIN `" . DB_PREFIX . "category_path` cp ON pc.category_id = cp.category_id WHERE pc.product_id = '" . (int)$product_id . "' AND cd.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY cp.level ASC LIMIT 5");
+			
+			foreach ($category_query->rows as $category) {
+				$category_data .= $category['name'] . '/';
+			}
+			
+			$category_data = rtrim($category_data, '/');
+			
+			return $category_data;
+		}
+		
+	  ]]>
+      </add>
+    </operation>
+  </file>
+   <file path="catalog/controller/{checkout,extension/module/frametheme,madeshop,extension/soconfig,extension/basel}/{cart,ft_cart,basel_features}.php">
+	<operation error="skip">
+      <search><![CDATA[$this->cart->add(]]></search>
+      <add position="after">
+      <![CDATA[
+	    // remarketing all in one
+		$this->load->model('tool/remarketing');
+		if ($this->config->get('remarketing_status') && !$this->model_tool_remarketing->isBot()) {
+			$categories = $this->model_catalog_product->getRemarketingCategories($product_info['product_id']);
+			$json['remarketing'] = [];
+			$json['remarketing']['google_product_id'] = $this->config->get('remarketing_google_id') == 'id' ? $product_info['product_id'] : $product_info['model'];
+			$json['remarketing']['google_identifier'] = $this->config->get('remarketing_google_identifier');;
+			$json['remarketing']['facebook_product_id'] = $this->config->get('remarketing_facebook_id') == 'id' ? $product_info['product_id'] : $product_info['model'];
+			$json['remarketing']['mytarget_product_id'] = $this->config->get('remarketing_mytarget_id') == 'id' ? $product_info['product_id'] : $product_info['model'];
+			$json['remarketing']['product_id'] = $product_info['product_id'];
+			$json['remarketing']['retailrocket_status'] = $this->config->get('remarketing_retailrocket_status');
+			$json['remarketing']['tiktok_status'] = $this->config->get('remarketing_tiktok_status');
+			$json['remarketing']['vk_product_id'] = $this->config->get('remarketing_vk_id') == 'id' ? $product_info['product_id'] : $product_info['model'];
+			$json['remarketing']['vk_identifier'] = $this->config->get('remarketing_vk_identifier');
+			$json['remarketing']['google_ads_identifier'] = $this->config->get('remarketing_google_ads_identifier');
+			$json['remarketing']['google_ads_identifier_cart'] = $this->config->get('remarketing_google_ads_identifier_cart');
+			$json['remarketing']['ecommerce_product_id'] = $this->config->get('remarketing_ecommerce_id') == 'id' ? $product_info['product_id'] : $product_info['model'];
+			$json['remarketing']['ecommerce_ga4_product_id'] = $this->config->get('remarketing_ecommerce_ga4_id') == 'id' ? $product_info['product_id'] : $product_info['model'];
+			$json['remarketing']['ecommerce_status'] = $this->config->get('remarketing_ecommerce_status');
+			$json['remarketing']['ecommerce_gtag_status'] = $this->config->get('remarketing_ecommerce_gtag_status');
+			$json['remarketing']['ecommerce_analytics_id'] = $this->config->get('remarketing_ecommerce_analytics_id');
+			$json['remarketing']['ecommerce_ga4_status'] = $this->config->get('remarketing_ecommerce_ga4_status');
+			$json['remarketing']['ecommerce_ga4_identifier'] = $this->config->get('remarketing_ecommerce_ga4_identifier');
+			$json['remarketing']['google_status'] = $this->config->get('remarketing_google_status');
+			$json['remarketing']['facebook_status'] = $this->config->get('remarketing_facebook_status');
+			$json['remarketing']['facebook_pixel_status'] = $this->config->get('remarketing_facebook_pixel_status');
+			$json['remarketing']['vk_status'] = $this->config->get('remarketing_vk_status');
+			$json['remarketing']['quantity'] = $quantity;
+			$current_price = $product_info['special'] ? $product_info['special'] : $product_info['price'];
+			$json['remarketing']['price'] = $this->currency->format($current_price, $this->session->data['currency'], '', false);
+			$json['remarketing']['google_price'] = $this->currency->format($current_price, $this->config->get('remarketing_google_currency'), '', false);
+			$json['remarketing']['google_conversion_price'] = $this->currency->format($current_price * $this->config->get('remarketing_google_ads_ratio'), $this->config->get('remarketing_google_currency'), '', false);
+			$json['remarketing']['facebook_price'] = $this->currency->format($current_price, $this->config->get('remarketing_facebook_currency'), '', false);
+			$json['remarketing']['ecommerce_price'] = $this->currency->format($current_price, $this->config->get('remarketing_ecommerce_currency'), '', false);
+			$json['remarketing']['brand'] = addslashes($product_info['manufacturer']);
+			$json['remarketing']['name'] = addslashes($product_info['name']);
+			$json['remarketing']['category'] = addslashes($categories);
+			$json['remarketing']['currency'] = $this->session->data['currency'];
+			$json['remarketing']['google_currency'] = $this->config->get('remarketing_google_currency');
+			$json['remarketing']['facebook_currency'] = $this->config->get('remarketing_facebook_currency');
+			$json['remarketing']['ecommerce_currency'] = $this->config->get('remarketing_ecommerce_currency');
+			$json['remarketing']['google_remarketing_event'] = [
+				'send_to' => $this->config->get('remarketing_google_identifier'),
+				'value'   => $json['remarketing']['google_price'],
+				'items'   => [[
+					'id' => $json['remarketing']['google_product_id'],
+					'google_business_vertical' => 'retail'
+				]],
+			];
+			$json['remarketing']['google_ads_event'] = [
+				'send_to' => $this->config->get('remarketing_google_ads_identifier_cart'),
+				'value'   => $json['remarketing']['google_conversion_price'],
+				'currency'   => $this->config->get('remarketing_google_currency')
+			];
+			$json['remarketing']['facebook_pixel_event'] = [
+				'content_name' => $json['remarketing']['name'],
+				'content_ids' => [$json['remarketing']['facebook_product_id']],
+				'content_type' => 'product',
+				'content_category' => $json['remarketing']['category'],
+				'value'   => $json['remarketing']['facebook_price'],
+				'currency'   => $this->config->get('remarketing_facebook_currency')
+			];
+			$json['remarketing']['tiktok_event'] = [
+				'content_name' => $json['remarketing']['name'],
+				'content_id' => $json['remarketing']['product_id'],
+				'content_type' => 'product',
+				'content_category' => $json['remarketing']['category'],
+				'value'   => $json['remarketing']['price'],
+				'currency'   => $json['remarketing']['currency']
+			];
+			$ecommerce_product = [
+				'name' => $json['remarketing']['name'],
+				'id' => [$json['remarketing']['ecommerce_product_id']],
+				'price' => $json['remarketing']['ecommerce_price'],
+				'quantity' => $json['remarketing']['quantity']
+			];
+			if (!empty($json['remarketing']['brand'])) $ecommerce_product['brand'] = $json['remarketing']['brand'];
+			if (!empty($json['remarketing']['category'])) $ecommerce_product['category'] = $json['remarketing']['category'];
+			$json['remarketing']['ecommerce_product'] = $ecommerce_product;
+			
+			$json['remarketing']['google_gtag_event'] = [
+				'send_to' => $this->config->get('remarketing_ecommerce_analytics_id'),
+				'value'   => $json['remarketing']['ecommerce_price'] * $json['remarketing']['quantity'],
+				'currency'   => $json['remarketing']['ecommerce_currency'],
+				'items' => [$json['remarketing']['ecommerce_product']]
+			];
+			
+			$ecommerce_ga4_product = [
+				'item_name' => $json['remarketing']['name'],
+				'index' => 1,
+				'price' => $json['remarketing']['ecommerce_price'],
+				'quantity' => $json['remarketing']['quantity']
+			];
+			if (!empty($json['remarketing']['brand'])) $ecommerce_ga4_product['item_brand'] = $json['remarketing']['brand'];
+			if (!empty($json['remarketing']['category'])) $ecommerce_ga4_product['item_category'] = $json['remarketing']['category'];
+			$json['remarketing']['ecommerce_ga4_event'] = [
+				'send_to' => $this->config->get('remarketing_ecommerce_ga4_identifier'),
+				'currency' => $json['remarketing']['ecommerce_currency'],
+				'value' => $json['remarketing']['ecommerce_price'] * $json['remarketing']['quantity'],
+				'items' => [$ecommerce_ga4_product]
+			];
+			
+			$fb_time = time();
+			$json['remarketing']['time'] = $fb_time;
+			//options todo			
+			
+			if ($this->config->get('remarketing_ecommerce_measurement_status')) {
+			if (!empty($this->session->data['uuid'])) {
+				$uuid = $this->session->data['uuid'];	
+				$ecommerce_data = [
+					'ec'    => 'Enhanced Ecommerce',
+					'ea'    => 'Adding a Product to a Shopping Cart',
+					'ni'    => 1,
+					'cu'    => $this->config->get('remarketing_ecommerce_currency'),
+					'pa'    => 'add',
+					'pr1nm' => $product_info['name'],
+					'pr1id' => ($this->config->get('remarketing_ecommerce_measurement_id') == 'id') ? $product_info['product_id'] : $product_info['model'],
+					'pr1pr' => $json['remarketing']['ecommerce_price'],
+					'pr1qt' => $quantity
+				];
+				if (!empty($json['remarketing']['brand'])) $ecommerce_data['pr1br'] = $json['remarketing']['brand'];
+				if (!empty($categories)) $ecommerce_data['pr1ca'] = $categories;
+		
+				$this->model_tool_remarketing->sendEcommerce($ecommerce_data);
+			}
+			}
+			
+			if ($this->config->get('remarketing_ecommerce_ga4_measurement_status')) {
+				if (!empty($this->session->data['uuid'])) {
+				$uuid = $this->session->data['uuid'];		
+				$item = [
+					// Google refuses id 'item_id' => ($this->config->get('remarketing_ecommerce_ga4_measurement_id') == 'id') ? $product_info['product_id'] : $product_info['model'],
+					'item_name' => $product_info['name'],
+					'affiliation' => $this->config->get('config_name'),
+					'price' => $json['remarketing']['ecommerce_price'],
+					'currency' => $this->config->get('remarketing_ecommerce_currency'),
+					'quantity' => 1,
+				];
+				if(!empty($json['remarketing']['brand'])) $item['item_brand'] = addslashes($json['remarketing']['brand']);
+				if(!empty($categories)) $item['item_category'] = $item['item_list_name'] = addslashes($categories);
+
+				$ecommerce_data = [
+					'client_id' => $uuid,
+					'events' => [[
+						'name' => 'add_to_cart',
+						'params' => [
+							'currency' => $this->config->get('remarketing_ecommerce_currency'),
+							'items' => [$item], 
+							'value' => $json['remarketing']['ecommerce_price']
+						]],
+					],
+				];
+				
+				$this->model_tool_remarketing->sendEcommerceGa4($ecommerce_data);
+				}
+			}
+			
+			if ($this->config->get('remarketing_facebook_server_side') && $this->config->get('remarketing_facebook_token')) {
+				$facebook_data['event_name'] = 'AddToCart';
+				$facebook_data['custom_data'] = [
+					'value' => $json['remarketing']['facebook_price'],
+					'currency' => $this->config->get('remarketing_facebook_currency'),
+					'content_ids' => [
+						$json['remarketing']['facebook_product_id']
+					],
+					'content_name'     => addslashes($product_info['name']),
+					'content_category' => $categories,
+					'content_type'     => 'product',
+					'opt_out'          => false
+				];
+				$facebook_data['time'] = $fb_time;
+				$this->model_tool_remarketing->sendFacebook($facebook_data);
+			}
+			
+			if ($this->config->get('remarketing_esputnik_status') && $this->customer->isLogged() && isset($this->session->data['esputnik_email'])) {
+				$event = new stdClass();
+				$event->eventTypeKey = 'cartUpdated'; 
+				$event->keyValue = $this->session->data['esputnik_email'];
+				$event->params = [];
+				if (isset($this->session->data['esputnik_telephone'])) {
+					$event->params[] = ['name' => 'phone', 'value' => $this->session->data['esputnik_telephone']];
+				}
+				$event->params[] = ['name' => 'email', 'value' => $this->session->data['esputnik_email']];
+				
+				$event->params[] = ['name' => 'currencyCode', 'value' => $this->session->data['currency']];
+				
+				if ($this->customer->isLogged()) {
+					$event->params[] = ['name' => 'externalCustomerId', 'value' => $this->customer->isLogged()];
+
+					if ($this->customer->getFirstName()) {
+						$event->params[] = ['name' => 'firstName', 'value' => $this->customer->getFirstName()];
+					}
+					if ($this->customer->getLastName()) {
+						$event->params[] = ['name' => 'lastName', 'value' => $this->customer->getLastName()];
+					}
+				}
+				$items = [];
+				
+				$this->load->model('tool/image');
+				$products = $this->cart->getProducts();
+				foreach ($products as $product) {
+					$items[] = [
+						'productId' => $product['product_id'],
+						'name'      => $product['name'],
+						'quantity'  => $product['quantity'],
+						'price'     => $product['price']
+					];
+				}
+				if (!isset($this->session->data['esputnik_uniq'])) {
+					$this->session->data['esputnik_uniq'] = uniqid();
+				}
+				$event->params[] = ['name' => 'recycleStateId', 'value' => $this->session->data['esputnik_uniq']];
+				$event->params[] = ['name' => 'products', 'value' => json_encode($items)];
+				
+				$this->model_tool_remarketing->sendEsputnik($event);
+			}
+		}
+	  ]]>
+      </add>
+    </operation>
+	<operation error="skip">
+      <search><![CDATA[$this->cart->remove(]]></search>
+      <add position="before">
+      <![CDATA[
+	    // remarketing all in one
+		$this->load->model('tool/remarketing');
+	    if ($this->config->get('remarketing_status') && !$this->model_tool_remarketing->isBot()) {
+			$this->load->model('catalog/product');
+			
+			foreach ($this->cart->getProducts() as $product) {
+				if ($product['cart_id'] == $this->request->post['key']) {
+					$product_info = $this->model_catalog_product->getProduct($product['product_id']);
+					$quantity = $product['quantity'];
+				}
+			}
+			
+			$json['remarketing'] = [];
+			if (!empty($product_info)) {
+				$categories = $this->model_catalog_product->getRemarketingCategories($product_info['product_id']);
+				$json['remarketing']['google_product_id'] = $this->config->get('remarketing_google_id') == 'id' ? $product_info['product_id'] : $product_info['model'];
+				$json['remarketing']['google_identifier'] = $this->config->get('remarketing_google_identifier');;
+				$json['remarketing']['facebook_product_id'] = $this->config->get('remarketing_facebook_id') == 'id' ? $product_info['product_id'] : $product_info['model'];
+				$json['remarketing']['mytarget_product_id'] = $this->config->get('remarketing_mytarget_id') == 'id' ? $product_info['product_id'] : $product_info['model'];
+				$json['remarketing']['vk_product_id'] = $this->config->get('remarketing_vk_id') == 'id' ? $product_info['product_id'] : $product_info['model'];
+				$json['remarketing']['vk_identifier'] = $this->config->get('remarketing_vk_identifier');
+				$json['remarketing']['ecommerce_product_id'] = $this->config->get('remarketing_ecommerce_id') == 'id' ? $product_info['product_id'] : $product_info['model'];
+				$json['remarketing']['ecommerce_ga4_product_id'] = $this->config->get('remarketing_ecommerce_ga4_id') == 'id' ? $product_info['product_id'] : $product_info['model'];
+				$json['remarketing']['ecommerce_status'] = $this->config->get('remarketing_ecommerce_status');
+				$json['remarketing']['ecommerce_gtag_status'] = $this->config->get('remarketing_ecommerce_gtag_status');
+				$json['remarketing']['ecommerce_ga4_status'] = $this->config->get('remarketing_ecommerce_ga4_status');
+				$json['remarketing']['ecommerce_ga4_identifier'] = $this->config->get('remarketing_ecommerce_ga4_identifier');
+				$json['remarketing']['google_status'] = $this->config->get('remarketing_google_status');
+				$json['remarketing']['facebook_status'] = $this->config->get('remarketing_facebook_status');
+				$json['remarketing']['facebook_pixel_status'] = $this->config->get('remarketing_facebook_pixel_status');
+				$json['remarketing']['vk_status'] = $this->config->get('remarketing_vk_status');
+				$json['remarketing']['quantity'] = $quantity; 
+				$current_price = $product_info['special'] ? $product_info['special'] : $product_info['price'];
+				$json['remarketing']['price'] = $this->currency->format($current_price, $this->session->data['currency'], '', false);
+				$json['remarketing']['google_price'] = $this->currency->format($current_price, $this->config->get('remarketing_google_currency'), '', false);
+				$json['remarketing']['facebook_price'] = $this->currency->format($current_price, $this->config->get('remarketing_facebook_currency'), '', false);
+				$json['remarketing']['ecommerce_price'] = $this->currency->format($current_price, $this->config->get('remarketing_ecommerce_currency'), '', false);
+				$json['remarketing']['brand'] = addslashes($product_info['manufacturer']);
+				$json['remarketing']['name'] = addslashes($product_info['name']);
+				$json['remarketing']['category'] = addslashes($categories);
+				$json['remarketing']['currency'] = $this->session->data['currency'];
+				$json['remarketing']['google_currency'] = $this->config->get('remarketing_google_currency');
+				$json['remarketing']['facebook_currency'] = $this->config->get('remarketing_facebook_currency');
+				$json['remarketing']['ecommerce_currency'] = $this->config->get('remarketing_ecommerce_currency');
+				$ecommerce_product = [
+					'name' => $json['remarketing']['name'],
+					'id' => [$json['remarketing']['ecommerce_product_id']],
+					'price' => $json['remarketing']['ecommerce_price'],
+					'quantity' => $json['remarketing']['quantity']
+				];
+				if (!empty($json['remarketing']['brand'])) $ecommerce_product['brand'] = $json['remarketing']['brand'];
+				if (!empty($json['remarketing']['category'])) $ecommerce_product['category'] = $json['remarketing']['category'];
+				$json['remarketing']['ecommerce_product'] = $ecommerce_product;
+
+				$ecommerce_ga4_product = [
+					'item_name' => $json['remarketing']['name'],
+					'index' => 1,
+					'price' => $json['remarketing']['ecommerce_price'],
+					'quantity' => $json['remarketing']['quantity']
+				];
+				if (!empty($json['remarketing']['brand'])) $ecommerce_ga4_product['item_brand'] = $json['remarketing']['brand'];
+				if (!empty($json['remarketing']['category'])) $ecommerce_ga4_product['item_category'] = $json['remarketing']['category'];
+				$json['remarketing']['ecommerce_ga4_event'] = [
+					'send_to' => $this->config->get('remarketing_ecommerce_ga4_identifier'),
+					'currency' => $json['remarketing']['ecommerce_currency'],
+					'items' => [$ecommerce_ga4_product]
+				];
+				
+				$json['remarketing']['google_gtag_event'] = [
+					'send_to' => $this->config->get('remarketing_ecommerce_analytics_id'),
+					'value'   => $json['remarketing']['ecommerce_price'],
+					'currency'   => $json['remarketing']['ecommerce_currency'],
+					'items' => [$json['remarketing']['ecommerce_product']]
+				];
+			
+				if ($this->config->get('remarketing_ecommerce_measurement_status')) {
+					if (!empty($this->session->data['uuid'])) {
+					$uuid = $this->session->data['uuid'];		
+					$ecommerce_data = [
+						'ec'    => 'Enhanced Ecommerce',
+						'ea'    => 'Removing a Product from a Shopping Cart',
+						'ni'    => 1,
+						'cu'    => $json['remarketing']['ecommerce_currency'],
+						'pa'    => 'remove',
+						'pr1nm' => $product_info['name'],
+						'pr1id' => ($this->config->get('remarketing_ecommerce_measurement_id') == 'id') ? $product_info['product_id'] : $product_info['model'],
+						'pr1pr' => $json['remarketing']['ecommerce_price'],
+						'pr1qt' => $quantity
+					];
+					if (!empty($json['remarketing']['brand'])) $ecommerce_data['pr1br'] = $json['remarketing']['brand'];
+					if (!empty($categories)) $ecommerce_data['pr1ca'] = $categories;
+
+					$this->model_tool_remarketing->sendEcommerce($ecommerce_data);
+					}
+				}
+				
+				if ($this->config->get('remarketing_ecommerce_ga4_measurement_status')) {
+					if (!empty($this->session->data['uuid'])) {
+					$uuid = $this->session->data['uuid'];		
+					$item = [
+						// Google refuses id 'item_id' => ($this->config->get('remarketing_ecommerce_ga4_measurement_id') == 'id') ? $product_info['product_id'] : $product_info['model'],
+						'item_name' => $product_info['name'],
+						'affiliation' => $this->config->get('config_name'),
+						'price' => $json['remarketing']['ecommerce_price'],
+						'currency' => $this->config->get('remarketing_ecommerce_currency'),
+						'quantity' => 1,
+					];
+					if(!empty($json['remarketing']['brand'])) $item['item_brand'] = addslashes($json['remarketing']['brand']);
+					if(!empty($categories)) $item['item_category'] = $item['item_list_name'] = addslashes($categories);
+
+				$ecommerce_data = [
+					'client_id' => $uuid,
+					'events' => [[
+						'name' => 'remove_from_cart',
+						'params' => [
+							'currency' => $this->config->get('remarketing_ecommerce_currency'),
+							'items' => [$item],
+							'value' => $json['remarketing']['ecommerce_price']
+						]],
+					],
+				];
+				
+					$this->model_tool_remarketing->sendEcommerceGa4($ecommerce_data);
+				}
+			}
+				
+				if ($this->config->get('remarketing_esputnik_status') && $this->customer->isLogged() && isset($this->session->data['esputnik_email'])) {
+					$event = new stdClass();
+					$event->eventTypeKey = 'cartUpdated';
+					$event->keyValue = $this->session->data['esputnik_email'];
+					$event->params = [];
+					if (isset($this->session->data['esputnik_telephone'])) {
+						$event->params[] = ['name' => 'phone', 'value' => $this->session->data['esputnik_telephone']];
+					}
+					$event->params[] = ['name' => 'email', 'value' => $this->session->data['esputnik_email']];
+					
+					$event->params[] = ['name' => 'currencyCode', 'value' => $this->session->data['currency']];
+					
+					if ($this->customer->isLogged()) {
+						$event->params[] = ['name' => 'externalCustomerId', 'value' => $this->customer->isLogged()];
+					
+						if ($this->customer->getFirstName()) {
+							$event->params[] = ['name' => 'firstName', 'value' => $this->customer->getFirstName()];
+						}
+					
+						if ($this->customer->getLastName()) {
+							$event->params[] = ['name' => 'lastName', 'value' => $this->customer->getLastName()];
+						}
+					}
+					$items = [];
+					
+					$this->load->model('tool/image');
+					$products = $this->cart->getProducts();
+					foreach ($products as $product) {
+						$items[] = [
+							'productId' => $product['product_id'],
+							'name'      => $product['name'],
+							'quantity'  => $product['quantity'],
+							'price'     => $product['price'],
+						];
+					}
+					if (!isset($this->session->data['esputnik_uniq'])) {
+						$this->session->data['esputnik_uniq'] = uniqid();
+					}
+					$event->params[] = ['name' => 'recycleStateId', 'value' => $this->session->data['esputnik_uniq']];
+					$event->params[] = ['name' => 'products', 'value' => json_encode($items)];
+					
+					$this->model_tool_remarketing->sendEsputnik($event);
+				}
+			}
+		}
+	  ]]>
+      </add>
+    </operation>
+  </file>
+  <file path="catalog/controller/account/wishlist.php">
+	<operation error="skip">
+      <search><![CDATA[$this->response->addHeader('Content-Type: application/json');]]></search>
+      <add position="before">
+      <![CDATA[
+			// remarketing all in one
+			$this->load->model('tool/remarketing');
+			if ($this->config->get('remarketing_status') && $product_info && !$this->model_tool_remarketing->isBot()) {
+				$categories = $this->model_catalog_product->getRemarketingCategories($product_info['product_id']);
+				$json['remarketing'] = [];
+				$json['remarketing']['facebook_product_id'] = $this->config->get('remarketing_facebook_id') == 'id' ? $product_info['product_id'] : $product_info['model'];
+				$json['remarketing']['ecommerce_product_id'] = $this->config->get('remarketing_ecommerce_id') == 'id' ? $product_info['product_id'] : $product_info['model'];
+				$json['remarketing']['vk_product_id'] = $this->config->get('remarketing_vk_id') == 'id' ? $product_info['product_id'] : $product_info['model'];
+				$json['remarketing']['product_id'] = $product_info['product_id'];
+				$json['remarketing']['vk_identifier'] = $this->config->get('remarketing_vk_identifier');
+				$json['remarketing']['facebook_status'] = $this->config->get('remarketing_facebook_status');
+				$json['remarketing']['facebook_pixel_status'] = $this->config->get('remarketing_facebook_pixel_status');
+				$json['remarketing']['vk_status'] = $this->config->get('remarketing_vk_status');
+				$json['remarketing']['tiktok_status'] = $this->config->get('remarketing_tiktok_status');
+				$current_price = $product_info['special'] ? $product_info['special'] : $product_info['price'];
+				$json['remarketing']['price'] = $this->currency->format($current_price, $this->session->data['currency'], '', false);
+				$json['remarketing']['google_price'] = $this->currency->format($current_price, $this->config->get('remarketing_google_currency'), '', false);
+				$json['remarketing']['facebook_price'] = $this->currency->format($current_price, $this->config->get('remarketing_facebook_currency'), '', false);
+				$json['remarketing']['ecommerce_price'] = $this->currency->format($current_price, $this->config->get('remarketing_ecommerce_currency'), '', false);
+				$json['remarketing']['brand'] = addslashes($product_info['manufacturer']);
+				$json['remarketing']['name'] = addslashes($product_info['name']);
+				$json['remarketing']['category'] = addslashes($categories);
+				$json['remarketing']['currency'] = $this->session->data['currency'];
+				$json['remarketing']['quantity'] = 1;
+				$json['remarketing']['google_currency'] = $this->config->get('remarketing_google_currency');
+				$json['remarketing']['facebook_currency'] = $this->config->get('remarketing_facebook_currency');
+				$json['remarketing']['ecommerce_currency'] = $this->config->get('remarketing_ecommerce_currency');
+				$fb_time = time();
+				$json['remarketing']['time'] = $fb_time;
+				$json['remarketing']['google_gtag_status'] = $this->config->get('remarketing_ecommerce_gtag_status');
+				$json['remarketing']['ecommerce_ga4_status'] = $this->config->get('remarketing_ecommerce_ga4_status');
+				$json['remarketing']['ecommerce_ga4_identifier'] = $this->config->get('remarketing_ecommerce_ga4_identifier');
+				$json['remarketing']['ecommerce_ga4_product_id'] = $this->config->get('remarketing_ecommerce_ga4_id') == 'id' ? $product_info['product_id'] : $product_info['model'];
+				
+				$json['remarketing']['facebook_pixel_event'] = [
+					'content_name' => $json['remarketing']['name'],
+					'content_ids' => [$json['remarketing']['facebook_product_id']],
+					'content_type' => 'product',
+					'content_category' => $json['remarketing']['category'],
+					'value'   => $json['remarketing']['facebook_price'],
+					'currency'   => $this->config->get('remarketing_facebook_currency')
+				];
+				$json['remarketing']['tiktok_event'] = [
+					'content_name' => $json['remarketing']['name'],
+					'content_id' => $json['remarketing']['product_id'],
+					'content_type' => 'product',
+					'content_category' => $json['remarketing']['category'],
+					'value'   => $json['remarketing']['price'],
+					'currency'   => $json['remarketing']['currency']
+				];
+				$ecommerce_ga4_product = [
+					'item_name' => $json['remarketing']['name'],
+					'index' => 1,
+					'price' => $json['remarketing']['ecommerce_price'],
+					'quantity' => $json['remarketing']['quantity']
+				];
+				if (!empty($json['remarketing']['brand'])) $ecommerce_ga4_product['item_brand'] = $json['remarketing']['brand'];
+				if (!empty($json['remarketing']['category'])) $ecommerce_ga4_product['item_category'] = $json['remarketing']['category'];
+				$json['remarketing']['ecommerce_ga4_event'] = [
+					'send_to' => $this->config->get('remarketing_ecommerce_ga4_identifier'),
+					'currency' => $json['remarketing']['ecommerce_currency'],
+					'items' => [$ecommerce_ga4_product]
+				];
+				
+				$ecommerce_product = [
+					'id' => $json['remarketing']['ecommerce_product_id'],
+					'name' => $json['remarketing']['name'],
+					'price' => $json['remarketing']['ecommerce_price'],
+					'quantity' => $json['remarketing']['quantity']
+				];
+				if (!empty($json['remarketing']['brand'])) $ecommerce_product['brand'] = $json['remarketing']['brand'];
+				if (!empty($json['remarketing']['category'])) $ecommerce_product['category'] = $json['remarketing']['category'];
+
+				$json['remarketing']['ecommerce_gtag_event'] = [
+					'send_to' => $this->config->get('remarketing_ecommerce_analytics_id'),
+					'currency' => $json['remarketing']['ecommerce_currency'],
+					'value' => $json['remarketing']['ecommerce_price'],
+					'items' => [$ecommerce_product]
+				];
+				
+				if ($this->config->get('remarketing_facebook_status') && $this->config->get('remarketing_facebook_server_side') && $this->config->get('remarketing_facebook_token')) {
+					$facebook_data['event_name'] = 'AddToWishlist';
+					$facebook_data['custom_data'] = [
+						'value' => $json['remarketing']['facebook_price'],
+						'currency' => $json['remarketing']['facebook_currency'],
+						'content_ids' => [
+							$json['remarketing']['facebook_product_id']
+						],
+						'content_name' => addslashes($product_info['name']),
+						'content_category' => $categories,
+						'content_type' => 'product',
+						'opt_out' => false
+					];
+					$facebook_data['time'] = $fb_time;
+					
+					$this->model_tool_remarketing->sendFacebook($facebook_data);
+				}
+			}
+			
+			if ($this->config->get('remarketing_ecommerce_ga4_measurement_status')) {
+				if (!empty($this->session->data['uuid'])) {
+				$uuid = $this->session->data['uuid'];		
+				
+				$item = [
+					// Google refuses id 'item_id' => ($this->config->get('remarketing_ecommerce_ga4_measurement_id') == 'id') ? $product_info['product_id'] : $product_info['model'],
+					'item_name' => $product_info['name'],
+					'affiliation' => $this->config->get('config_name'),
+					'price' => $json['remarketing']['ecommerce_price'],
+					'currency' => $this->config->get('remarketing_ecommerce_currency'),
+					'quantity' => 1,
+				];
+				if(!empty($json['remarketing']['brand'])) $item['item_brand'] = addslashes($json['remarketing']['brand']);
+				if(!empty($categories)) $item['item_category'] = $item['item_list_name'] = addslashes($categories);
+				
+				$ecommerce_data = [
+					'client_id' => $uuid,
+					'events' => [[
+						'name' => 'add_to_wishlist',
+						'params' => [
+							'currency' => $this->config->get('remarketing_ecommerce_currency'),
+							'items' => [$item],
+							'value' => $json['remarketing']['ecommerce_price']
+						]],
+					],
+				]; 
+				
+				$this->model_tool_remarketing->sendEcommerceGa4($ecommerce_data);
+				}
+			}
+	]]> 
+      </add>
+    </operation>
+  </file>
+  <file path="catalog/model/checkout/order.php">
+	<operation error="skip">
+      <search><![CDATA[$this->db->query("UPDATE `" . DB_PREFIX . "order` SET order_status_id = '" . (int)$order_status_id . "', date_modified = NOW() WHERE order_id = '" . (int)$order_id . "'");]]></search>
+      <add position="after">
+	  <![CDATA[
+	    // remarketing all in one
+		$this->load->model('tool/remarketing');
+		
+		if ($this->config->get('remarketing_status') && !$this->model_tool_remarketing->isBot()) {
+			
+			$this->load->model('catalog/product');
+			$ecommerce_currency = $this->config->get('remarketing_ecommerce_currency'); 
+			$facebook_currency = $this->config->get('remarketing_facebook_currency'); 
+			$ecommerce_info = $this->model_tool_remarketing->getOrderRemarketing($order_id);
+			$fb_time = time(); 
+			
+	    if ($this->config->get('remarketing_ecommerce_measurement_status')) {
+			$refund_status = $this->config->get('remarketing_refund_status');
+			if (is_array($refund_status) && in_array($order_status_id, $refund_status)) {
+
+			if (!empty($this->session->data['uuid'])) {
+				$uuid = $this->session->data['uuid'];		
+				$ecommerce_data = [
+					'ti'  => $order_info['order_id'],
+					'ec'  => 'Enhanced Ecommerce',
+					'ea'  => 'Refund', 
+					'ni'  => 1,
+					'pa'  => 'refund'
+				]; 
+				 
+				if ($order_info['ip']) {
+					$ecommerce_data['ip'] = $order_info['ip']; 
+				}
+				
+				if ($order_info['user_agent']) {
+					$ecommerce_data['user_agent'] = $order_info['user_agent']; 
+				}
+
+				$this->model_tool_remarketing->sendEcommerce($ecommerce_data);
+				}
+			}
+		
+		$send_status = $this->config->get('remarketing_ecommerce_send_status');
+		
+		if (($this->config->get('remarketing_ecommerce_resend_status') != '0' && $this->config->get('remarketing_ecommerce_resend_status') == $order_status_id) || (is_array($send_status) && in_array($order_status_id, $send_status) && $ecommerce_info['sent_data']['ecommerce'] == '0000-00-00 00:00:00')) {
+				$data['ecommerce_totalvalue'] = $ecommerce_info['ecommerce_total']; 
+
+				if (!empty($this->session->data['uuid'])) {
+				$uuid = $this->session->data['uuid'];		
+				$ecommerce_data = [
+					'ti'  => $ecommerce_info['order_id'],
+					'ta'  => addslashes($ecommerce_info['store_name']),
+					'ts'  => $ecommerce_info['shipping'],
+					'tr'  => $data['ecommerce_totalvalue'],
+					'ec'  => 'Enhanced Ecommerce',
+					'ea'  => 'Purchase', 
+					'ni'  => 1,
+					'cu'  => $ecommerce_currency,
+					'pa'  => 'purchase'
+				]; 
+				
+				if ($ecommerce_info['coupon']) {
+					$ecommerce_data['tcc'] = $ecommerce_info['coupon'];
+				}
+				
+				if ($order_info['ip']) {
+					$ecommerce_data['ip'] = $order_info['ip']; 
+				}
+				
+				if ($order_info['user_agent']) {
+					$ecommerce_data['user_agent'] = $order_info['user_agent']; 
+				}
+
+				$i = 1;
+				if ($ecommerce_info['products']) {
+					foreach ($ecommerce_info['products'] as $product){
+						$ecommerce_data['pr' . $i .'nm'] = $product['name'];
+						$ecommerce_data['pr' . $i .'id'] = ($this->config->get('remarketing_ecommerce_measurement_id') == 'id') ? $product['product_id'] : $product['model'];
+						$ecommerce_data['pr' . $i .'pr'] = $product['ecommerce_price'];
+						$ecommerce_data['pr' . $i .'br'] = $product['product_info']['manufacturer'];
+						$ecommerce_data['pr' . $i .'ca'] = $product['category'];
+						if (!empty($product['variant'])) $ecommerce_data['pr' . $i .'va'] = $product['variant'];
+						$ecommerce_data['pr' . $i .'qt'] = $product['quantity'];
+						$i++;
+					}
+				}
+				
+					$this->model_tool_remarketing->sendEcommerce($ecommerce_data);
+					$this->model_tool_remarketing->setSend($order_id, 'ecommerce');
+				}
+		}
+		
+		if ($this->config->get('remarketing_ecommerce_delete_status') != '0' && $this->config->get('remarketing_ecommerce_delete_status') == $order_status_id) {
+				$data['ecommerce_totalvalue'] = $ecommerce_info['ecommerce_total']; 
+ 
+				if (!empty($this->session->data['uuid'])) {
+				$uuid = $this->session->data['uuid'];		
+				$ecommerce_data = [
+					'ti'  => $ecommerce_info['order_id'],
+					'ta'  => addslashes($ecommerce_info['store_name']),
+					'ts'  => $ecommerce_info['shipping'] * -1,
+					'tr'  => $data['ecommerce_totalvalue'] * -1,
+					'ec'  => 'Enhanced Ecommerce',
+					'ea'  => 'Purchase', 
+					'ni'  => 1,
+					'cu'  => $ecommerce_currency,
+					'pa'  => 'purchase'
+				]; 
+				
+				if ($ecommerce_info['coupon']) {
+					$ecommerce_data['tcc'] = $ecommerce_info['coupon'];
+				}
+				
+				if ($order_info['ip']) {
+					$ecommerce_data['ip'] = $order_info['ip']; 
+				}
+				
+				if ($order_info['user_agent']) {
+					$ecommerce_data['user_agent'] = $order_info['user_agent']; 
+				}
+				
+				$i = 1;
+				if ($ecommerce_info['products']) {
+					foreach ($ecommerce_info['products'] as $product){
+						$ecommerce_data['pr' . $i .'nm'] = $product['name'];
+						$ecommerce_data['pr' . $i .'id'] = ($this->config->get('remarketing_ecommerce_measurement_id') == 'id') ? $product['product_id'] : $product['model'];
+						$ecommerce_data['pr' . $i .'pr'] = $product['ecommerce_price'];
+						$ecommerce_data['pr' . $i .'br'] = $product['product_info']['manufacturer'];
+						$ecommerce_data['pr' . $i .'ca'] = $product['category'];
+						if (!empty($product['variant'])) $ecommerce_data['pr' . $i .'va'] = $product['variant'];
+						$ecommerce_data['pr' . $i .'qt'] = $product['quantity'] * -1;
+						$i++;
+					}
+				}
+				
+				$this->model_tool_remarketing->sendEcommerce($ecommerce_data);
+				}
+			}
+		}
+			if ($this->config->get('remarketing_ecommerce_ga4_measurement_status')) {
+				$ga4_send_status = $this->config->get('remarketing_ecommerce_ga4_send_status');
+				$ga4_refund_status = $this->config->get('remarketing_ecommerce_ga4_refund_status');
+			
+				$event_name = false;
+				if (is_array($ga4_send_status) && in_array($order_status_id, $ga4_send_status) && $ecommerce_info['sent_data']['ecommerce_ga4'] == '0000-00-00 00:00:00') {
+					$event_name = 'purchase';
+				}
+				if (is_array($ga4_refund_status) && in_array($order_status_id, $ga4_refund_status)) {
+					$event_name = 'refund';
+				}
+				
+				if ($event_name) {
+					if (!empty($this->session->data['uuid'])) {
+					$uuid = $this->session->data['uuid'];		 
+					
+					$params = [];
+					$params['affiliation'] = addslashes($ecommerce_info['store_name']);
+					if ($ecommerce_info['coupon']) {
+						$params['coupon'] = $ecommerce_info['coupon'];
+					}
+					
+					$params['currency'] = $ecommerce_currency;
+					$items = [];
+					foreach ($ecommerce_info['products'] as $product) {
+						$item = [
+							// Google refuses id 'item_id' => ($this->config->get('remarketing_ecommerce_ga4_measurement_id') == 'id') ? $product_info['product_id'] : $product_info['model'],
+							'item_name' => $product['name'],
+							'quantity' => $product['quantity'],
+							'affiliation' => addslashes($ecommerce_info['store_name']),
+							'price' => $product['ecommerce_price'],
+							'currency' => $ecommerce_currency,
+						];
+						if (!empty($product['product_info']['manufacturer'])) {
+							$item['item_brand'] = $product['product_info']['manufacturer'];
+						}
+						if (!empty($product['category'])) {
+							$item['item_category'] = $product['category'];
+						}
+						if (!empty($product['variant'])) {
+							$item['item_variant'] = $product['variant'];
+						}
+						
+						$items[] = $item;
+					}					
+					$params['items'] = $items;
+					
+					$params['transaction_id'] = $ecommerce_info['order_id'];
+					if ($ecommerce_info['shipping']) {
+						$params['shipping'] = $ecommerce_info['shipping'];
+					}
+					$params['value'] = $ecommerce_info['ecommerce_total'];
+					
+					$ecommerce_data = [
+						'client_id' => $uuid,
+						'events' => [[
+							'name' => $event_name,
+							'params' => $params
+							]]
+					];
+					
+					
+					$this->model_tool_remarketing->sendEcommerceGa4($ecommerce_data);
+					$this->model_tool_remarketing->setSend($order_id, 'ecommerce_ga4');
+				}
+			}
+		}
+
+		$facebook_send_status = $this->config->get('remarketing_facebook_send_status');
+		  
+		if ($this->config->get('remarketing_facebook_status') && $this->config->get('remarketing_facebook_server_side') && $this->config->get('remarketing_facebook_token') && (($this->config->get('remarketing_facebook_resend_status') != '0' && $this->config->get('remarketing_facebook_resend_status') == $order_status_id) || ((is_array($facebook_send_status) && in_array($order_status_id, $facebook_send_status) && $ecommerce_info['sent_data']['facebook'] == '0000-00-00 00:00:00')))) {
+			$facebook_data['event_name'] = 'Purchase';
+			$fb_products = [];
+			$num_items = 0;
+            
+			foreach ($ecommerce_info['products'] as $product) {
+				$fb_products[] = [
+					'id'         => ($this->config->get('remarketing_facebook_id') == 'id' ? $product['product_id'] : $product['model']),
+					'quantity'   => $product['quantity'],
+					'item_price' => $product['facebook_price']
+				];
+				$num_items += $product['quantity'];
+			}
+			$facebook_data['custom_data'] = [
+				'value'        => $ecommerce_info['facebook_total'],
+				'currency'     => $facebook_currency,
+				'contents'     => $fb_products,
+				'num_items'    => $num_items,
+				'content_type' => 'product',
+				'opt_out'      => false
+			];
+			
+			$facebook_data['time'] = $fb_time;
+			
+			$this->model_tool_remarketing->sendFacebook($facebook_data, $ecommerce_info);
+			
+			if ($this->config->get('remarketing_facebook_lead')) {
+				$facebook_data = [];	
+				$facebook_data['event_name'] = 'Lead';
+				$facebook_data['custom_data'] = [
+					'value'        => $ecommerce_info['facebook_total'],
+					'currency'     => $facebook_currency,
+					'opt_out'      => false
+				];
+			
+				$facebook_data['time'] = $fb_time;
+				$this->model_tool_remarketing->sendFacebook($facebook_data, $ecommerce_info);
+			}
+			
+			$this->model_tool_remarketing->setSend($order_id, 'facebook');
+		} 
+		
+		$facebook_lead_send_status = $this->config->get('remarketing_facebook_lead_send_status');
+		  
+		if ($this->config->get('remarketing_facebook_status') && $this->config->get('remarketing_facebook_server_side') && $this->config->get('remarketing_facebook_token') && ((is_array($facebook_lead_send_status) && in_array($order_status_id, $facebook_lead_send_status) && $ecommerce_info['sent_data']['facebook_lead'] == '0000-00-00 00:00:00'))) {
+			$facebook_data = [];	
+			$facebook_data['event_name'] = 'Lead';
+			$facebook_data['custom_data'] = [ 
+				'value'        => $ecommerce_info['facebook_total'],
+				'currency'     => $facebook_currency,
+				'opt_out'      => false
+			];
+			
+			$facebook_data['time'] = $fb_time;
+			$this->model_tool_remarketing->sendFacebook($facebook_data, $ecommerce_info);
+			
+			$this->model_tool_remarketing->setSend($order_id, 'facebook_lead');
+		} 
+		
+			if ($this->config->get('remarketing_telegram_status')) {
+				$tg_send_status = $this->config->get('remarketing_telegram_send_status');
+				if (is_array($tg_send_status) && in_array($order_status_id, $tg_send_status) && $ecommerce_info['sent_data']['telegram'] == '0000-00-00 00:00:00') {
+					$this->model_tool_remarketing->sendTelegram($order_id);
+					$this->model_tool_remarketing->setSend($order_id, 'telegram');
+				}
+			}
+			
+			if ($this->config->get('remarketing_esputnik_status')) {
+				$event_type = false;
+				$esputnik_status = false;
+				$initialized_status = $this->config->get('remarketing_esputnik_initialized_status');
+				if (is_array($initialized_status) && in_array($order_status_id, $initialized_status) && $ecommerce_info['sent_data']['esputnik'] == '0000-00-00 00:00:00') {
+					$event_type = 'orderCreated';
+					$esputnik_status = 'INITIALIZED';
+				}
+				
+				$in_progress_status = $this->config->get('remarketing_esputnik_inprogress_status');
+				if (is_array($in_progress_status) && in_array($order_status_id, $in_progress_status)) {
+					$event_type = 'orderUpdated';
+					$esputnik_status = 'IN_PROGRESS';
+				}
+				
+				$delivered_status = $this->config->get('remarketing_esputnik_delivered_status');
+				if (is_array($delivered_status) && in_array($order_status_id, $delivered_status)) {
+					$event_type = 'orderDelivered';
+					$esputnik_status = 'DELIVERED';
+				}
+				
+				$cancelled_status = $this->config->get('remarketing_esputnik_cancelled_status');
+				if (is_array($cancelled_status) && in_array($order_status_id, $cancelled_status)) {
+					$event_type = 'orderCancelled';
+					$esputnik_status = 'CANCELLED';
+				}
+
+				if ($event_type && $esputnik_status && !empty($ecommerce_info['email'])) {
+					$event = new stdClass();
+					$event->eventTypeKey = $event_type;
+					$event->keyValue = $ecommerce_info['email'];
+					$event->params = []; 
+					$event->params[] = ['name' => 'phone', 'value' => $ecommerce_info['telephone']];
+					$event->params[] = ['name' => 'externalOrderId', 'value' => $ecommerce_info['order_id']];
+					if (!empty($ecommerce_info['customer_id'])) {
+						$event->params[] = ['name' => 'externalCustomerId', 'value' => $ecommerce_info['customer_id']];
+					}
+					$event->params[] = ['name' => 'totalCost', 'value' => $ecommerce_info['default_total']];
+					$event->params[] = ['name' => 'status', 'value' => $esputnik_status];
+					$event->params[] = ['name' => 'date', 'value' => date('Y-m-d\TH:i:s') . '+02:00'];
+					if (!empty($ecommerce_info['firstname'])) {
+						$event->params[] = ['name' => 'firstName', 'value' => $ecommerce_info['firstname']];
+					}
+					if (!empty($ecommerce_info['lastname'])) {
+						$event->params[] = ['name' => 'lastName', 'value' => $ecommerce_info['lastname']];
+					}
+					if (!empty($ecommerce_info['order_info'][$this->config->get('remarketing_esputnik_ttn_field')])) {
+						$event->params[] = ['name' => 'ttn', 'value' => $ecommerce_info['order_info'][$this->config->get('remarketing_esputnik_ttn_field')]];
+					}
+					$event->params[] = ['name' => 'currency', 'value' => $this->session->data['currency']];
+					if ($ecommerce_info['shipping']) {
+						$event->params[] = ['name' => 'shipping', 'value' => $ecommerce_info['shipping']];
+					}
+					$event->params[] = ['name' => 'deliveryMethod', 'value' => $order_info['shipping_method']];
+					$event->params[] = ['name' => 'paymentMethod', 'value' => $order_info['payment_method']];
+					
+					$format = $this->config->get('remarketing_esputnik_address_format');
+					
+					$find = [
+						'{firstname}',
+						'{lastname}',
+						'{company}',
+						'{address_1}',
+						'{address_2}',
+						'{city}',
+						'{postcode}',
+						'{zone}',
+						'{zone_code}',
+						'{country}'
+					];
+	
+					$replace = [ 
+						'firstname' => $order_info['shipping_firstname'],
+						'lastname'  => $order_info['shipping_lastname'],
+						'company'   => $order_info['shipping_company'],
+						'address_1' => $order_info['shipping_address_1'],
+						'address_2' => $order_info['shipping_address_2'],
+						'city'      => $order_info['shipping_city'],
+						'postcode'  => $order_info['shipping_postcode'],
+						'zone'      => $order_info['shipping_zone'],
+						'zone_code' => $order_info['shipping_zone_code'],
+						'country'   => $order_info['shipping_country']
+					];
+	
+					$esputnik_address = str_replace(["\r\n", "\r", "\n"], '<br />', preg_replace(["/\s\s+/", "/\r\r+/", "/\n\n+/"], '<br />', trim(str_replace($find, $replace, $format))));
+					$event->params[] = ['name' => 'deliveryAddress', 'value' => $esputnik_address];
+					$items = [];
+					
+					$this->load->model('tool/image');
+					foreach ($ecommerce_info['products'] as $product) {
+						if ($product['product_info']['image']) {
+							$product_image = $this->model_tool_image->resize($product['product_info']['image'], 200, 200);
+						} else {
+							$product_image = $this->model_tool_image->resize('no_image.jpg', 200, 200);
+						}
+						$items[] = [
+							'externalItemId' => $product['product_id'],
+							'name'           => $product['name'],
+							'category'       => $product['category'],
+							'quantity'       => $product['quantity'],
+							'cost'           => $product['price'],
+							'url'            => $this->url->link('product/product', 'product_id=' . $product['product_id']),
+							'imageUrl'       => $product_image
+						];
+					}
+					
+					if (!isset($this->session->data['esputnik_uniq'])) {
+						$this->session->data['esputnik_uniq'] = uniqid();
+					}
+					$event->params[] = ['name' => 'recycleStateId', 'value' => $this->session->data['esputnik_uniq']];
+					$event->params[] = ['name' => 'items', 'value' => json_encode($items)];
+					$this->model_tool_remarketing->sendEsputnik($event);
+					if ($esputnik_status == 'INITIALIZED') {
+						$this->model_tool_remarketing->setSend($order_id, 'esputnik');
+					}
+				}
+			}
+		}
+		]]>
+      </add>
+    </operation>
+	<operation error="skip">
+      <search><![CDATA[return $order_id;]]></search>
+      <add position="before">
+	  <![CDATA[
+	  $this->session->data['remarketing_order_id'] = $order_id;
+	  setcookie('remarketing_order_id', $order_id, time() + 24 * 3600, '/');
+	  $this->load->model('tool/remarketing'); 
+	  $this->model_tool_remarketing->getOrderRemarketing($order_id);
+	  ]]>
+      </add>
+    </operation> 
+	<operation error="skip">
+      <search><![CDATA[$this->db->query("DELETE FROM `" . DB_PREFIX . "order` WHERE order_id = '" . (int)$order_id . "'");]]></search>
+      <add position="after">
+	  <![CDATA[
+		$this->db->query("DELETE FROM `" . DB_PREFIX . "remarketing_orders` WHERE order_id = '" . (int)$order_id . "'");	  ]]>
+      </add>
+    </operation>
+  </file>
+  <file path="admin/model/sale/order.php">
+	<operation error="skip">
+      <search><![CDATA[$this->db->query("DELETE FROM `" . DB_PREFIX . "order` WHERE order_id = '" . (int)$order_id . "'");]]></search>
+      <add position="after">
+	  <![CDATA[
+		$this->db->query("DELETE FROM `" . DB_PREFIX . "remarketing_orders` WHERE order_id = '" . (int)$order_id . "'");	  ]]>
+      </add>
+    </operation>
+  </file>
+  <file path="catalog/model/account/customer.php">
+	<operation error="skip">
+      <search><![CDATA[$customer_id = $this->db->getLastId();]]></search>
+      <add position="after">
+	  <![CDATA[
+	    // remarketing all in one
+		$this->load->model('tool/remarketing');
+		if ($this->config->get('remarketing_status') && !$this->model_tool_remarketing->isBot()) {
+		if ($this->config->get('remarketing_facebook_status') && $this->config->get('remarketing_facebook_server_side') && $this->config->get('remarketing_facebook_token')) {
+			$facebook_data['event_name'] = 'CompleteRegistration';
+			$fb_time = time();
+			$facebook_data['custom_data'] = [
+				'status' => true,
+				'currency' => $this->config->get('remarketing_facebook_currency'),
+				'value' => 1
+			];
+			$facebook_data['time'] = $fb_time;
+			
+			$this->model_tool_remarketing->sendFacebook($facebook_data);
+		}
+		
+		if ($this->config->get('remarketing_esputnik_status') && $customer_id) {
+			if (isset($data['newsletter']) && $data['newsletter']) {
+				$create_contact_url = 'https://esputnik.com/api/v1/contact/subscribe';
+				$json_contact_value = new stdClass();
+				$contact = new stdClass();
+				$contact->firstName = $data['firstname'];
+				$contact->lastName = $data['lastname'];
+				$contact->contactKey = $customer_id;
+				$contact->id = $customer_id;
+				$contact->channels = [['type'=>'email', 'value' => $data['email']],['type'=>'sms', 'value' => $data['telephone']]];
+				$contact->groups = [['name'=>'Web Site']];
+				$json_contact_value->contact = $contact;
+				$json_contact_value->groups = ['Subscribers'];
+				$this->model_tool_remarketing->sendEsputnik($json_contact_value, $create_contact_url);
+			} else {
+				$create_contact_url = 'https://esputnik.com/api/v1/contact';
+				$contact = new stdClass();
+				$contact->firstName = $data['firstname'];
+				$contact->lastName = $data['lastname'];
+				$contact->contactKey = $customer_id;
+				$contact->id = $customer_id;
+				$contact->channels = [['type'=>'email', 'value' => $data['email']],['type'=>'sms', 'value' => $data['telephone']]];
+				$contact->groups = [['name'=>'Web Site']];
+				$this->model_tool_remarketing->sendEsputnik($contact, $create_contact_url);
+			}
+		}
+		}
+		]]>
+      </add>
+    </operation>
+  </file>
+  <file path="catalog/controller/information/contact.php">
+	<operation error="skip">
+      <search><![CDATA[$mail->send();]]></search>
+      <add position="after">
+	  <![CDATA[
+	    // remarketing all in one
+		$this->load->model('tool/remarketing');
+		if ($this->config->get('remarketing_status') && !$this->model_tool_remarketing->isBot() && $this->config->get('remarketing_facebook_status') && $this->config->get('remarketing_facebook_server_side') && $this->config->get('remarketing_facebook_token')) {
+			$facebook_data['event_name'] = 'Contact';
+			$fb_time = time();
+			$facebook_data['custom_data'] = [];
+			$facebook_data['time'] = $fb_time;
+			$this->model_tool_remarketing->sendFacebook($facebook_data);
+		}
+		]]>
+      </add>
+    </operation>
+  </file>
+  <file path="catalog/controller/checkout/simplecheckout_cart.php">
+	<operation error="skip">
+      <search><![CDATA[$this->_templateData['vouchers'] = array();]]></search>
+      <add position="after">
+	  <![CDATA[
+	// remarketing all in one
+	$this->load->model('tool/remarketing');
+	if ($this->config->get('remarketing_status') && !$this->model_tool_remarketing->isBot()) {
+	$cart_total = $this->cart->getTotal();
+	$this->load->model('catalog/product');
+	$facebook_currency = $this->config->get('remarketing_facebook_currency');
+	$ecommerce_currency = $this->config->get('remarketing_ecommerce_currency');
+	$facebook_totalvalue = $this->currency->format($cart_total, $facebook_currency, '', false); 
+	$ga4_totalvalue = $this->currency->format($cart_total, $ecommerce_currency, '', false); 
+	$facebook_id = $this->config->get('remarketing_facebook_id') == 'id' ? 'product_id' : 'model';
+			
+	$data['facebook_ids'] = [];
+	foreach ($products as $product) {
+		$data['facebook_ids'][] = $product;
+	} 
+	$this->_templateData['facebook_output'] = '';
+	$this->_templateData['gtag_output'] = '';
+	$this->_templateData['ga4_output'] = '';
+	if ($this->config->get('remarketing_facebook_status') && $this->config->get('remarketing_facebook_identifier') && $this->config->get('remarketing_facebook_pixel_status')) {
+		if (!empty($data['facebook_ids'])) {
+			$this->_templateData['facebook_output'] .= "<script>" . "\n";
+			$this->_templateData['facebook_output'] .= "facebook_payment_data = {" . "\n";	
+			$this->_templateData['facebook_output'] .= "content_type: 'product'," . "\n";
+			
+			$num_items = 0;
+			foreach ($data['facebook_ids'] as $product) {
+				$num_items += $product['quantity'];
+			}
+			$this->_templateData['facebook_output'] .= "num_items: " . $num_items . "," . "\n";
+				$this->_templateData['facebook_output'] .= "contents: [" . "\n";
+				foreach ($data['facebook_ids'] as $product) {
+					$this->_templateData['facebook_output'] .= "{" . "'id': '" . $product[$facebook_id] . "', 'price': " . $this->currency->format($product['price'], $this->config->get('remarketing_facebook_currency'), '', false) . ", 'quantity': " . $product['quantity'] . "},";
+				
+			}
+			$this->_templateData['facebook_output'] = rtrim($this->_templateData['facebook_output'], ',');
+			$this->_templateData['facebook_output'] .= "],\n";
+			$this->_templateData['facebook_output'] .= 'value: ' . $facebook_totalvalue . ',' . "\n";
+			$this->_templateData['facebook_output'] .= "currency: '" .  $this->config->get('remarketing_facebook_currency') . "'" . "\n";
+			$this->_templateData['facebook_output'] .= "}</script>";
+		}
+	}
+	
+	if ($this->config->get('remarketing_ecommerce_ga4_status')) {
+		$ga4_event = [];
+		$ga4_event['currency'] = $ecommerce_currency;
+		$ga4_event['send_to'] = $this->config->get('remarketing_ecommerce_ga4_identifier');
+		$ga4_event['value'] = $ga4_totalvalue;
+		if (!empty($this->session->data['coupon'])) $ga4_event['coupon'] = $this->session->data['coupon'];
+		if (!empty($this->session->data['payment_method']['title'])) $ga4_event['payment_type'] = $this->session->data['payment_method']['title'];
+		$list_products = [];
+		foreach ($products as $product) {
+			$product_info = $this->model_catalog_product->getProduct($product['product_id']);
+			$categories = addslashes($this->model_catalog_product->getRemarketingCategories($product['product_id']));
+			$ga4_product = [
+				'item_name' => addslashes($product['name']),
+				'quantity' => $product['quantity'],
+				'affiliation' => $this->config->get('config_name'),
+				'price' => $this->currency->format($product['price'], $ecommerce_currency, '', false),
+				'currency' => $ecommerce_currency
+			];
+			
+			if (!empty($categories)) $ga4_product['item_category'] = $categories;
+			if (!empty($product_info['manufacturer'])) $ga4_product['item_brand'] = $product_info['manufacturer'];
+			$list_products[] = $ga4_product;
+		}
+		
+		$ga4_event['items'] = $list_products; 
+		
+		if (!empty($ga4_event)) {
+			$this->_templateData['ga4_output'] .= "<script>" . "\n";
+			$this->_templateData['ga4_output'] .= "ga4_payment_data = " . json_encode($ga4_event) . ";\n";	
+			$this->_templateData['ga4_output'] .= "</script>";
+		}
+	}
+	
+	if ($this->config->get('remarketing_ecommerce_gtag_status')) {
+		$gtag_event = [];
+		$gtag_event['currency'] = $ecommerce_currency;
+		$gtag_event['send_to'] = $this->config->get('remarketing_ecommerce_analytics_id');
+		$gtag_event['value'] = $ga4_totalvalue;
+		if (!empty($this->session->data['coupon'])) $gtag_event['coupon'] = $this->session->data['coupon'];
+		if (!empty($this->session->data['payment_method']['title'])) $gtag_event['payment_type'] = $this->session->data['payment_method']['title'];
+		$list_products = [];
+		// no_parameters
+		/*foreach ($products as $product) {
+			$product_info = $this->model_catalog_product->getProduct($product['product_id']);
+			$categories = addslashes($this->model_catalog_product->getRemarketingCategories($product['product_id']));
+			$gtag_product = [
+				'id' => addslashes($product['name']),
+				'name' => addslashes($product['name']),
+				'quantity' => $product['quantity'],
+				'price' => $this->currency->format($product['price'], $ecommerce_currency, '', false)
+			];
+			
+			if (!empty($categories)) $gtag_product['category'] = $categories;
+			if (!empty($product_info['manufacturer'])) $gtag_product['brand'] = $product_info['manufacturer'];
+			$list_products[] = $gtag_product;
+		}*/
+		
+		$gtag_event['items'] = $list_products; 
+		$gtag_event = [];
+		$gtag_event['send_to'] = $this->config->get('remarketing_ecommerce_analytics_id');
+		if (!empty($gtag_event)) {
+			$this->_templateData['gtag_output'] .= "<script>" . "\n";
+			$this->_templateData['gtag_output'] .= "gtag_payment_data = " . json_encode($gtag_event) . ";\n";	
+			$this->_templateData['gtag_output'] .= "</script>";
+		}
+	}
+} 
+	]]>
+      </add>
+    </operation>
+  </file>
+  <file path="admin/controller/sale/order.php">
+	<operation error="skip">
+      <search><![CDATA[public function info() {]]></search>
+      <add position="after">
+	  <![CDATA[
+	    // remarketing all in one
+	    $data['remarketing_data'] = [];
+		if (isset($this->request->get['order_id'])) {
+			$order_id = $this->request->get['order_id'];
+			$remarketing_query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "remarketing_orders` WHERE order_id = '" . (int)$order_id . "'");
+			if($remarketing_query->num_rows) { 
+				$data['remarketing_data'] = $remarketing_query->rows[0];
+			}
+		} 
+		]]>
+      </add>
+    </operation>
+  </file>
+</modification>

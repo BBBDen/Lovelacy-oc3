@@ -1,0 +1,711 @@
+{{ header }}
+<div class="breadcrumbs">
+    <div class="container">
+        <ul>
+            {% for breadcrumb in breadcrumbs %}
+                <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+            {% endfor %}
+        </ul>{{ text_back_button }}
+    </div>
+</div>
+
+<section class="account">
+    <div class="container">
+        <div class="account__wrapper flex flex_fs">
+            <aside class="account__menu">
+                <div class="account__item account__item_active account-page"><svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="14.5" cy="7.5" r="5.5" stroke="black" stroke-width="1.6"/>
+                        <path d="M14 16C20.7091 16 24.6333 20.7902 23.916 26H14" stroke="black" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M14 16C7.9618 16 4.43003 20.7902 5.07562 26H14" stroke="black" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg><a id="account__link--personal" class="account__link" href="javascript:void(0);">{{ heading_title }}</a>
+                </div>
+                <div class="account__item account__history"><svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14 3C7.93471 3 3 7.93471 3 14C3 20.0653 7.93471 25 14 25C20.0653 25 25 20.0653 25 14C25 7.93471 20.0653 3 14 3ZM14 23.625C8.69268 23.625 4.37501 19.3073 4.37501 14C4.37501 8.69268 8.69268 4.37501 14 4.37501C19.3073 4.37501 23.625 8.69268 23.625 14C23.625 19.3073 19.3073 23.625 14 23.625Z" fill="black"/>
+                        <path d="M15.557 7H14V13.8567L18.8991 18L20 17.069L15.557 13.3114V7Z" fill="black"/>
+                    </svg><a class="account__link order-history" href="{{ order }}">{{ text_order }}</a>
+                </div>
+
+
+                <div class="account__item account__subscription">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3.75 7C3.75 5.20507 5.20507 3.75 7 3.75H22C23.7949 3.75 25.25 5.20507 25.25 7V10.25H3.75V7Z" stroke="black" stroke-width="1.5"/>
+                        <path d="M25.25 20C25.25 21.7949 23.7949 23.25 22 23.25L7 23.25C5.20507 23.25 3.75 21.7949 3.75 20L3.75 13.75L25.25 13.75L25.25 20Z" stroke="black" stroke-width="1.5"/>
+                        <circle cx="9" cy="18" r="2" fill="black"/>
+                    </svg>
+                    <a id="account__link order-history-subscribe" class="account__link order-history" href="javascript:void(0);">Подписка</a>
+                    {% if user_pay_status != 'successful' %}
+                    <span class="info-block"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="#E44897"/>
+                            <path d="M13 5H11L11.5 14H12.5L13 5Z" fill="white"/>
+                            <circle cx="12" cy="17" r="1" fill="white"/>
+                        </svg>
+                        <div class="info-block__tooltip">Для оформления подписки укажите ваши параметры и привяжите карту для оплаты</div>
+                    </span>
+                    {% endif %}
+
+                </div>
+            </aside>
+            <div class="account-info">
+                <div class="account-info--personal">
+                    <div class="account-info__title">{{ text_my_account }}</div>
+                    <div class="account-info__block account-info__block--p">
+                        <div class="p--info">
+                            <div class="account-info__text account-info__name">{{ name }}</div>
+                            <div class="account-info__text account-info__date">{{ birthday }}</div>
+                            <div class="account-info__flex flex">
+                                <div class="account-info__text account-info__phone">{{ phone }}</div>
+                                {#                            <div class="account-info__checkbox checkbox">#}
+                                {#                                <label class="custom-checkbox">#}
+                                {#                                    <input type="checkbox"><span class="flex"><span class="checkbox-button"></span><span class="custom-checkbox__text">Получать СМС уведомления</span></span>#}
+                                {#                                </label>#}
+                                {#                            </div>#}
+                            </div>
+                            <div class="account-info__flex flex">
+                                <div class="account-info__text account-info__mail">{{ email }}</div>
+                                {% if social_nick %}
+                                    <div class="account-info__text account-info__social_nick">{{ social_nick }}</div>
+                                {% endif %}
+                                <div class="account-info__checkbox checkbox">
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" name="newsletter" {{ newsletter_checkbox }}>
+                                        <span class="flex">
+                                        <span class="checkbox-button"></span>
+                                        <span class="custom-checkbox__text">{{ text_newsletter }}</span>
+                                    </span>
+                                    </label>
+                                </div>
+                            </div><a class="btn" href="#">{{ text_edit }} </a>
+                        </div>
+
+                    </div>
+                    <div class="account-info__edit account-info__edit--p">
+                        <div>
+                            <input class="input name-input" name="name" value="{{ name }}" type="text" placeholder="{{ text_name }}">
+                        </div>
+                        <div>
+                            <input class="input" name="birthday" value="{{ birthday }}" type="date" placeholder="{{ text_birthday }}">
+                        </div>
+                        <div>
+                            <input class="input phone-input" name="phone" value="{{ phone }}" type="text" placeholder="{{ text_phone }}">
+                        </div>
+                        <div>
+                            <input class="input email-input" name="email" value="{{ email }}" type="text" placeholder="{{ text_mail }}">
+                        </div>
+                        <div>
+                            <input class="input email-input" name="social_nick" value="{{ social_nick }}" type="text" placeholder="{{ text_social_nick }}">
+                        </div>
+                        <button class="btn btn-personal" data-loading="{{ text_loading }}">{{ text_btn_edit }}</button>
+                    </div>
+                    <div class="account-info__title">{{ text_address }}</div>
+                    <div class="account-info__block account-info__block--a">
+                        <div class="account-info__text account-info__address">
+                            <div class="account-info__block--a__field">
+                                {% if country %}
+                                    {{ country }},
+                                {% endif %}
+                                {% if city %}
+                                    {{ city }},
+                                {% endif %}
+                                {% if street %}
+                                    {{ street }},
+                                {% endif %}
+                                {% if house %}
+                                    {{ house }},
+                                {% endif %}
+                                {% if building %}
+                                    {{ text_building }} {{ building }}
+                                {% endif %}
+                                {% if flat %}
+                                    {{ text_flat }}
+                                    {{ flat }}
+                                {% endif %}
+                            </div>
+
+                        </div><a class="btn" href="#">{{ text_edit }}</a>
+                    </div>
+                    <div class="account-info__edit account-info__edit--a">
+                        <select class="input" name="country_id" type="text" style="padding: 0 16px">
+                            {% for country in countries %}
+                                {% if country.country_id == country_id %}
+                                    <option value="{{ country.country_id }}" selected="selected">{{ country.name }}</option>
+                                {% else %}
+                                    <option value="{{ country.country_id }}">{{ country.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        <select name="zone_id" id="input-shipping-zone" class="form-control input" style="padding: 0 16px">
+                            <option value="">{{ entry_zone_id }}</option>
+                        </select>
+                        <input class="input" name="street" value="{{ street }}" type="text" placeholder="{{ text_street }}">
+                        <div class="flex flex_sb">
+                            <input class="input" name="house" value="{{ house }}" type="text" placeholder="{{ text_house }}">
+                            <input class="input" name="building" value="{{ building }}" type="text" placeholder="{{ text_building_input }}">
+                            <input class="input" name="flat" value="{{ flat }}" type="text" placeholder="{{ text_flat_input }}">
+                        </div>
+                        <button class="btn btn-address" data-loading="{{ text_loading }}">{{ text_btn_edit }}</button>
+                    </div><a class="account-info__change" href="#">{{ text_change_password }}</a>
+                    <div class="account-info__edit acount-info__edit--pass">
+                        <div class="account-info__edit__title">{{ text_change_password }}</div>
+                        <input class="input" name="password" type="password" placeholder="{{ text_new_password }}">
+                        <input class="input" name="confirm" type="password" placeholder="{{ text_confirm_password }}">
+                        <button class="btn btn-pass" data-loading="{{ text_loading }}">{{ text_btn_edit }}</button>
+                    </div><a class="account-info__logout btn" href="index.php?route=account/logout">{{ text_logout }}</a>
+                </div>
+                <div class="account__menu account__menu-mb">
+                    <div class="account__item account__history"><svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14 3C7.93471 3 3 7.93471 3 14C3 20.0653 7.93471 25 14 25C20.0653 25 25 20.0653 25 14C25 7.93471 20.0653 3 14 3ZM14 23.625C8.69268 23.625 4.37501 19.3073 4.37501 14C4.37501 8.69268 8.69268 4.37501 14 4.37501C19.3073 4.37501 23.625 8.69268 23.625 14C23.625 19.3073 19.3073 23.625 14 23.625Z" fill="black"/>
+                            <path d="M15.557 7H14V13.8567L18.8991 18L20 17.069L15.557 13.3114V7Z" fill="black"/>
+                        </svg><a class="account__link order-history" href="{{ order }}">{{ text_order_history }}</a>
+                    </div>
+                    <div class="account__item account__subscription">
+                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3.75 7C3.75 5.20507 5.20507 3.75 7 3.75H22C23.7949 3.75 25.25 5.20507 25.25 7V10.25H3.75V7Z" stroke="black" stroke-width="1.5"/>
+                            <path d="M25.25 20C25.25 21.7949 23.7949 23.25 22 23.25L7 23.25C5.20507 23.25 3.75 21.7949 3.75 20L3.75 13.75L25.25 13.75L25.25 20Z" stroke="black" stroke-width="1.5"/>
+                            <circle cx="9" cy="18" r="2" fill="black"/>
+                        </svg>
+                        <a class="account__link order-history" href="#">{{ text_order_subscribe }}</a>
+                        <span class="info-block"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="#E44897"/>
+                            <path d="M13 5H11L11.5 14H12.5L13 5Z" fill="white"/>
+                            <circle cx="12" cy="17" r="1" fill="white"/>
+                        </svg>
+                        <div class="info-block__tooltip">{{ text_tooltip }}</div>
+                    </span>
+
+                    </div>
+                </div>
+                <div id="account-info--order">
+                    <div class="account-info--order"></div>
+                </div>
+                <div class="account-info--subscription">
+                    <form class="account-info--form user_information">
+                        <div class="account-info__title">{{ text_parameters }}</div>
+                        <div class="account-info__edit account-info__edit--a" style="display: block">
+                            <div>
+                                <input class="input" name="chest" type="text" placeholder="{{ text_chest }}" value="{{ chest }}">
+                            </div>
+                            <div>
+                                <input class="input" name="under_chest" type="text" placeholder="{{ text_under_chest }}" value="{{ under_chest }}">
+                            </div>
+                            <div>
+                                <input class="input" name="hips" type="text" placeholder="{{ text_hips }}" value="{{ hips }}">
+                            </div>
+                            <div>
+                                <textarea class="input" name="braSize" placeholder="Какой размер чашки вы обычно покупаете? (например: 75С)"></textarea>
+                            </div>
+                            <div>
+                                <textarea class="input" name="braSizeOur" placeholder="Какие из наших комплектов у вас уже есть и какого размера там чашка? (необязательно)"></textarea>
+                            </div>
+                            <div class="wrapper">
+                                <div class="account-info__edit__title">{{ text_chokers }}</div>
+                                <div class="account-info__checkbox checkbox">
+                                    <label class="custom-checkbox">
+                                        <input type="radio" name="chockers" value="true" {% if chockers == 'true' %}{{ 'checked' }}{% endif %}>
+                                        <span class="flex">
+                                        <span class="checkbox-button"></span>
+                                        <span class="custom-checkbox__text">{{ text_y }}</span>
+                                    </span>
+                                    </label>
+                                </div>
+                                <div class="account-info__checkbox checkbox">
+                                    <label class="custom-checkbox">
+                                        <input type="radio" name="chockers" value="false" {% if chockers == 'false' %}{{ 'checked' }}{% endif %}>
+                                        <span class="flex">
+                                        <span class="checkbox-button"></span>
+                                        <span class="custom-checkbox__text">{{ text_n }}</span>
+                                    </span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="wrapper">
+                                <div class="account-info__edit__title">{{ text_streps }}</div>
+                                <div class="account-info__checkbox checkbox">
+                                    <label class="custom-checkbox">
+                                        <input type="radio" name="streps" value="true" {% if streps == 'true' %}{{ 'checked' }}{% endif %}>
+                                        <span class="flex">
+                                        <span class="checkbox-button"></span>
+                                        <span class="custom-checkbox__text">{{ text_y }}</span>
+                                    </span>
+                                    </label>
+                                </div>
+                                <div class="account-info__checkbox checkbox">
+                                    <label class="custom-checkbox">
+                                        <input type="radio" name="streps" value="false" {% if streps == 'false' %}{{ 'checked' }}{% endif %}>
+                                        <span class="flex">
+                                        <span class="checkbox-button"></span>
+                                        <span class="custom-checkbox__text">{{ text_n }}</span>
+                                    </span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="account-info__edit__title">{{ text_material }}</div>
+                            <div class="wrapper">
+                                <div class="account-info__checkbox checkbox">
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" name="material" value="cruzhevo" {% if material == 'cruzhevo' %}{{ 'checked' }}{% endif %}>
+                                        <span class="flex">
+                                        <span class="checkbox-button"></span>
+                                        <span class="custom-checkbox__text">{{ text_lace }}</span>
+                                    </span>
+                                    </label>
+                                </div>
+                                <div class="account-info__checkbox checkbox">
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" name="material" value="chlopock" {% if material == 'chlopock' %}{{ 'checked' }}{% endif %}>
+                                        <span class="flex">
+                                        <span class="checkbox-button"></span>
+                                        <span class="custom-checkbox__text">{{ text_cotton }}</span>
+                                    </span>
+                                    </label>
+                                </div>
+                                <div class="account-info__checkbox checkbox">
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" name="material" value="setka" {% if material == 'setka' %}{{ 'checked' }}{% endif %}>
+                                        <span class="flex">
+                                        <span class="checkbox-button"></span>
+                                        <span class="custom-checkbox__text">{{ text_grid }}</span>
+                                    </span>
+                                    </label>
+                                </div>
+                                <div class="account-info__checkbox checkbox">
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" name="material" value="all" {% if material == 'all' %}{{ 'checked' }}{% endif %}>
+                                        <span class="flex">
+                                        <span class="checkbox-button"></span>
+                                        <span class="custom-checkbox__text">{{ text_no_preference }}</span>
+                                    </span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="account-info__edit__title">{{ text_colors }}</div>
+                            <div class="wrapper">
+                                <div class="account-info__checkbox checkbox">
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" name="color" value="dark" {% if color == 'dark' %}{{ 'checked' }}{% endif %}>
+                                        <span class="flex">
+                                        <span class="checkbox-button"></span>
+                                        <span class="custom-checkbox__text">{{ text_dark }}</span>
+                                    </span>
+                                    </label>
+                                </div>
+                                <div class="account-info__checkbox checkbox">
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" name="color" value="light" {% if color == 'light' %}{{ 'checked' }}{% endif %}>
+                                        <span class="flex">
+                                        <span class="checkbox-button"></span>
+                                        <span class="custom-checkbox__text">{{ text_light }}</span>
+                                    </span>
+                                    </label>
+                                </div>
+                                <div class="account-info__checkbox checkbox">
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" name="color" value="all" {% if color == 'all' %}{{ 'checked' }}{% endif %}>
+                                        <span class="flex">
+                                        <span class="checkbox-button"></span>
+                                        <span class="custom-checkbox__text">{{ text_no_preference }}</span>
+                                    </span>
+                                    </label>
+                                </div>
+                            </div>
+                            <textarea class="input" name="notToAdd" placeholder="{{ text_not_add }}">{{ notToAdd }}</textarea>
+                            <textarea class="input" name="requests" placeholder="{{ text_request }}">{{ requests }}</textarea>
+                            <div class="subs-wrapp">
+                                <button class="btn btn-subscription">{{ text_save }}</button>
+                            </div>
+                        </div>
+                    </form>
+                    {% if user_pay_status != 'successful' %}
+                    <div class="subscription-payment">
+
+                        <div class="account-info__title">{{ text_pay }}</div>
+                        <form class="form-account-subscribe">
+                            <div class="account-info__checkbox checkbox account-info__checkbox-agree">
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" name="agree"><span class="flex"><span class="checkbox-button"></span>{{ text_policy }}</span>
+                                </label>
+                            </div>
+                            <div class="account-info__checkbox checkbox account-info__checkbox-charge">
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" name="charge"><span class="flex"><span class="checkbox-button"></span><span class="custom-checkbox__text">{{ text_subs }}</span></span>
+                                </label>
+                            </div>
+                            <button class="btn btn-subscription btn-gray" type="submit">Привязать карту и оплатить</button>
+                        </form>
+                    </div>
+                    {% endif %}
+                    <div class="account-info-btns">
+                        <a href="#" class="account-info__unsubscribe">{{ text_unsubscribe }}</a>
+                        <a class="account-info__more" href="{{ subscribe_link }}">{{ text_more_details }}</a>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="overflow popup-subscription-overflow">
+            <div class="popup-subscription">
+                <button class="popup-subscription__close subscription-close">✕</button>
+                <div class="popup-subscription__body">
+                    <div class="popup-subscription__title">{{ text_are_you_shure }}</div>
+                    <div class="popup-subscription__btns">
+                        <button class="popup-subscription__back subscription-close">{{ text_back }}</button>
+                        <button class="popup-subscription__unsubscribe btn">{{ text_unsb }}</button>
+                    </div>
+                </div>
+                <div class="popup-subscription__done">
+                    <div class="popup-subscription__title">{{ text_unsubscribed }}</div>
+                    <div class="popup-subscription__btns">
+                        <button class="btn subscription-close">{{ text_ok }}</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript" defer>
+
+    var subscriptionBtn = document.querySelector(".account-info__unsubscribe");
+    var popup = document.querySelector(".popup-subscription-overflow");
+    var confirmBtn = document.querySelector(".popup-subscription__unsubscribe");
+    var closePopup = document.querySelectorAll(".subscription-close");
+
+    if(subscriptionBtn && popup && confirmBtn && closePopup[0]) {
+        subscriptionBtn.addEventListener("click", function(e) {
+            e.preventDefault();
+            document.body.classList.add("active-popup")
+
+        })
+        confirmBtn.addEventListener("click", function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: 'index.php?route=account/account/unSubscribe&customer_id={{ customer_id }}&language=' + VARS.language_code,
+                dataType: 'json',
+                type: 'post',
+                beforeSend: function () {},
+                complete: function () {},
+                success: function (response) {
+                    if (response.success) {
+                        document.body.classList.add("confirmed");
+                        // $('.account__subscription').addClass('hide-mode')
+                        $('.account-page').trigger('click');
+                    } else {
+                        alert(response.answer)
+                    }
+                }
+            });
+        })
+        closePopup.forEach(function(button) {
+            button.addEventListener("click", function() {
+                document.body.classList.remove("active-popup")
+                document.body.classList.remove("confirmed");
+
+            })
+        })
+        popup.addEventListener("click", function(e) {
+            if(e.target == popup) {
+                document.body.classList.remove("active-popup")
+                document.body.classList.remove("confirmed");
+            }
+        })
+
+    }
+
+    var subscriptionForm = document.querySelector(".account-info--form");
+
+    if(subscriptionForm) {
+        var chestInput = subscriptionForm.querySelector('[name="chest"]'),
+            underChestInput = subscriptionForm.querySelector('[name="under_chest"]'),
+            hipsInput = subscriptionForm.querySelector('[name="hips"]'),
+            chockerRadios = subscriptionForm.querySelectorAll('[name="chockers"]'),
+            materialRadios = subscriptionForm.querySelectorAll('[name="material"]'),
+            colorRadios = subscriptionForm.querySelectorAll('[name="color"]'),
+            strepsRadios = subscriptionForm.querySelectorAll('[name="streps"]'),
+            notToAddText = subscriptionForm.querySelector('[name="notToAdd"]'),
+            braSizeText = subscriptionForm.querySelector('[name="braSize"]'),
+            specialText = subscriptionForm.querySelector('[name="requests"]');
+
+
+        function createError(text, elem) {
+            if(!elem.parentElement.querySelector(".span_error")) {
+                var span = document.createElement("span");
+                span.classList.add("span_error")
+                span.innerText = text;
+                elem.classList.add("wrong")
+                elem.parentElement.appendChild(span)
+            }
+        }
+        function remove(elem) {
+            if(elem.parentElement.querySelector(".span_error")) {
+                elem.parentElement.querySelector(".span_error").remove()
+            }
+            elem.classList.remove("wrong")
+        }
+
+        function checkInput(elem, text) {
+            if( !regEx.test(elem.value) ) {
+                createError(text, elem)
+            } else {
+                remove(elem)
+            }
+        }
+        function checkRadios(elems, text) {
+            for(var i = 0; i < elems.length; i++) {
+                if(!elems[i].checked) {
+                    if(!elems[i].parentElement.parentElement.parentElement.nextElementSibling.classList.contains("span_error")) {
+                        var span = document.createElement("span");
+                        span.classList.add("span_error")
+                        span.innerText = text;
+                        elems[i].parentElement.parentElement.parentElement.insertAdjacentElement("afterend", span)
+                    }
+                } else {
+                    if(elems[i].parentElement.parentElement.parentElement.nextElementSibling.classList.contains("span_error")) {
+                        elems[i].parentElement.parentElement.parentElement.nextElementSibling.remove()
+                    }
+                    break;
+                }
+            }
+
+        }
+
+
+
+        var regEx = /^\d+$/;
+
+    }
+
+
+    function displayErrors(mainBlock, errors) {
+        $(mainBlock).find('.span_error').remove();
+        $(mainBlock).find('input').removeClass('wrong');
+        if (errors) {
+            $.each(errors, function (input, error){
+                if (input === 'house') {
+                    $(document).find('[name="'+ input +'"]').addClass('wrong').closest('div').append('<span class="span_error">'+ error +'</span>');
+                } else {
+                    $(document).find('[name="'+ input +'"]').addClass('wrong').after('<span class="span_error">'+ error +'</span>');
+                }
+            })
+        }
+    }
+
+    function request(ref, url, data) {
+        var txt = $(ref).text();
+        return $.ajax({
+            url: url,
+            data: data,
+            dataType: 'json',
+            type: 'post',
+            beforeSend: function () {
+                $(ref).text($(ref).data('loading'))
+            },
+            complete: function () {
+                $(ref).text(txt)
+            }
+        });
+    }
+    (function ($) {
+        $('form.user_information').on('submit', function (e) {
+            e.preventDefault();
+            var s = $( this );
+            $.ajax({
+                url: 'index.php?route=account/account/userInfo&customer_id=' + '{{ customer_id }}' + '&language=' + VARS.language_code,
+                dataType: 'json',
+                data: s.serialize(),
+                type: 'post',
+                success: function (response) {
+                    var popupNew = document.createElement("div");
+                    var popupWrap = document.querySelector(".subs-wrapp");
+
+                    popupNew.classList.add('promo-popup');
+                    if(popupWrap) {
+                        popupWrap.appendChild(popupNew)
+                    }
+                    popupNew.style.cssText = `color: #f486be; font-size: 14px; `
+                    popupNew.innerText = "{{ text_popup_subscribe }}";
+                    setTimeout(function() {
+                        {% if status == 'successful' %}
+                            window.location.href = response.redirect
+                        {% else %}
+                            popupNew.remove()
+                        {% endif %}
+                    }, 5000)
+                },
+                beforeSend: function () {
+                    $('.btn.btn-subscription').prop('disabled', true);
+                },
+                complete: function () {
+                    $('.btn.btn-subscription').prop('disabled', false);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                }
+            });
+        });
+        $(document).delegate('select[name=\'country_id\']', 'change', function () {
+
+            $('[name="zone_id"]').prop('disabled', false);
+
+            $.ajax({
+                url: 'index.php?route=checkout/checkout/country&country_id=' + this.value,
+                dataType: 'json',
+                beforeSend: function () {
+                    $('select[name=\'country_id\']').prop('disabled', true);
+                },
+                complete: function () {
+                    $('select[name=\'country_id\']').prop('disabled', false);
+                },
+                success: function (json) {
+                    if (json['postcode_required'] == '1') {
+                        $('input[name=\'postcode\']').parent().parent().addClass('required');
+                    } else {
+                        $('input[name=\'postcode\']').parent().parent().removeClass('required');
+                    }
+
+                    html = '<option value="">{{ text_select }}</option>';
+
+                    if (json['zone'] && json['zone'] != '') {
+                        for (i = 0; i < json['zone'].length; i++) {
+                            html += '<option value="' + json['zone'][i]['zone_id'] + '"';
+
+                            if (json['zone'][i]['zone_id'] == '{{ zone_id }}') {
+                                html += ' selected="selected"';
+                            }
+
+                            html += '>' + json['zone'][i]['name'] + '</option>';
+                        }
+                    } else {
+                        html += '<option value="0" selected="selected">{{ text_none }}</option>';
+                    }
+
+                    $('select[name=\'zone_id\']').html(html);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                }
+            });
+        });
+        $('select[name=\'country_id\']').trigger('change');
+        $('.btn-personal').on('click', function(e) {
+            e.preventDefault();
+            var ref = this;
+            request(ref, 'index.php?route=account/account/editPersonal', {
+                name: $(ref).closest('.account-info__edit').find('[name="name"]').val(),
+                birthday: $(ref).closest('.account-info__edit').find('[name="birthday"]').val(),
+                phone: $(ref).closest('.account-info__edit').find('[name="phone"]').val(),
+                email: $(ref).closest('.account-info__edit').find('[name="email"]').val(),
+                social_nick: $(ref).closest('.account-info__edit').find('[name="social_nick"]').val(),
+                newsletter: $(ref).closest('body').find('[name="newsletter"]:checked').val(),
+                language: VARS.language_code
+            }).done(function (response) {
+                console.log(response)
+
+                if (response['errors']) {
+                    displayErrors('.account-info__edit', response['errors'])
+                } else {
+                    $('.account-info__block--p').show();
+                    $('.account-info__block--p').load(window.location.href + ' .p--info');
+
+                    $('.account-info__edit--p').hide();
+                }
+            }).fail(function(xhr, ajaxOptions, thrownError) {
+                console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+            });
+        });
+
+        $('.btn-address').on('click', function (e) {
+            e.preventDefault();
+
+            var _ref = this;
+            request(_ref, 'index.php?route=account/account/editAddress', {
+                country: $(_ref).closest('.account-info__edit--a').find('[name=\'country_id\']').val(),
+                city: $(_ref).closest('.account-info__edit--a').find('[name=\'zone_id\']').val(),
+                street: $(_ref).closest('.account-info__edit--a').find('[name=\'street\']').val(),
+                house: $(_ref).closest('.account-info__edit--a').find('[name=\'house\']').val(),
+                building: $(_ref).closest('.account-info__edit--a').find('[name=\'building\']').val(),
+                flat: $(_ref).closest('.account-info__edit--a').find('[name=\'flat\']').val(),
+                language: VARS.language_code
+            }).done(function (response) {
+                if (response['errors']) {
+                    displayErrors('.account-info__edit--a', response['errors'])
+                } else {
+                    $('.account-info__block--a').show();
+                    $('.account-info__address').load(window.location.href + ' .account-info__block--a__field');
+
+                    $('.account-info__edit--a').hide();
+                }
+            }).fail(function(xhr, ajaxOptions, thrownError) {
+                console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+            });
+        });
+
+        $('.btn-pass').on('click', function (e) {
+            e.preventDefault();
+
+            var _ref_ = this;
+            request(_ref_, 'index.php?route=account/account/editPassword', {
+                password: $(_ref_).closest('.acount-info__edit--pass').find('[name=\'password\']').val(),
+                confirm: $(_ref_).closest('.acount-info__edit--pass').find('[name=\'confirm\']').val(),
+                language: VARS.language_code
+            }).done(function (response) {
+                if (response['errors']) {
+                    displayErrors('.acount-info__edit--pass', response['errors'])
+                } else {
+                    $('.acount-info__edit--pass').hide();
+                }
+            }).fail(function(xhr, ajaxOptions, thrownError) {
+                console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+            });
+        })
+
+        $('.form-account-subscribe').on('submit', function (e) {
+            e.preventDefault();
+            var _self = $( this ),
+                btn = _self.find('[type="submit"]'),
+                btnText = btn.text();
+            $.ajax({
+                url: 'index.php?route=information/information/submitHandlerSubscribe&language=' + encodeURIComponent(VARS.language_code) + '&language_id=' + encodeURIComponent(VARS.language_id) + '&route_action=account',
+                data: _self.serialize(),
+                dataType: 'json',
+                type: 'post',
+                beforeSend: function () {
+                    btn.text('Отправка...')
+                },
+                complete: function () {
+                    btn.text(btnText)
+                },
+                success: function (response) {
+                    _self.find('.span_error').remove();
+                    _self.find('input, textarea, select').removeClass('wrong');
+
+                    if (!response.success) {
+                        if (response.hasOwnProperty('error_subscribe') || response.hasOwnProperty('critical_error')) {
+                            var alert_ = response.hasOwnProperty('error_subscribe') ? response.error_subscribe : response.critical_error;
+                            alert(alert_)
+                        } else {
+                            $.each(response.errors, function (i, v) {
+                                if (i === 'agree' || i === 'create' || i === 'charge') {
+                                    _self.find('.account-info__checkbox-' + i).after('<span class="span_error">'+ v +'</span>');
+                                } else if (i === 'house') {
+                                    _self.find('[name="'+i+'"]').addClass('wrong');
+                                    _self.find('.flex.flex_sb.flex_checkbox').after('<span class="span_error" style="display: block">'+ v +'</span>');
+                                } else {
+                                    _self.find('[name="'+i+'"]').addClass('wrong');
+                                    _self.find('[name="'+ i +'"]').after('<span class="span_error">'+ v +'</span>');
+                                }
+                            });
+                        }
+                    } else {
+                        window.location.href = response.redirect
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                }
+            });
+        })
+    })(jQuery)
+</script>
+{{ footer }}

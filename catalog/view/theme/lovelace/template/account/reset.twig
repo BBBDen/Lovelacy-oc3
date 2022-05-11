@@ -1,0 +1,31 @@
+{{ header }}
+<div class="breadcrumbs">
+  <div class="container">
+    <ul itemscope itemtype="https://schema.org/BreadcrumbList">
+      {% for breadcrumb in breadcrumbs %}
+        <li class="breadcrumbs-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="{{ breadcrumb.href }}" itemprop="item">
+            <span itemprop="name">{{ breadcrumb.text }}</span>
+            <meta itemprop="position" content="{{ loop.index }}" />
+          </a>
+        </li>
+      {% endfor %}
+    </ul>{{ text_back_button }}
+  </div>
+</div>
+
+<section class="login">
+  <div class="container">
+    <div class="login__form">
+      <div class="login__login">
+        <div class="login__title">{{ text_password }}</div>
+        <input type="password" name="password" value="{{ password }}" id="input-password" class="input" />
+        <input type="password" name="confirm" value="{{ confirm }}" id="input-confirm" class="input" />
+        <button class="btn btn-reset" data-loading="{{ text_loading }}">{{ button_continue }}</button>
+      </div>
+    </div>
+    <div class="login__links forgot__links" style="display: block"> <a href="{{ back }}">{{ button_back }}</a></div>
+  </div>
+</section>
+
+{{ footer }}

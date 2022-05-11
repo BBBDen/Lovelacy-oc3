@@ -12,7 +12,7 @@ jobs:
         env:
           dest: 'sunautob@93.125.99.120:/home/sunautob/test-lovelace/test_folder'
         run: |
-          echo "${{secrets.SERVER_KEY}}" > deploy_key
+          echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC2o2j/WpY+4jrrKVpVJkAXtpdGJedpgLriJZC3/RJOHB4nZvBgBC6iVxe824Qw0kXCcb1+RUaDt5Q5HRNytRSZRx/N1JAscehWRhK1PHeyhy94LUooYfEqjOUqpqvWBtuXsasZgIkq2Wg2aZN6jke1ihF8YAo0X5DwzUHQeS3063zwnkQpeVdPf6iDxfO92d1zfpjX5+K3VLmtzXfQcWcxSgZrWFUP0JCx9FmJot3Lri9ZHpDfEaDeFdCbBNBFrIZypLg8cNERze5GCWjt/BN7YFSZEo+5uJl5WU2vLuiKpOP5x5xbddhUtDQ0KRZs73WM84iy6awWxGDSk7vcru2B" > deploy_key
           chmod 600 ./deploy_key
           rsync -chav \
             -e 'ssh -i ./deploy_key -o StrictHostKeyChecking=no' \

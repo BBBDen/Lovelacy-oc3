@@ -18,7 +18,7 @@ $_['text_subscribe_title']             = '<span>Оставьте ваши дан
 $_['text_account']             = 'Уже есть аккаунт? Вы можете оформить подписку через него. <a href="%s">Войти</a>';
 $_['text_personal_data']             = 'Личные данные';
 $_['text_address_data']             = 'Адрес доставки';
-$_['text_name']             = 'Имя';
+$_['text_name']             = 'ФИО';
 $_['text_phone']             = 'Телефон';
 $_['text_pay']             = 'Перейти к оплате';
 $_['text_mail']             = 'Почта';

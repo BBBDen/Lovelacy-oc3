@@ -13,7 +13,7 @@ jobs:
         env:
           dest: 'sunautob@93.125.99.120:/home/sunautob/test-lovelace/test_folder'
         run: |
-          echo "${{secrets.SERVER_KEY}}" > deploy_key
+          echo "${{secrets.SECRET}}" > deploy_key
           chmod 600 ./deploy_key
           rsync -chav \
             -e 'ssh -i ./deploy_key -o StrictHostKeyChecking=no' \

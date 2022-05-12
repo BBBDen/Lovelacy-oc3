@@ -44,7 +44,7 @@
               {% elseif data.pay_status == 'canceled' %}
                 {% set user_class_pay_result = 'alert-warning' %}
               {% elseif data.pay_status == 'failed' %}
-                {% set user_class_pay_result = 'alert-dark' %}
+                {% set user_class_pay_result = 'alert-info' %}
               {% elseif data.pay_status == 'error' %}
                 {% set user_class_pay_result = 'alert-danger' %}
               {% endif %}
@@ -60,10 +60,15 @@
                             class="fa fa-eye"></i></a>
                 </td>
               </tr>
+
             {% endfor %}
             </tbody>
           </table>
         </form>
+        <div class="row">
+          <div class="col-sm-6 text-left">{{ pagination }}</div>
+          <div class="col-sm-6 text-right">{{ results }}</div>
+        </div>
       </div>
     </div>
   </div>

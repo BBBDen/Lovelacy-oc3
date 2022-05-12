@@ -67,10 +67,10 @@ class ControllerCatalogUserData extends Controller {
 			'sort'  => $sort,
 			'order' => $order,
 			'start' => ($page - 1) * $this->config->get('config_limit_admin'),
-			'limit' => $this->config->get('config_limit_admin')
+			'limit' => $this->config->get('config_limit_admin'),
 		);
-
-		$results = $this->model_customer_customer->getCustomersInfo();
+        $user_data_total = $this->model_customer_customer->getTotalUsersData($filter_data);
+		$results = $this->model_customer_customer->getCustomersInfo($filter_data);
 
         $this->load->model('tool/image');
 
@@ -130,9 +130,18 @@ class ControllerCatalogUserData extends Controller {
 			$url .= '&order=' . $this->request->get['order'];
 		}
 
+        $pagination = new Pagination();
+        $pagination->total = $user_data_total;
+        $pagination->page = $page;
+        $pagination->limit = $this->config->get('config_limit_admin');
+        $pagination->url = $this->url->link('catalog/user_data', 'user_token=' . $this->session->data['user_token'] . $url . '&page={page}', true);
+        $data['pagination'] = $pagination->render();
+
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
+
+
 
 		$this->response->setOutput($this->load->view('catalog/user_data', $data));
 	}
@@ -141,9 +150,7 @@ class ControllerCatalogUserData extends Controller {
     {
         $this->load->language('catalog/user_data');
         $this->load->model('customer/customer');
-
-        $this->document->setTitle($this->language->get('heading_title'));
-
+        $title = $this->language->get('heading_title');
         $data['breadcrumbs'] = array();
 
         $data['breadcrumbs'][] = array(
@@ -193,6 +200,9 @@ class ControllerCatalogUserData extends Controller {
         $result = $this->model_customer_customer->getData($this->request->get['path_id']);
 
         if ($result) {
+            if ($result['firstname']) {
+                $title .= '|' . $result['firstname'];
+            }
             $data = [];
             if ($result['user_data']) {
                 $_data_ = unserialize($result['user_data']);
@@ -230,6 +240,8 @@ class ControllerCatalogUserData extends Controller {
                 $status = 'Подписка не оформлена';
             } else if ($result['pay_status'] === 'canceled') {
                 $status = 'Подписка отменена';
+            } else if ($result['pay_status'] === 'error') {
+                $status = 'Произощла ошибка при подписке';
             }
             $data['user_data'] = [
                 'email' => $result['email'],
@@ -240,7 +252,7 @@ class ControllerCatalogUserData extends Controller {
                 'data' => $data
             ];
         }
-
+        $this->document->setTitle($title);
         $data['header'] = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['footer'] = $this->load->controller('common/footer');

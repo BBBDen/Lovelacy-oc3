@@ -256,10 +256,31 @@ class ModelCustomerCustomer extends Model {
         return $query->row;
     }
 
-    public function getCustomersInfo()
+    public function getCustomersInfo($data = [])
     {
-        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "card_subscribe_info as csi LEFT JOIN " . DB_PREFIX . "customer c ON (csi.customer_id = c.customer_id)");
+        $sql = "SELECT * FROM " . DB_PREFIX . "card_subscribe_info as csi LEFT JOIN " . DB_PREFIX . "customer c ON (csi.customer_id = c.customer_id)";
+
+        if (isset($data['start']) || isset($data['limit'])) {
+            if ($data['start'] < 0) {
+                $data['start'] = 0;
+            }
+
+            if ($data['limit'] < 1) {
+                $data['limit'] = 20;
+            }
+
+            $sql .= " LIMIT " . (int)$data['start'] . "," . (int)$data['limit'];
+        }
+        $query = $this->db->query($sql);
         return $query->rows;
+    }
+
+    public function getTotalUsersData($data = [])
+    {
+        $sql = "SELECT COUNT(*) AS total FROM " . DB_PREFIX . "card_subscribe_info as csi LEFT JOIN " . DB_PREFIX . "customer c ON (csi.customer_id = c.customer_id)";
+        $query = $this->db->query($sql);
+
+        return $query->row['total'];
     }
 
 	public function getTotalCustomers($data = array()) {

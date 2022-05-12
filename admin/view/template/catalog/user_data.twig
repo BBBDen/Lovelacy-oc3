@@ -22,6 +22,34 @@
         <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ heading_title }}</h3>
       </div>
       <div class="panel-body">
+        <table class="table table-bordered" style="max-width: 300px">
+          <thead>
+          <tr>
+            <td>Цвет</td>
+            <td>Статус</td>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><div class="alert alert-success"></div></td>
+            <td>Успешно</td>
+          </tr>
+          <tr>
+            <td><div class="alert alert-warning"></div></td>
+            <td>Подписка отменена</td>
+          </tr>
+          <tr>
+            <td><div class="alert alert-info"></div></td>
+            <td>Подписка не завершилась</td>
+          </tr>
+          <tr>
+            <td><div class="alert alert-danger"></div></td>
+            <td>Ошибка подписки</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel-body">
         <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-filter" class="form-horizontal">
           <table class="table table-bordered table-hover">
             <thead>

@@ -61,9 +61,5 @@ system/storage
 admin/*.txt
 config.php
 admin/config.php
-.htpasswd
-.htaccess
-*.zip
 *.sh
-error_log
-
+.htaccess

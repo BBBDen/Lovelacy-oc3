@@ -476,7 +476,7 @@ class ControllerAccountAccount extends Controller {
                     'auth_data' => self::AUTH_DATA,
                     'cancel_reason' => "Customer's request"
                 ]), true);
-                $this->model_account_customer->updateCustomerSubscribeInfo($this->request->get['customer_id'], $unsbs['state']);
+                $this->model_account_customer->updateCustomerSubscribeInfo($this->request->get['customer_id'], $unsbs['state'] ? $unsbs['state'] : 'canceled');
                 $json = ['success' => true];
                 $curl = curl_init();
                 curl_setopt_array($curl, array(

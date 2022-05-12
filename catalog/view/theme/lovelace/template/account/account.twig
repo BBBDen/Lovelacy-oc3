@@ -380,12 +380,18 @@
         })
         confirmBtn.addEventListener("click", function(e) {
             e.preventDefault();
+            var btnText = e.target.textContent,
+                btnLoadText = 'Отписка...';
             $.ajax({
                 url: 'index.php?route=account/account/unSubscribe&customer_id={{ customer_id }}&language=' + VARS.language_code,
                 dataType: 'json',
                 type: 'post',
-                beforeSend: function () {},
-                complete: function () {},
+                beforeSend: function () {
+                    e.target.textContent = btnLoadText
+                },
+                complete: function () {
+                    e.target.textContent = btnText
+                },
                 success: function (response) {
                     if (response.success) {
                         document.body.classList.add("confirmed");
@@ -401,7 +407,7 @@
             button.addEventListener("click", function() {
                 document.body.classList.remove("active-popup")
                 document.body.classList.remove("confirmed");
-
+                window.location.reload();
             })
         })
         popup.addEventListener("click", function(e) {

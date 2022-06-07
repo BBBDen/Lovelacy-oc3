@@ -77,6 +77,7 @@ class ControllerCatalogUserData extends Controller {
 		foreach ($results as $result) {
 			$data['user_data'][] = array(
 			    'id' => $result['card_subscribe_info_id'],
+			    'bepayed_sbs_id' => $result['bepayed_sbs_id'],
 				'name' => $result['firstname'] . ' ' . $result['lastname'],
 				'email' => $result['email'],
 				'pay_status' => $result['pay_status'],

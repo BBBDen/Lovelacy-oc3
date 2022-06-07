@@ -143,6 +143,12 @@ class ModelAccountCustomer extends Model {
         return $query->row;
     }
 
+    public function getCustomersSubscribers() {
+        $sql = "SELECT * FROM " . DB_PREFIX . "card_subscribe_info";
+        $query = $this->db->query($sql);
+        return $query->rows;
+    }
+
     public function getCustomerInfo($customer_id = 0)
     {
         if ($customer_id) {
@@ -193,6 +199,10 @@ class ModelAccountCustomer extends Model {
         $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "customer WHERE LOWER(email) = '" . $this->db->escape(utf8_strtolower($data['email'])) . "' AND customer_group_id = '". (int)$data['customer_group_id'] ."'");
 
         return $query->num_rows > 0 ? true : false;
+    }
+
+    public function updatePayStatusToCustomerSubscriber($id, $status) {
+        $this->db->query("UPDATE " . DB_PREFIX . "card_subscribe_info SET pay_status = '". $this->db->escape($status) ."' WHERE card_subscribe_info_id = '". (int)$id ."'");
     }
 
     public function getCustomerByCode($code) {

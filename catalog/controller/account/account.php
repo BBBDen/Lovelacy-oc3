@@ -82,45 +82,45 @@ class ControllerAccountAccount extends Controller {
             $data['customer_id'] = $customer_info['customer_id'];
             $_user_data_ = $this->model_account_customer->getCustomerInfo($customer_info['customer_id']);
 
-            if ($_user_data_) {
-                $data['user_pay_status'] = $_user_data_['pay_status'];
-                if ($data['user_pay_status'] == 'successful') {
-                    $curl = curl_init();
-
-                    curl_setopt_array($curl, array(
-                        CURLOPT_URL => 'https://lovelaceby.retailcrm.ru/api/v5/customers/'.$customer_info['customer_id'].'/edit?by=externalId&apiKey=qPiqTmCrdsGldH5K9U5DUWVj3t4mKPDH&site=lovelaceby',
-                        CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_ENCODING => '',
-                        CURLOPT_MAXREDIRS => 10,
-                        CURLOPT_TIMEOUT => 0,
-                        CURLOPT_FOLLOWLOCATION => true,
-                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                        CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => array('customer' => '  {
-                        "customFields":{
-                        "subscribe":true}}
-                         '),
-                    ));
-
-                    $response = curl_exec($curl);
-
-                    curl_close($curl);
-
-                }
-                $data['customer_status'] = $_user_data_['pay_status'];
-                $user_data = isset($_user_data_['user_data']) ? unserialize($_user_data_['user_data']) : [];
-                $data['chest'] = isset($user_data['chest']) ? $user_data['chest'] : '';
-                $data['under_chest'] = isset($user_data['under_chest']) ? $user_data['under_chest'] : '';
-                $data['hips'] = isset($user_data['hips']) ? $user_data['hips'] : '';
-                $data['chockers'] = isset($user_data['chockers']) ? $user_data['chockers'] : '';
-                $data['streps'] = isset($user_data['streps']) ? $user_data['streps'] : '';
-                $data['material'] = isset($user_data['material']) ? $user_data['material'] : '';
-                $data['color'] = isset($user_data['color']) ? $user_data['color'] : '';
-                $data['notToAdd'] = isset($user_data['notToAdd']) ? $user_data['notToAdd'] : '';
-                $data['requests'] = isset($user_data['requests']) ? $user_data['requests'] : '';
-                $data['braSize'] = isset($user_data['braSize']) ? $user_data['braSize'] : '';
-                $data['braSizeOur'] = isset($user_data['braSizeOur']) ? $user_data['braSizeOur'] : '';
-            }
+//            if ($_user_data_) {
+//                $data['user_pay_status'] = $_user_data_['pay_status'];
+//                if ($data['user_pay_status'] == 'successful') {
+//                    $curl = curl_init();
+//
+//                    curl_setopt_array($curl, array(
+//                        CURLOPT_URL => 'https://lovelaceby.retailcrm.ru/api/v5/customers/'.$customer_info['customer_id'].'/edit?by=externalId&apiKey=qPiqTmCrdsGldH5K9U5DUWVj3t4mKPDH&site=lovelaceby',
+//                        CURLOPT_RETURNTRANSFER => true,
+//                        CURLOPT_ENCODING => '',
+//                        CURLOPT_MAXREDIRS => 10,
+//                        CURLOPT_TIMEOUT => 0,
+//                        CURLOPT_FOLLOWLOCATION => true,
+//                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+//                        CURLOPT_CUSTOMREQUEST => 'POST',
+//                        CURLOPT_POSTFIELDS => array('customer' => '  {
+//                        "customFields":{
+//                        "subscribe":true}}
+//                         '),
+//                    ));
+//
+//                    $response = curl_exec($curl);
+//
+//                    curl_close($curl);
+//
+//                }
+//                $data['customer_status'] = $_user_data_['pay_status'];
+//                $user_data = isset($_user_data_['user_data']) ? unserialize($_user_data_['user_data']) : [];
+//                $data['chest'] = isset($user_data['chest']) ? $user_data['chest'] : '';
+//                $data['under_chest'] = isset($user_data['under_chest']) ? $user_data['under_chest'] : '';
+//                $data['hips'] = isset($user_data['hips']) ? $user_data['hips'] : '';
+//                $data['chockers'] = isset($user_data['chockers']) ? $user_data['chockers'] : '';
+//                $data['streps'] = isset($user_data['streps']) ? $user_data['streps'] : '';
+//                $data['material'] = isset($user_data['material']) ? $user_data['material'] : '';
+//                $data['color'] = isset($user_data['color']) ? $user_data['color'] : '';
+//                $data['notToAdd'] = isset($user_data['notToAdd']) ? $user_data['notToAdd'] : '';
+//                $data['requests'] = isset($user_data['requests']) ? $user_data['requests'] : '';
+//                $data['braSize'] = isset($user_data['braSize']) ? $user_data['braSize'] : '';
+//                $data['braSizeOur'] = isset($user_data['braSizeOur']) ? $user_data['braSizeOur'] : '';
+//            }
         } else {
             $data['customer_id'] = 0;
             $data['chest'] = '';
@@ -478,23 +478,23 @@ class ControllerAccountAccount extends Controller {
                 ]), true);
                 $this->model_account_customer->updateCustomerSubscribeInfo($this->request->get['customer_id'], $unsbs['state'] ? $unsbs['state'] : 'canceled');
                 $json = ['success' => true];
-                $curl = curl_init();
-                curl_setopt_array($curl, array(
-                    CURLOPT_URL => 'https://lovelaceby.retailcrm.ru/api/v5/customers/'.$customer_info['customer_id'].'/edit?by=externalId&apiKey=qPiqTmCrdsGldH5K9U5DUWVj3t4mKPDH&site=lovelaceby',
-                    CURLOPT_RETURNTRANSFER => true,
-                    CURLOPT_ENCODING => '',
-                    CURLOPT_MAXREDIRS => 10,
-                    CURLOPT_TIMEOUT => 0,
-                    CURLOPT_FOLLOWLOCATION => true,
-                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                    CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => array('customer' => '  {
-                        "customFields":{
-                        "subscribe":false}}
-                         '),
-                ));
-                $response = curl_exec($curl);
-                curl_close($curl);
+//                $curl = curl_init();
+//                curl_setopt_array($curl, array(
+//                    CURLOPT_URL => 'https://lovelaceby.retailcrm.ru/api/v5/customers/'.$customer_info['customer_id'].'/edit?by=externalId&apiKey=qPiqTmCrdsGldH5K9U5DUWVj3t4mKPDH&site=lovelaceby',
+//                    CURLOPT_RETURNTRANSFER => true,
+//                    CURLOPT_ENCODING => '',
+//                    CURLOPT_MAXREDIRS => 10,
+//                    CURLOPT_TIMEOUT => 0,
+//                    CURLOPT_FOLLOWLOCATION => true,
+//                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+//                    CURLOPT_CUSTOMREQUEST => 'POST',
+//                    CURLOPT_POSTFIELDS => array('customer' => '  {
+//                        "customFields":{
+//                        "subscribe":false}}
+//                         '),
+//                ));
+//                $response = curl_exec($curl);
+//                curl_close($curl);
             }
         } else {
             $json = [

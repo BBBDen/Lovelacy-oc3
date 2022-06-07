@@ -142,10 +142,6 @@ class ControllerExtensionModuleRetailcrm extends Controller {
 
             $country = $this->model_localisation_country->getCountry($post['country_id']);
             $zone = $this->model_localisation_zone->getZone($post['zone_id']);
-            $customer['customFields'] =
-                array(
-                    'instagram_account' => $customer['social_nick']
-                );
             $customer['address'] = array(
                 'address_1' => $post['address_1'],
                 'address_2' => $post['address_2'],
@@ -155,15 +151,19 @@ class ControllerExtensionModuleRetailcrm extends Controller {
                 'zone' => $zone['name']
             );
         }
-
+        $address = $this->model_account_address->getAddress($customer['address_id']);
         if (file_exists(DIR_APPLICATION . 'model/extension/retailcrm/custom/customer.php')) {
             $this->load->model('extension/retailcrm/custom/customer');
             $this->model_extension_retailcrm_custom_customer->sendToCrm($customer);
         } else {
-            $this->load->model('extension/retailcrm/customer');
-            $this->model_extension_retailcrm_customer->sendToCrm($customer);
+            $customer_manager = $this->retailcrm->getCustomerManager();
+            $customer_manager->createCustomer($customer,$address);
         }
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> 23bb7a02ef803dedf2975128025bc47f18920515
     }
 
     /**
@@ -178,13 +178,22 @@ class ControllerExtensionModuleRetailcrm extends Controller {
 
         $customer = $this->model_account_customer->getCustomer($customerId);
         $address = $this->model_account_address->getAddress($customer['address_id']);
+<<<<<<< HEAD
         if ($customer['social_nick'] <> null) {
+=======
+        $customer['subscribe'] = $this->model_account_customer->getCustomerSubscribeId($customerId);
+
+>>>>>>> 23bb7a02ef803dedf2975128025bc47f18920515
             if (file_exists(DIR_APPLICATION . 'model/extension/retailcrm/custom/customer.php')) {
                 $this->load->model('extension/retailcrm/custom/customer');
 
 
                 $this->model_extension_retailcrm_custom_customer->changeInCrm($customer, $this->retailcrmApiClient);
             } else {
+<<<<<<< HEAD
+=======
+
+>>>>>>> 23bb7a02ef803dedf2975128025bc47f18920515
                 $customer_manager = $this->retailcrm->getCustomerManager();
                 $customer_manager->editCustomer($customer, $address);
             }

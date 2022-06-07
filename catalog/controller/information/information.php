@@ -56,6 +56,9 @@ class ControllerInformationInformation extends Controller {
         $data['countries'] = [];
         $data['auth'] = 0;
 		if ((int)$layout_id === self::SUBSCRIBE_LAYOUT) {
+            if ($this->customer->isLogged()) {
+                $this->response->redirect($this->url->link('account/account', '', true));
+            }
 		    $data['text_policy'] = sprintf($this->language->get('text_policy'), $this->url->link('information/information', 'information_id=3', true), $this->url->link('information/information', 'information_id=7', true));
 		    $data['text_account'] = sprintf($this->language->get('text_account'), '/login');
             $this->load->model('localisation/country');

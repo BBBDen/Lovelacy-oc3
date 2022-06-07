@@ -163,28 +163,7 @@ class ControllerExtensionModuleRetailcrm extends Controller {
             $this->load->model('extension/retailcrm/customer');
             $this->model_extension_retailcrm_customer->sendToCrm($customer);
         }
-
-        //        $customerId = $parameter3;
-//        $customer = $this->model_account_customer->getCustomer($customerId);
-////        $customer['customFields'] = array(
-////            'instagram_account' => 'test'
-////        );
-//
-//        $customer['address'] = array(
-//
-//            'city' => 'Gomel'
-//
-//        );
-//
-//
-//        if (file_exists(DIR_APPLICATION . 'model/extension/retailcrm/custom/customer.php')) {
-//            $this->load->model('extension/retailcrm/custom/customer');
-//            $this->model_extension_retailcrm_custom_customer->sendToCrm($customer, $this->retailcrmApiClient);
-//        } else {
-//            $address = array();
-//            $customer_manager = $this->retailcrm->getCustomerManager();
-//            $customer_manager->createCustomer($customer, $address);
-//        }
+        
     }
 
     /**
@@ -199,17 +178,16 @@ class ControllerExtensionModuleRetailcrm extends Controller {
 
         $customer = $this->model_account_customer->getCustomer($customerId);
         $address = $this->model_account_address->getAddress($customer['address_id']);
-
+        if ($customer['social_nick'] <> null) {
             if (file_exists(DIR_APPLICATION . 'model/extension/retailcrm/custom/customer.php')) {
                 $this->load->model('extension/retailcrm/custom/customer');
 
 
                 $this->model_extension_retailcrm_custom_customer->changeInCrm($customer, $this->retailcrmApiClient);
             } else {
-//                $address['address_1']=$customer['social_nick'];
                 $customer_manager = $this->retailcrm->getCustomerManager();
                 $customer_manager->editCustomer($customer, $address);
             }
-
+        }
         }
 }

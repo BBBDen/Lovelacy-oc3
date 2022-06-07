@@ -1,4 +1,11 @@
 <?php
 
 // Text
-$_['error_permission']     = 'Warning: You do not have permission to access the API!';
+$_['error_permission']     = 'Внимание: у вас нет разрешения на доступ к API!';
+$_['phone_error_empty']     = 'Введите Ваш номер телефона';
+$_['phone_error']     = 'Введите номер телефона в правильном формате';
+$_['phone_error_isset']     = 'Такой телефон не зарегистрирован в системе';
+$_['sms_message']     = 'Код для сброса пароля: %s';
+$_['text_enter_message']     = 'Введите код в поле "КОД C ТЕЛЕФОНА"';
+$_['error_verify_customer']     = 'Пользователь не найден!';
+$_['error_verify_code']     = 'Введенный код не верный!';

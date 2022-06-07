@@ -670,45 +670,6 @@ $(document).ready(function() {
 		});
 	});
 
-	$('.login__forgot .btn').on('click', function (e) {
-		e.preventDefault();
-
-		var _ref_ = $( this ),
-			email = _ref_.closest('.login__forgot').find('.input[name=\'email\']').val(),
-			btnText = _ref_.text();
-
-		$.ajax({
-			url: 'index.php?route=account/forgotten/forgotten',
-			data: {
-				email:email,
-				language_code: VARS.language_code
-			},
-			dataType: 'json',
-			type: 'post',
-			error: function(xhr, ajaxOptions, thrownError) {
-				console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-			},
-			success: function (json) {
-				console.log(json);
-				_ref_.closest('.login__forgot').find('input[name=\'email\']').removeClass('wrong');
-				_ref_.closest('.login__forgot').find('.span_error').remove();
-				if (json['error']) {
-					_ref_.closest('.login__forgot').find('input[name=\'email\']').addClass('wrong');
-					_ref_.closest('.login__forgot').append('<span class="span_error">'+json['error']+'</span>');
-				} else {
-					_ref_.closest('body').find('.login__again').css({display: 'block'});
-					$('.login__forgot, .forgot__links').remove();
-				}
-			},
-			beforeSend: function () {
-				_ref_.text(_ref_.data('loading'))
-			},
-			complete: function () {
-				_ref_.text(btnText)
-			}
-		})
-	});
-
 	$('.btn-reset').on('click', function (e) {
 		e.preventDefault();
 		var __ref__ = $( this ),

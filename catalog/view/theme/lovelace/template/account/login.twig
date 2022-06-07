@@ -39,8 +39,8 @@
       </div>
       <div class="login__forgot">
         <div class="login__title">{{ text_restore }}</div>
-        <input class="input email-input" name="email" type="text" placeholder="{{ entry_email }}">
-        <button class="btn" data-loading="{{ text_loading }}">{{ text_reset_pas }}</button>
+        <input class="input email-input" name="phone" type="text" placeholder="{{ entry_phone }}">
+        <button class="btn btn_forgot" data-loading="{{ text_loading }}">{{ text_reset_pas }}</button>
       </div>
       <div class="login__again">
         <div class="login__title">{{ text_instruction }}</div>
@@ -57,4 +57,94 @@
     <div class="login__links login__again"> <a href="{{ action }}">{{ text_auth }}</a></div>
   </div>
 </section>
+<script><!--//
+  function verifySMS (__this__) {
+    var __self__ = $( __this__ ),
+            btnText = __self__.text(),
+            phoneNumber = __self__.closest('.login__forgot').find('[name="phone_sms"]').val(),
+            verifyCode = __self__.closest('.login__forgot').find('[name="sms_code"]').val();
+
+    $.ajax({
+      url: 'index.php?route=api/rocket_sms/verify&api_token={{ api_token }}',
+      data: {
+        phone: phoneNumber,
+        code: verifyCode
+      },
+      dataType: 'json',
+      type: 'post',
+      success: function (json) {
+        console.log(json);
+        __self__.closest('.login__forgot').find('input[name=\'sms_code\']').removeClass('wrong');
+        __self__.closest('.login__forgot').find('.span_error').remove();
+        if (!json['success']) {
+          __self__.closest('.login__forgot').find('input[name=\'sms_code\']').addClass('wrong');
+          __self__.closest('.login__forgot').append('<span class="span_error">' + json['answer'] + '</span>');
+        } else {
+          window.location.href = json['answer'];
+        }
+      },
+      error: function (xhr, ajaxOptions, thrownError) {
+        console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+      },
+      beforeSend: function () {
+        __self__.text(__self__.data('loading'))
+      },
+      complete: function () {
+        __self__.text(btnText)
+      }
+    });
+  };
+  (function ($) {
+    document.addEventListener('DOMContentLoaded', function () {
+      $('.login__forgot .btn_forgot').on('click', function (e) {
+        e.preventDefault();
+
+        var _ref_ = $(this),
+                phone = _ref_.closest('.login__forgot').find('.input[name=\'phone\']').val(),
+                btnText = _ref_.text();
+
+        $.ajax({
+          url: 'index.php?route=api/rocket_sms/send&api_token={{ api_token }}',
+          data: {
+            phone: phone,
+            language_code: VARS.language_code
+          },
+          dataType: 'json',
+          type: 'post',
+          error: function (xhr, ajaxOptions, thrownError) {
+            console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+          },
+          success: function (json) {
+            console.log(json);
+            _ref_.closest('.login__forgot').find('input[name=\'email\']').removeClass('wrong');
+            _ref_.closest('.login__forgot').find('.span_error').remove();
+            if (!json['success']) {
+              if (json['errors']) {
+                _ref_.closest('.login__forgot').find('input[name=\'phone\']').addClass('wrong');
+                _ref_.closest('.login__forgot').append('<span class="span_error">' + json['errors']['phone'] + '</span>');
+              }
+              if (json['answer']) {
+                _ref_.closest('.login__forgot').append('<span class="span_error">' + json['answer'] + '</span>');
+              }
+            } else {
+              var html = '';
+              html += '<div class="login__title">'+ json['answer'] +'</div>';
+              html += '<input class="input email-input" name="sms_code" type="text" placeholder="КОД С ТЕЛЕФОНА">';
+              html += '<input type="hidden" name="phone_sms" value='+ json['sms_phone'] +'>';
+              html += '<button id="verify_sms" class="btn" data-loading="{{ text_loading }}" onclick="verifySMS(this);return false;">Отправить</button>';
+              _ref_.closest('body').find('.login__forgot').html(html);
+              // $('.login__forgot, .forgot__links').remove();
+            }
+          },
+          beforeSend: function () {
+            _ref_.text(_ref_.data('loading'))
+          },
+          complete: function () {
+            _ref_.text(btnText)
+          }
+        })
+      });
+    });
+  })(jQuery)
+  // --></script>
 {{ footer }}

@@ -17,13 +17,13 @@ class ControllerAccountForgotten extends Controller {
 
 		$this->load->model('account/customer');
 
-		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
-			$this->model_account_customer->editCode($this->request->post['email'], token(40));
-
-			$this->session->data['success'] = $this->language->get('text_success');
-
-			$this->response->redirect($this->url->link('account/login', '', true));
-		}
+        $token = array_key_exists('token', $this->request->get) ? $this->request->get['token'] : '';
+        if ($token) {
+            $data['issetToken'] = true;
+        } else {
+            $data['issetToken'] = false;
+        }
+        $data['token'] = $token;
 
 		$data['breadcrumbs'] = array();
 
@@ -67,6 +67,40 @@ class ControllerAccountForgotten extends Controller {
 
 		$this->response->setOutput($this->load->view('account/forgotten', $data));
 	}
+
+	public function reset() {
+        $this->load->language('account/forgotten');
+        $this->load->model('account/customer');
+        $post = $this->request->post;
+        $json = [];
+
+        if (mb_strlen($post['password']) === 0) {
+            $json['success'] = false;
+            $json['errors']['password'] = $this->language->get('error_password_empty');
+        } else if (mb_strlen($post['password']) < 5) {
+            $json['success'] = false;
+	        $json['errors']['password'] = $this->language->get('error_password');
+        } else if ($post['password'] !== $post['password_confirmation']) {
+            $json['success'] = false;
+            $json['errors']['password'] = $this->language->get('error_password_confirmation');
+        } else {
+            $customer = $this->model_account_customer->getCustomerByTokenId( $this->request->post['token'] );
+            if ($customer) {
+                $this->model_account_customer->editPasswordAndResetToken($customer['email'], $post['password']);
+                $this->model_account_customer->deleteLoginAttempts($customer['email']);
+                $this->customer->login($customer['email'], $post['password']);
+                unset($this->session->data['guest']);
+                $json['success'] = true;
+                $json['redirect'] = $this->url->link('account/account');
+            } else {
+                $json['success'] = false;
+                $json['errors']['password'] = $this->language->get('error_customer');
+            }
+        }
+
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($json));
+    }
 
 	protected function validate() {
 		if (!isset($this->request->post['email'])) {

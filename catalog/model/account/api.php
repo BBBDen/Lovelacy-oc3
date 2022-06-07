@@ -17,4 +17,14 @@ class ModelAccountApi extends Model {
 
 		return $query->rows;
 	}
+
+    public function getApi($api_id) {
+        $query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "api` WHERE api_id = '" . (int)$api_id . "'");
+
+        return $query->row;
+    }
+
+    public function deleteApiSessionBySessionId($session_id) {
+        $this->db->query("DELETE FROM `" . DB_PREFIX . "api_session` WHERE session_id = '" . $this->db->escape($session_id) . "'");
+    }
 }

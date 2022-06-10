@@ -7,6 +7,7 @@ class ControllerAccountLogin extends Controller {
 
 	public function index() {
 		$this->load->model('account/customer');
+		$this->load->model('account/api');
 
 		// Login override for admin users
 		if (!empty($this->request->get['token'])) {
@@ -79,6 +80,24 @@ class ControllerAccountLogin extends Controller {
 		} else {
 			$data['error_warning'] = '';
 		}
+
+        $api_info = $this->model_account_api->getApi($this->config->get('config_api_sms_id'));
+
+        if ($api_info) {
+            $session = new Session($this->config->get('session_engine'), $this->registry);
+
+            $session->start();
+
+            $this->model_account_api->deleteApiSessionBySessionId($session->getId());
+
+            $this->model_account_api->addApiSession($api_info['api_id'], $session->getId(), $this->request->server['REMOTE_ADDR']);
+
+            $session->data['api_id'] = $api_info['api_id'];
+
+            $data['api_token'] = $session->getId();
+        } else {
+            $data['api_token'] = '';
+        }
 
 		$data['login_way'] = $this->config->get('config_login_way');
 

@@ -242,7 +242,7 @@ class ControllerCatalogUserData extends Controller {
             } else if ($result['pay_status'] === 'canceled') {
                 $status = 'Подписка отменена';
             } else if ($result['pay_status'] === 'error') {
-                $status = 'Произошла ошибка при подписке';
+                $status = 'Произощла ошибка при подписке';
             }
             $data['user_data'] = [
                 'email' => $result['email'],

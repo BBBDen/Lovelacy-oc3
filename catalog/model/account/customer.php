@@ -89,7 +89,8 @@ class ModelAccountCustomer extends Model {
 
     public function getCustomerByPhone($phone) {
         $telephone = utf8_strtolower(str_replace(['+', '_', '-', '(', ')', '=', '№', '#', '$', '%', ' '], '', $phone));
-        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "customer WHERE LOWER(telephone) = '" . $this->db->escape($telephone) . "' OR LOWER(telephone) = '+" . $this->db->escape($telephone) . "'");
+        $telephone2 = str_replace('375', '', $telephone);
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "customer WHERE LOWER(telephone) = '" . $this->db->escape($telephone) . "' OR LOWER(telephone) = '+" . $this->db->escape($telephone) . "' OR LOWER(telephone) = '". $this->db->escape($telephone2) ."'");
 
         return $query->row;
     }

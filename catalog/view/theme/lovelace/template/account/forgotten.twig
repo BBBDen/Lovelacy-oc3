@@ -1,0 +1,78 @@
+{{ header }}
+<div class="breadcrumbs">
+  <div class="container">
+    <ul itemscope itemtype="https://schema.org/BreadcrumbList">
+      {% for breadcrumb in breadcrumbs %}
+        <li class="breadcrumbs-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="{{ breadcrumb.href }}" itemprop="item">
+            <span itemprop="name">{{ breadcrumb.text }}</span>
+            <meta itemprop="position" content="{{ loop.index }}" />
+          </a>
+        </li>
+      {% endfor %}
+    </ul>{{ text_back_button }}
+  </div>
+</div>
+
+<section class="login">
+    {% if issetToken %}
+    <div class="container">
+        <div class="login__form">
+            <div class="login__reset">
+                <input class="input password-input" name="password" type="password" placeholder="{{ entry_password }}">
+                <input class="input password_-input" name="password_confirmation" type="password" placeholder="{{ entry_password_confirm }}">
+                <button class="btn btn_reset_pass" data-loading="{{ text_loading }}">{{ entry_button }}</button>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</section>
+<script><!--//
+    (function ($) {
+        document.addEventListener('DOMContentLoaded', function () {
+            $('.btn_reset_pass').on('click', function (e) {
+                e.preventDefault();
+                var __self__ = $( this ),
+                    btnText = __self__.text(),
+                    password = __self__.closest('div').find('[name="password"]').val(),
+                    passwordConfirm = __self__.closest('div').find('[name="password_confirmation"]').val(),
+                    token = '{{ token }}';
+
+                $.ajax({
+                    url: 'index.php?route=account/forgotten/reset',
+                    dataType: 'json',
+                    type: 'post',
+                    data: {
+                        token: token,
+                        password_confirmation: passwordConfirm,
+                        password: password,
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                    },
+                    beforeSend: function () {
+                        __self__.text(__self__.data('loading'))
+                    },
+                    complete: function () {
+                        __self__.text(btnText)
+                    },
+                    success: function (json) {
+                        console.log(json)
+                        __self__.closest('div').find('input').removeClass('wrong');
+                        __self__.closest('div').find('.span_error').remove();
+                        if (!json['success']) {
+                            $.each(json['errors'], function (k,v) {
+                                __self__.closest('div').find('[name="'+k+'"]').addClass('wrong')
+                                __self__.closest('div').append('<span class="span_error">' + v + '</span>')
+                            });
+                        } else {
+                            window.location.href = json['redirect'];
+                        }
+                    }
+                });
+            })
+        })
+    })(jQuery)
+    // --></script>
+
+{{ footer }}

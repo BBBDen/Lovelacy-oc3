@@ -112,12 +112,23 @@ class ModelAccountCustomer extends Model {
         $this->db->query("UPDATE " . DB_PREFIX . "customer SET salt = '" . $this->db->escape($salt = token(9)) . "', password = '" . $this->db->escape(sha1($salt . sha1($salt . sha1($password)))) . "', code = '' WHERE LOWER(email) = '" . $this->db->escape(utf8_strtolower($email)) . "'");
     }
 
+    public function editPasswordAndResetToken($email, $password) {
+        $this->db->query("UPDATE " . DB_PREFIX . "customer SET salt = '" . $this->db->escape($salt = token(9)) . "', password = '" . $this->db->escape(sha1($salt . sha1($salt . sha1($password)))) . "', code = '', token = '' WHERE LOWER(email) = '" . $this->db->escape(utf8_strtolower($email)) . "'");
+    }
+
+
     public function editAddressId($customer_id, $address_id) {
         $this->db->query("UPDATE " . DB_PREFIX . "customer SET address_id = '" . (int)$address_id . "' WHERE customer_id = '" . (int)$customer_id . "'");
     }
 
     public function editCode($email, $code) {
         $this->db->query("UPDATE `" . DB_PREFIX . "customer` SET code = '" . $this->db->escape($code) . "' WHERE LCASE(email) = '" . $this->db->escape(utf8_strtolower($email)) . "'");
+    }
+
+    public function editCodeFromResetPassword($phone, $code, $token) {
+        $telephone = utf8_strtolower(str_replace(['+', '_', '-', '(', ')', '=', '№', '#', '$', '%', ' '], '', $phone));
+        $telephone2 = str_replace('375', '', $telephone);
+        $this->db->query("UPDATE `" . DB_PREFIX . "customer` SET code = '" . $this->db->escape($code) . "', token = '". $this->db->escape($token) ."' WHERE LCASE(telephone) = '" . $this->db->escape(utf8_strtolower($telephone)) . "' OR LCASE(telephone) = '+" . $this->db->escape(utf8_strtolower($telephone)) . "' OR LCASE(telephone) = '" . $this->db->escape(utf8_strtolower($telephone2)) . "'");
     }
 
     public function editNewsletter($newsletter) {
@@ -138,7 +149,8 @@ class ModelAccountCustomer extends Model {
 
     public function getCustomerByPhone($phone) {
         $telephone = utf8_strtolower(str_replace(['+', '_', '-', '(', ')', '=', '№', '#', '$', '%', ' '], '', $phone));
-        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "customer WHERE LOWER(telephone) = '" . $this->db->escape($telephone) . "' OR LOWER(telephone) = '+" . $this->db->escape($telephone) . "'");
+        $telephone2 = str_replace('375', '', $telephone);
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "customer WHERE LOWER(telephone) = '" . $this->db->escape($telephone) . "' OR LOWER(telephone) = '+" . $this->db->escape($telephone) . "' OR LOWER(telephone) = '". $this->db->escape($telephone2) ."'");
 
         return $query->row;
     }
@@ -207,6 +219,12 @@ class ModelAccountCustomer extends Model {
 
     public function getCustomerByCode($code) {
         $query = $this->db->query("SELECT customer_id, firstname, lastname, email FROM `" . DB_PREFIX . "customer` WHERE code = '" . $this->db->escape($code) . "' AND code != ''");
+
+        return $query->row;
+    }
+
+    public function getCustomerByTokenId($token) {
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "customer WHERE token = '" . $this->db->escape($token) . "' AND token != ''");
 
         return $query->row;
     }

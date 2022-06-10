@@ -159,7 +159,11 @@ class ControllerExtensionModuleRetailcrm extends Controller {
             $customer_manager = $this->retailcrm->getCustomerManager();
             $customer_manager->createCustomer($customer,$address);
         }
+<<<<<<< HEAD
+        
+=======
 
+>>>>>>> 23bb7a02ef803dedf2975128025bc47f18920515
     }
 
     /**
@@ -174,18 +178,25 @@ class ControllerExtensionModuleRetailcrm extends Controller {
 
         $customer = $this->model_account_customer->getCustomer($customerId);
         $address = $this->model_account_address->getAddress($customer['address_id']);
+<<<<<<< HEAD
+        if ($customer['social_nick'] <> null) {
+=======
         $customer['subscribe'] = $this->model_account_customer->getCustomerSubscribeId($customerId);
 
+>>>>>>> 23bb7a02ef803dedf2975128025bc47f18920515
             if (file_exists(DIR_APPLICATION . 'model/extension/retailcrm/custom/customer.php')) {
                 $this->load->model('extension/retailcrm/custom/customer');
 
 
                 $this->model_extension_retailcrm_custom_customer->changeInCrm($customer, $this->retailcrmApiClient);
             } else {
+<<<<<<< HEAD
+=======
 
+>>>>>>> 23bb7a02ef803dedf2975128025bc47f18920515
                 $customer_manager = $this->retailcrm->getCustomerManager();
                 $customer_manager->editCustomer($customer, $address);
             }
-
+        }
         }
 }

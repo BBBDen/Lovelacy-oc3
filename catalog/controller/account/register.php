@@ -393,7 +393,7 @@ class ControllerAccountRegister extends Controller {
         return $this->error;
     }
 
-	public function registration()
+    public function registration()
     {
         $json = [];
 

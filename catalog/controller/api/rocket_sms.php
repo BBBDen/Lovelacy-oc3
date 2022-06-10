@@ -123,7 +123,7 @@ class ControllerApiRocketSms extends Controller {
     private function validate($post) {
         if (!array_key_exists('phone', $post) || mb_strlen($post['phone']) === 0) {
             $this->errors['phone'] = $this->language->get('phone_error_empty');
-        } else if (!preg_match('/^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){12,14}(\s*)?$/', $post['phone'])) {
+        } else if (!preg_match('/^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){9,14}(\s*)?$/', $post['phone'])) {
             $this->errors['phone'] = $this->language->get('phone_error');
         } else if (!$this->model_account_customer->getCustomerByPhone($post['phone'])) {
             $this->errors['phone'] = $this->language->get('phone_error_isset');

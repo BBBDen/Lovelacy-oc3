@@ -462,7 +462,7 @@ class ControllerAccountAccount extends Controller {
 
         $this->load->model('account/customer');
         $customer_info = $this->model_account_customer->getCustomerSubscribeId($this->request->get['customer_id']);
-        if ($customer_info) {
+        if ($customer_info['bepayed_sbs_id']) {
             $sbs_info = json_decode($this->curlHandler('https://api.bepaid.by/subscriptions/' . $customer_info['bepayed_sbs_id'], [], 'GET', [
                 'auth_data' => self::AUTH_DATA
             ]), true);

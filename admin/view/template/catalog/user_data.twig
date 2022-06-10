@@ -67,28 +67,35 @@
             <tbody>
             {% set user_class_pay_result = '' %}
             {% for data in user_data %}
-              {% if data.pay_status == 'successful' %}
-                {% set user_class_pay_result = 'alert-success' %}
-              {% elseif data.pay_status == 'canceled' %}
-                {% set user_class_pay_result = 'alert-warning' %}
-              {% elseif data.pay_status == 'failed' %}
-                {% set user_class_pay_result = 'alert-info' %}
-              {% elseif data.pay_status == 'error' %}
-                {% set user_class_pay_result = 'alert-danger' %}
-              {% endif %}
-              <tr class="{{ user_class_pay_result }}">
-                <td class="text-center"><input type="checkbox" name="selected[]" value="{{ data.id }}">
-                </td>
-                <td class="left">{{ data.name }}</td>
-                <td class="left">{{ data.phone }}</td>
-                <td class="left">{{ data.email }}</td>
-                <td class="text-right">
-                  <a target="_blank" href="{{ data.edit }}"
-                     data-toggle="tooltip" title="" class="btn btn-success" data-original-title="Посмотреть"><i
-                            class="fa fa-eye"></i></a>
-                </td>
+              {% if data.pay_status %}
+                {% if data.pay_status == 'successful' %}
+                  {% set user_class_pay_result = 'alert-success' %}
+                {% elseif data.pay_status == 'active' %}
+                  {% set user_class_pay_result = 'alert-success' %}
+                {% elseif data.pay_status == 'expired' %}
+                  {% set user_class_pay_result = 'alert-danger' %}
+                {% elseif data.pay_status == 'canceled' %}
+                  {% set user_class_pay_result = 'alert-warning' %}
+                {% elseif data.pay_status == 'failed' %}
+                  {% set user_class_pay_result = 'alert-info' %}
+                {% elseif data.pay_status == 'error' %}
+                  {% set user_class_pay_result = 'alert-danger' %}
+                {% else %}
+                  {% set user_class_pay_result = data.pay_status %}
+                {% endif %}
+                <tr {% if data.bepayed_sbs_id %}class="{{ user_class_pay_result }}"{% endif %}>
+                  <td class="text-center"><input type="checkbox" name="selected[]" value="{{ data.id }}">
+                  </td>
+                  <td class="left">{{ data.name }}{% if not data.bepayed_sbs_id %} <b>БЕЗ СТАТУСА!</b>{% endif %}</td>
+                  <td class="left">{{ data.phone }}</td>
+                  <td class="left">{{ data.email }}</td>
+                  <td class="text-right">
+                    <a target="_blank" href="{{ data.edit }}"
+                       data-toggle="tooltip" title="" class="btn btn-success" data-original-title="Посмотреть"><i
+                              class="fa fa-eye"></i></a>
+                  </td>
               </tr>
-
+              {% endif %}
             {% endfor %}
             </tbody>
           </table>

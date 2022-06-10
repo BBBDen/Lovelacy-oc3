@@ -217,6 +217,10 @@ class ModelAccountCustomer extends Model {
         return $query->num_rows > 0 ? true : false;
     }
 
+    public function updatePayStatusToCustomerSubscriber($id, $status) {
+        $this->db->query("UPDATE " . DB_PREFIX . "card_subscribe_info SET pay_status = '". $this->db->escape($status) ."' WHERE card_subscribe_info_id = '". (int)$id ."'");
+    }
+
     public function getCustomerByCode($code) {
         $query = $this->db->query("SELECT customer_id, firstname, lastname, email FROM `" . DB_PREFIX . "customer` WHERE code = '" . $this->db->escape($code) . "' AND code != ''");
 

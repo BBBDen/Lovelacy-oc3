@@ -61,5 +61,4 @@ system/storage
 admin/*.txt
 config.php
 admin/config.php
-*.sh
-.htaccess
+

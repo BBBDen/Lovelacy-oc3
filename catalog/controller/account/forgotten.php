@@ -91,6 +91,9 @@ class ControllerAccountForgotten extends Controller {
                 $this->customer->login($customer['email'], $post['password']);
                 unset($this->session->data['guest']);
                 $json['success'] = true;
+                $json['text'] = $this->language->get('text_password_success');
+                $json['button_text'] = $this->language->get('text_go_to_account');
+                $json['redirect_link'] = $this->url->link('account/account');
                 $json['redirect'] = $this->url->link('account/account');
             } else {
                 $json['success'] = false;

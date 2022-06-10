@@ -19,6 +19,7 @@
     <div class="container">
         <div class="login__form">
             <div class="login__reset">
+                <div class="login__title">{{ text_password_new }}</div>
                 <input class="input password-input" name="password" type="password" placeholder="{{ entry_password }}">
                 <input class="input password_-input" name="password_confirmation" type="password" placeholder="{{ entry_password_confirm }}">
                 <button class="btn btn_reset_pass" data-loading="{{ text_loading }}">{{ entry_button }}</button>
@@ -57,7 +58,6 @@
                         __self__.text(btnText)
                     },
                     success: function (json) {
-                        console.log(json)
                         __self__.closest('div').find('input').removeClass('wrong');
                         __self__.closest('div').find('.span_error').remove();
                         if (!json['success']) {
@@ -66,6 +66,11 @@
                                 __self__.closest('div').append('<span class="span_error">' + v + '</span>')
                             });
                         } else {
+                            // text - json.text
+                            // text - json.button_text
+                            // link to account - json.redirect_link
+
+                            // replace this to popup
                             window.location.href = json['redirect'];
                         }
                     }

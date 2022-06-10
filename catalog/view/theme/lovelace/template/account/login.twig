@@ -129,7 +129,7 @@
             } else {
               var html = '';
               html += '<div class="login__title">'+ json['answer'] +'</div>';
-              html += '<input class="input email-input" name="sms_code" type="text" placeholder="КОД С ТЕЛЕФОНА">';
+              html += '<input class="input email-input" name="sms_code" type="text" placeholder="'+ json['answer'] +'">';
               html += '<input type="hidden" name="phone_sms" value='+ json['sms_phone'] +'>';
               html += '<button id="verify_sms" class="btn" data-loading="{{ text_loading }}" onclick="verifySMS(this);return false;">Отправить</button>';
               _ref_.closest('body').find('.login__forgot').html(html);

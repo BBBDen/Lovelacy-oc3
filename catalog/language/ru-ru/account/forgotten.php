@@ -14,6 +14,7 @@ $_['text_success']    = 'Новый пароль был выслан на Ваш
 
 // Entry
 $_['entry_email']     = 'E-Mail адрес';
+$_['text_password_new']     = 'Введите новый пароль';
 $_['entry_password']     = 'Пароль';
 $_['entry_password_confirm']     = 'Повторите пароль';
 $_['entry_button']     = 'Отправить';
@@ -27,3 +28,5 @@ $_['error_password_empty']     = 'Введите пароль';
 $_['error_customer']     = 'Такого пользователя не существует!';
 $_['error_approved']  = 'Ваша учетная запись требует одобрения, прежде чем вы сможете войти.';
 $_['email_validation']  = 'Введите Email в правильном формате';
+$_['text_password_success']  = 'Пароль успешно изменен';
+$_['text_go_to_account']  = 'Войти в личный кабинет';
